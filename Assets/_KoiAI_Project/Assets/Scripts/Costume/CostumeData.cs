@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 namespace KoiAI.Costume
 {
     [CreateAssetMenu(fileName = "new CostumeData", menuName = "KoiAI/Costume/CostumeData")]
-    public class CostumeData : ScriptableObject
+    public class CostumeData : ScriptableObject, ISerializationCallbackReceiver
     {
         [SerializeField]
         private CostumeCategory _costumeCategory;
@@ -19,9 +19,10 @@ namespace KoiAI.Costume
         [SerializeField]
         private bool _canMultipleCostume = false;
         [HideInInspector]
-        [SerializeField]
-        private Guid _guid = Guid.NewGuid();
+        [SerializeField] 
+        private string _guidString;
         
+        private Guid _guid;
         private VisualElement _costumeSlot;
 
         public void SetCostumeSlot(VisualElement costumeSlot)
@@ -36,5 +37,19 @@ namespace KoiAI.Costume
         public GameObject CostumePrefab => _costumePrefab;
         public bool CanMulitpleCostume => _canMultipleCostume; 
         public VisualElement CostumeSlot => _costumeSlot;
+
+        public void OnBeforeSerialize()
+        {
+            if (_guid == Guid.Empty || string.IsNullOrEmpty(_guidString))
+            {
+                _guid = Guid.NewGuid();
+                _guidString = _guid.ToString();
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            Guid.TryParse(_guidString, out _guid);
+        }
     }
 }

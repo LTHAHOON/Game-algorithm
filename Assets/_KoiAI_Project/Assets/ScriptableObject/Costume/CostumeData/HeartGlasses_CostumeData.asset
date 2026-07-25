@@ -16,3 +16,5 @@ MonoBehaviour:
   _costumeTexture: {fileID: 2800000, guid: 16a17c145ee99c34ba91a73f7ade3781, type: 3}
   _costumeName: Heart Glasses
   _costumePrefab: {fileID: 4867294627513241484, guid: eb0ff4297f2a5354e93f4f0037fd3c58, type: 3}
+  _canMultipleCostume: 0
+  _guidString: 113a87a0-924f-4d5d-99e2-dc65b21aeed7

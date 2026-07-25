@@ -16,3 +16,5 @@ MonoBehaviour:
   _costumeTexture: {fileID: 2800000, guid: 08be42b843d7a394d87f5d1df43fb487, type: 3}
   _costumeName: Red Cape
   _costumePrefab: {fileID: 340117571790191924, guid: fb974916138395d4fb4c69804b5b60e1, type: 3}
+  _canMultipleCostume: 0
+  _guidString: acd2e09c-8e91-45b5-8411-bf75e24b4aef

@@ -16,3 +16,5 @@ MonoBehaviour:
   _costumeTexture: {fileID: 2800000, guid: fa7366df96d2b2c42a3981fbf3212278, type: 3}
   _costumeName: Mario Cap
   _costumePrefab: {fileID: 730331440650914512, guid: 8e7d12f5b3f328d409492de269bc04c8, type: 3}
+  _canMultipleCostume: 0
+  _guidString: 26290677-89d8-4e2b-9955-a4bcd5ef93f1

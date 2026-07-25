@@ -26,7 +26,7 @@ namespace KoiAI.UI
         private TModel _visualModel;
         [SerializeField]
         private TViewInfo _viewInfo;
-        private void Awake()
+        private void Start()
         {
             Initalize(_visualModel, _viewInfo);
         }

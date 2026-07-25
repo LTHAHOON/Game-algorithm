@@ -16,3 +16,5 @@ MonoBehaviour:
   _costumeTexture: {fileID: 2800000, guid: 88948cd906b021a499be3c3bd0801390, type: 3}
   _costumeName: Galaxy Cape
   _costumePrefab: {fileID: 4181002318218676925, guid: ef39e0fc4d4bb7044acc143012af4cbb, type: 3}
+  _canMultipleCostume: 0
+  _guidString: c5152df2-982c-4659-a545-fdc866562f68

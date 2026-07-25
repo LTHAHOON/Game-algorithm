@@ -68,6 +68,11 @@ namespace KoiAI.UI
 
         public override void Initalize(CharacterSettingModel visualModel, CharacterSettingViewInfo viewInfo)
         {
+            for (int i = 0; i < visualModel.AllPlayerData.Count; i++)
+            {
+                visualModel.AllPlayerData[i].Initialize();
+            }
+            
             PopUpWindowContainer<UIDocument, string> windowContainer = GetPopUpWindowContainer();
             if (windowContainer == null)
             {
@@ -120,7 +125,6 @@ namespace KoiAI.UI
             Button palettePcikerCenterBtn_Body = circleColorPicker_Body_Root.Q<Button>(viewInfo.PalettePickerCenterBtnName);
             palettePcikerCenterBtn_Face.clicked += _circleColorPicker_Face.MovePickerToCenter;
             palettePcikerCenterBtn_Body.clicked += _circleColorPicker_Body.MovePickerToCenter;
-            
             #endregion
 
             #region CostumeSlotList 초기화
@@ -193,11 +197,14 @@ namespace KoiAI.UI
                 SearchCostume(searchCategory);
             });
             CharacterSettingService.Init(visualModel, _currentCharIndex);
-            LoadWearingCostume(visualModel.AllPlayerData[_currentCharIndex]);
             #endregion
 
-            SaveManager.Instance.SaveFromJson(visualModel.AllPlayerData, SavePaths.CharacterSettingPath);
+
+            
+            SaveManager.Instance.LoadFromJson(visualModel.AllPlayerData, SavePaths.CharacterSettingPath);
             SaveManager.Instance.SaveToJson(visualModel.AllPlayerData, SavePaths.CharacterSettingPath);
+            LoadWearingCostume(visualModel.AllPlayerData[_currentCharIndex]);
+            LoadCharacterColor();
         }
 
         private void LoadWearingCostume(PlayerData playerData)
@@ -383,12 +390,12 @@ namespace KoiAI.UI
             PlayerData curPlayerData = visualModel.AllPlayerData[_currentCharIndex];
             if (visualModel.AllPlayerData.Count > _currentCharIndex)
             {
-                _circleColorPicker_Face.RegisterAllCallBack(curPlayerData.CurColorPosition_Face);
-                _circleColorPicker_Body.RegisterAllCallBack(curPlayerData.CurColorPosition_Body);
+                _circleColorPicker_Face.RegisterAllCallBack(curPlayerData.CurColor_Face);
+                _circleColorPicker_Body.RegisterAllCallBack(curPlayerData.CurColor_Body);
             }
             for (int i = 0; i < visualModel.AllPlayerData.Count; i++)
             {
-                visualModel.AllPlayerData[i].SetLastColorPosition();
+                visualModel.AllPlayerData[i].SetLastColor();
                 visualModel.AllPlayerData[i].SaveWearingCostumeGUIDs();
 
             }
@@ -420,11 +427,11 @@ namespace KoiAI.UI
                         continue;
                     }
 
-                    playerData.UndoToLastColorPosition();
+                    playerData.UndoToLastColor();
                     if (i == _lastCharIndex)
                     {
-                        _circleColorPicker_Face.UnregisterAllCallBack(playerData.CurColorPosition_Face);
-                        _circleColorPicker_Body.UnregisterAllCallBack(playerData.CurColorPosition_Body);
+                        _circleColorPicker_Face.UnregisterAllCallBack(playerData.CurColor_Face);
+                        _circleColorPicker_Body.UnregisterAllCallBack(playerData.CurColor_Body);
                     }
                 }
             }
@@ -449,8 +456,8 @@ namespace KoiAI.UI
             //캐릭터 바뀔 때만 해당 캐릭터의 데이터 불러오기 
             if (direction != 0)
             {
-                _circleColorPicker_Face.RegisterAllCallBack(curPlayerData.CurColorPosition_Face);
-                _circleColorPicker_Body.RegisterAllCallBack(curPlayerData.CurColorPosition_Body);
+                _circleColorPicker_Face.RegisterAllCallBack(curPlayerData.CurColor_Face);
+                _circleColorPicker_Body.RegisterAllCallBack(curPlayerData.CurColor_Body);
                 LoadWearingCostume(curPlayerData);
                 CharacterSettingService.SetCharacterSettingIndex(_currentCharIndex);
             }
@@ -549,7 +556,7 @@ namespace KoiAI.UI
             CharacterSettingModel visualModel = GetVisualModel();
             for (int i = 0; i < visualModel.AllPlayerData.Count; i++)
             {
-                visualModel.AllPlayerData[i].SetLastColorPosition();
+                visualModel.AllPlayerData[i].SetLastColor();
                 visualModel.AllPlayerData[i].SaveWearingCostumeGUIDs();
 
             }
@@ -563,10 +570,24 @@ namespace KoiAI.UI
             PopUpManager.Instance.ChangePopUpState(PopUpState.Close, this);
         }
 
+        private void LoadCharacterColor()
+        {
+            CharacterSettingModel visualModel = GetVisualModel();
+            
+            for (int i = 0; i < visualModel.AllPlayerData.Count; i++)
+            {
+                PlayerData playerData = visualModel.AllPlayerData[i];
+                PlayerSkin playerSkin = playerData.PlayerSkin;
+                
+                playerSkin.FaceMaterial.color = playerData.CurColor_Face;
+                playerSkin.BodyMaterial.color = playerData.CurColor_Body;
+            }
+        }
+        
         /// <summary>
         /// ICircleColorPickerHandler로 인해 컬러가 결정될 때 호출됩니다.
         /// </summary>
-        public void OnColorChanged(CircleColorPicker circleColorPicker, Color newColor, Vector2 curColorPosition)
+        public void OnColorChanged(CircleColorPicker circleColorPicker, Color newColor)
         {
             CharacterSettingModel visualModel =  GetVisualModel();
             PlayerData curPlayerData = visualModel.AllPlayerData[_currentCharIndex];
@@ -577,12 +598,12 @@ namespace KoiAI.UI
             {
                 curPlayerSkin.FaceMaterial.color = newColor;
                 
-                curPlayerData.SetCurColorPositionFace(curColorPosition);
+                curPlayerData.SetCurColorFace(newColor);
             }
             else if (circleColorPicker == _circleColorPicker_Body)
             {
                 curPlayerSkin.BodyMaterial.color = newColor;
-                curPlayerData.SetCurColorPositionBody(curColorPosition);
+                curPlayerData.SetCurColorBody(newColor);
             }
 
             SetConfirmButtonEnabled(true);

@@ -3,9 +3,11 @@ using UnityEngine.UIElements;
 
 namespace KoiAI.Utilities
 {
+    using KoiAI.UI;
+    
     public interface ICircleColorPickerHandler 
     {
-        public void OnColorChanged(CircleColorPicker circleColorPicker, Color newColor, Vector2 curColorPosition);
+        public void OnColorChanged(CircleColorPicker circleColorPicker, Color newColor);
     }
 
     public class CircleColorPicker
@@ -39,10 +41,9 @@ namespace KoiAI.Utilities
             {
                 Debug.LogError("UXML에서 'CirclePalette' 또는 'Picker' 요소를 찾을 수 없습니다.");
             }
-
         }
         
-        public void RegisterAllCallBack(Vector2 curColorPosition)
+        public void RegisterAllCallBack(Color curColor)
         {
             if (_circlePalette == null)
             {
@@ -51,11 +52,12 @@ namespace KoiAI.Utilities
             _circlePalette.RegisterCallback<PointerDownEvent>(OnPointerDown);
             _circlePalette.RegisterCallback<PointerMoveEvent>(OnPointerMove);
             _circlePalette.RegisterCallback<PointerUpEvent>(OnPointerUp);
-            
+
+            Vector2 curColorPosition = GetColorPosition(curColor);
             UpdatePickerAndColor(curColorPosition);
         }
 
-        public void UnregisterAllCallBack(Vector2 curColorPosition)
+        public void UnregisterAllCallBack(Color curColor)
         {
             if (_circlePalette == null)
             {
@@ -66,7 +68,7 @@ namespace KoiAI.Utilities
             _circlePalette.UnregisterCallback<PointerUpEvent>(OnPointerUp);
             _circlePalette.ReleaseMouse();
 
-
+            Vector2 curColorPosition = GetColorPosition(curColor);
             UpdatePickerAndColor(curColorPosition);
         }
 
@@ -135,14 +137,37 @@ namespace KoiAI.Utilities
             // 5. 최종 색상 추출 및 이벤트 발송
             SelectedColor = Color.HSVToRGB(hue, saturation, value);
 
-            _colorPickerHandler?.OnColorChanged(this, SelectedColor, screenPosition);
+            _colorPickerHandler?.OnColorChanged(this, SelectedColor);
         }
 
+        private Vector3 GetColorPosition(Color color)
+        {
+            Color.RGBToHSV(color, out float hue, out float saturation, out float value);
+
+            Rect bounds = _circlePalette.worldBound;
+            Vector2 center = bounds.center;
+            float maxRadius = bounds.width * 0.5f;
+
+            // 3. Hue(0~1)를 라디안 각도로 역산 (Atan2 역산)
+            // 원래 코드에서 Y축을 반전시켰으므로(-localOffset.y), 사인 값에 마이너스를 붙여줍니다.
+            float angle = hue * 360f;
+            float rad = angle * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(Mathf.Cos(rad), -Mathf.Sin(rad));
+
+            // 4. Saturation(0~1)을 이용해 실제 반지름 거리 구하기
+            float currentRadius = saturation * maxRadius;
+
+            // 5. 중심으로부터의 오프셋 벡터 계산
+            Vector2 localOffset = direction * currentRadius;
+
+            // 6. 최종 전역 스크린 좌표(screenPosition) 도출
+            Vector2 screenPosition = center + localOffset;
+
+            return screenPosition;
+        }
+        
         public void MovePickerToCenter()
         {
-          //  Rect bounds = _circlePalette.layout;
-        //    _picker.style.left = (bounds.width * 0.5f) - (_picker.layout.width * 0.5f);
-         //   _picker.style.top = (bounds.height * 0.5f) - (_picker.layout.height * 0.5f);
             UpdatePickerAndColor(_circlePalette.worldBound.center);
         }
     }

@@ -1,22 +1,49 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using KoiAI.Utilities;
 using NaughtyAttributes;
 using UnityEngine;
 using static KoiAI.Player.PlayerFeature;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace KoiAI.Player
 {
     using KoiAI.AnimatorSystem;
-    using NUnit.Framework;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using KoiAI.Core;
 
     [CreateAssetMenu(fileName = "new PlayerData", menuName = "KoiAI/Player/PlayerData")]
-    public class PlayerData : ScriptableObject
+    public class PlayerData : ScriptableObject, ISaveDTOHandler
     {
+        private PlayerDTO _playerDto;
+        public void SetFromSaveDTO(SaveDTO saveDTO)
+        {
+            if (saveDTO is PlayerDTO playerDto)
+            {
+                _playerDto = playerDto;
+                _wearingCostumeGUIDs = _playerDto.WearingCostumeGUIDs;
+                _curColor_Face = _playerDto.CurColor_Face;
+                _curColor_Body = _playerDto.CurColor_Body;
+            }
+        }
+
+        public void SetToSaveDTO()
+        {
+            if (_playerDto == null)
+            {
+                //완전 처음 게임을 시작할 경우
+                _playerDto = new PlayerDTO(_curColor_Face, _curColor_Body, _wearingCostumeGUIDs);
+            }
+            else
+            {
+                _playerDto.SetPlayerDTO(_curColor_Face, _curColor_Body, _wearingCostumeGUIDs);
+            }
+        }
+
+        public SaveDTO GetSaveDTO()
+        {
+            return _playerDto;
+        }
+        
         [SerializeField]
         private string _chracterBaseName;
         [ReadOnly]
@@ -42,26 +69,25 @@ namespace KoiAI.Player
         [SerializeField]
         private PlayerRotationExtensionData _playerRotationExtensionData;
 
-        [HideInInspector]
-        [SerializeField]
         private List<Guid> _wearingCostumeGUIDs = new();
-        [HideInInspector]
         private List<Guid> _lastWearingCostumeGUIDs = new();
+        
+        private Color _curColor_Face;
+        private Color _curColor_Body;
+        
+        private Color _lastColor_Face;
+        private Color _lastColor_Body;
+        
 
-        [ReadOnly]
-        [SerializeField]
-        private Vector2 _curColorPosition_Face;
-        [ReadOnly]
-        [SerializeField]
-        private Vector2 _curColorPosition_Body;
-
-        [HideInInspector]
-        [SerializeField]
-        private Vector2 _lastColorPosition_Face;
-        [HideInInspector]
-        [SerializeField]
-        private Vector2 _lastColorPosition_Body;
-
+        public void Initialize()
+        {
+            _wearingCostumeGUIDs.Clear();
+            _lastWearingCostumeGUIDs.Clear();
+            _curColor_Face = Color.white;
+            _curColor_Body = Color.white;
+            _playerDto = null;
+        }
+        
         public void SaveWearingCostumeGUIDs()
         {
             _lastWearingCostumeGUIDs = _wearingCostumeGUIDs.ToList();
@@ -78,33 +104,26 @@ namespace KoiAI.Player
             return _lastWearingCostumeGUIDs;
         }
 
-        public void SetCurColorPositionFace(Vector2 faceColorPos)
+        public void SetCurColorFace(Color faceColor)
         {
-            _curColorPosition_Face = faceColorPos;
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-#endif
+            _curColor_Face = faceColor;
         }
 
-        public void SetCurColorPositionBody(Vector2 bodyColorPos)
+        public void SetCurColorBody(Color bodyColor)
         {
-            _curColorPosition_Body = bodyColorPos;
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-#endif
+            _curColor_Body = bodyColor;
         }
         
-        public void SetLastColorPosition()
+        public void SetLastColor()
         {
-            _lastColorPosition_Face = _curColorPosition_Face;
-            _lastColorPosition_Body = _curColorPosition_Body;
-
+            _lastColor_Face = _curColor_Face;
+            _lastColor_Body = _curColor_Body;
         }
 
-        public void UndoToLastColorPosition()
+        public void UndoToLastColor()
         {
-            _curColorPosition_Face = _lastColorPosition_Face;
-            _curColorPosition_Body = _lastColorPosition_Body;
+            _curColor_Face = _lastColor_Face;
+            _curColor_Body = _lastColor_Body;
         }
 
         public PlayerFeatureData GetPlayerFeatureData()
@@ -141,16 +160,17 @@ namespace KoiAI.Player
 
             
         }
-        
+
 
         public bool HasMovementProperty => GetPlayerFeatureData() is var data && data != null && data.HasMovementProperty;
         public bool HasRotationProperty => GetPlayerFeatureData() is var data && data != null && data.HasRotationProperty;
-        
-        public Vector2 CurColorPosition_Face => _curColorPosition_Face;
-        public Vector2 CurColorPosition_Body => _curColorPosition_Body;
+
+        public Color CurColor_Face => _curColor_Face;
+        public Color CurColor_Body => _curColor_Body;
         public string CharacterBaseName => _chracterBaseName;
         public PlayerFeatureDataType PlayerFeatureDataType => _playerFeatureDataType;
         public PlayerSkin PlayerSkin => _playerSkin;
         public AnimatorData AnimatorData => _animatorData;
+
     }
 }

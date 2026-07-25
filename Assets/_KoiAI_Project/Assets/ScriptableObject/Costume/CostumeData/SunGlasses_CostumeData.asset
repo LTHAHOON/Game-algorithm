@@ -16,3 +16,5 @@ MonoBehaviour:
   _costumeTexture: {fileID: 2800000, guid: a603856f4ad9b30478836dea95ed8a0f, type: 3}
   _costumeName: Sun Glasses
   _costumePrefab: {fileID: 8082390946887071691, guid: 41d93c02a63ca6d44b3db9323634b078, type: 3}
+  _canMultipleCostume: 0
+  _guidString: fe3eaec2-a46c-4c8b-a243-8aba5fe2c1cb
