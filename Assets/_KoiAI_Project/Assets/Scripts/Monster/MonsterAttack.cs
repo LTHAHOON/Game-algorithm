@@ -43,6 +43,12 @@ namespace KoiAI.Monster
         {
             _entitySight.Detect();
             WeaponControllerBase weaponController = ActivateRandom.GetRandomActivateTarget(_randomWeaponContorllers);
+            if(weaponController == null)
+            {
+                Owner.ChangeFeature(this);
+                return;
+            }
+
             if (!_entitySight.IsFindTarget())
             {
                 Owner.ChangeFeature(this);

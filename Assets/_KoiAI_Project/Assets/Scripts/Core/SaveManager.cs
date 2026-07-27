@@ -119,9 +119,8 @@ namespace KoiAI.Core
             }
 
         }
-        
 
-        public string ReadSaveFile(string savePath)
+        private string ReadSaveFile(string savePath)
         {
             if (File.Exists(savePath))
             {
@@ -133,7 +132,6 @@ namespace KoiAI.Core
             }
             return null;
         }
-
 
     }
 }

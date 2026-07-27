@@ -6,7 +6,7 @@ namespace KoiAI.Utilities
     {
         public static T GetRandomActivateTarget<T>(ActivateRandomValue<T>[] activateValues) where T : Component
         {
-            if (activateValues == null)
+            if (activateValues == null || activateValues.Length <= 0)
             {
                 return null;
             }

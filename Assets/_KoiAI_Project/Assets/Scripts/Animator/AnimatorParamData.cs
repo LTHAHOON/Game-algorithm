@@ -26,6 +26,27 @@ namespace KoiAI.AnimatorSystem
         [Dropdown("GetAnimatorParamList")]
         [OnValueChanged("OnValueChanged")]
         private string _jumpParam;
+        [SerializeField]
+        [BoxGroup("애니메이터 파라미터(없으면 None)")]
+        [Dropdown("GetAnimatorParamList")]
+        [OnValueChanged("OnValueChanged")]
+        private string _attack01_Param;
+        [SerializeField]
+        [BoxGroup("애니메이터 파라미터(없으면 None)")]
+        [Dropdown("GetAnimatorParamList")]
+        [OnValueChanged("OnValueChanged")]
+        private string _attack02_Param;
+
+        [SerializeField]
+        [BoxGroup("애니메이터 파라미터(없으면 None)")]
+        [Dropdown("GetAnimatorParamList")]
+        [OnValueChanged("OnValueChanged")]
+        private string _act1_Param;
+        [SerializeField]
+        [BoxGroup("애니메이터 파라미터(없으면 None)")]
+        [Dropdown("GetAnimatorParamList")]
+        [OnValueChanged("OnValueChanged")]
+        private string _act2_Param;
 
         private readonly List<string> _animatorParamList = new();
 

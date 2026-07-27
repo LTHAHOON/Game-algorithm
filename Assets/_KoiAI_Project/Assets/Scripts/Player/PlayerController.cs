@@ -125,12 +125,16 @@ namespace KoiAI.Player
             _playerFeatures = GetComponents<PlayerFeature>();
 
             //스킨 생성
+            PlayerSkin playerSkin = _playerData.PlayerSkin;
             _curPlayerSkin = CharacterSettingService.InstantiateCharacter(transform);
+            PlayerData playerData = _playerData;
             _playerData = CharacterSettingService.GetCurrentPlayerData();
             if (!_playerData)
             {
-                Debug.LogError("PlayerData is null");
-                return;
+                Debug.Log("PlayerData is null");
+                _playerData = playerData;
+                _curPlayerSkin = Instantiate(playerSkin, transform);
+                // return;
             }
             _playerAutoFeatureGenerator.GeneratePlayerFeature();
             _playerCmDataMediator.ConnectHandlesInConnector();

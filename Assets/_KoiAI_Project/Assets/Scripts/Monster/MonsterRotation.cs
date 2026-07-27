@@ -35,6 +35,10 @@ namespace KoiAI.Monster
 
         public override void UpdateFeature()
         {
+            if (_entitySight == null || _surfaceAngleFinder == null)
+            {
+                return;
+            }
             _entitySight.Detect();
             _surfaceAngleFinder.TryGetLocalSurfaceAngle(out _targetAngle, transform);
             bool isFindPlayer = _entitySight.IsFindTarget();

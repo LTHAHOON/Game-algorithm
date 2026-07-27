@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using KoiAI.Utilities;
 using NaughtyAttributes;
 using UnityEngine;
 using static KoiAI.Player.PlayerFeature;
@@ -77,7 +76,6 @@ namespace KoiAI.Player
         
         private Color _lastColor_Face;
         private Color _lastColor_Body;
-        
 
         public void Initialize()
         {
@@ -92,7 +90,6 @@ namespace KoiAI.Player
         {
             _lastWearingCostumeGUIDs = _wearingCostumeGUIDs.ToList();
         }
-
 
         public List<Guid> GetWearingCostumeGUIDs()
         {
@@ -157,10 +154,7 @@ namespace KoiAI.Player
                 };
             }
             return null;
-
-            
         }
-
 
         public bool HasMovementProperty => GetPlayerFeatureData() is var data && data != null && data.HasMovementProperty;
         public bool HasRotationProperty => GetPlayerFeatureData() is var data && data != null && data.HasRotationProperty;
