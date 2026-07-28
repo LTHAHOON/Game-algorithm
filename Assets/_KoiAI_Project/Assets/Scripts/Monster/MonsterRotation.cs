@@ -1,8 +1,43 @@
+using KoiAI.Player;
 using KoiAI.Utilities;
+using System;
 using UnityEngine;
 
 namespace KoiAI.Monster
 {
+    [Serializable]
+    public class MonsterRotationExtensionData : MonsterFeatureExtensionData
+    {
+        #region 보정값 및 추가 회전 데이터
+
+        [SerializeField]
+        private float _lookSpeedMod;
+        [SerializeField]
+        private float _surfaceCheckDistanceMod;
+        [SerializeField]
+        private LayerMask _surfaceLayerMask;
+
+        #endregion
+        public float LookSpeedMod => _lookSpeedMod;
+        public float SurfaceCheckDistanceMod => _surfaceCheckDistanceMod;
+        public LayerMask SurfaceLayerMask => _surfaceLayerMask;
+    }
+
+    [Serializable]
+    public class MonsterRotationValueData : MonsterFeatureValueData
+    {
+        #region 회전 데이터
+
+        [SerializeField]
+        private float _lookSpeed = 10f;
+        [SerializeField]
+        private float _surfaceCheckDistance = 3f;
+
+        #endregion
+        public float LookSpeed => _lookSpeed;
+        public float SurfaceCheckDistance => _surfaceCheckDistance;
+    }
+
     [RequireComponent(typeof(EntitySight))]
     public class MonsterRotation : MonsterFeature
     {
@@ -19,7 +54,9 @@ namespace KoiAI.Monster
         private EntitySight _entitySight;
         private Vector3 _targetAngle = Vector3.zero;
 
-        public override void Init()
+        public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Rotation;
+        public override void Init(MonsterFeatureValueData monsterFeatureValueData = null,
+            MonsterFeatureExtensionData monsterFeatureExtensionData = null)
         {
             _entitySight = GetComponent<EntitySight>();
             _surfaceAngleFinder = new(_surfaceCheckDistance);
@@ -51,6 +88,7 @@ namespace KoiAI.Monster
                 if(dir.sqrMagnitude <= _detectDistanceToFeature * _detectDistanceToFeature)
                 {
                     Owner.ChangeFeature(this);
+
                     return;
                 }
             }

@@ -30,7 +30,7 @@ namespace KoiAI.A_Star
         }
 
 
-    
+
         public IEnumerator IERebuildPath(Action<List<Vector2Int>> onEndBuild)
         {
             _path.Clear();
@@ -43,18 +43,18 @@ namespace KoiAI.A_Star
             int frameSize = 200;
             openSet.Add(_start);
             gCost.Add(_start, 0);
-        
-            while(openSet.Count > 0)
+
+            while (openSet.Count > 0)
             {
                 for (int f = 0; f < frameSize; f++)
                 {
-                    if (openSet.Count == 0) 
+                    if (openSet.Count == 0)
                     {
                         onEndBuild?.Invoke(null);
-                        yield break; 
+                        yield break;
                     }
                     ++curIterationCount;
-                    if(curIterationCount > _maxIterationCount)
+                    if (curIterationCount > _maxIterationCount)
                     {
                         onEndBuild?.Invoke(null);
                         yield break;
@@ -78,14 +78,14 @@ namespace KoiAI.A_Star
                         {
                             continue;
                         }
-                        if(!_closedSet.Contains(neighbor))
+                        if (!_closedSet.Contains(neighbor))
                         {
-                            if(!openSet.Contains(neighbor))
+                            if (!openSet.Contains(neighbor))
                             {
                                 openSet.Add(neighbor);
                             }
-                            gCost[neighbor] =  gCost[currentNode] + 10;
-                            cameFrom[neighbor]= currentNode;
+                            gCost[neighbor] = gCost[currentNode] + 10;
+                            cameFrom[neighbor] = currentNode;
                         }
                     }
                     _neighbors.Clear();
@@ -93,13 +93,13 @@ namespace KoiAI.A_Star
                 yield return null;
             }
         }
-    
+
         private void BuildPath(Vector2Int currentNode, Dictionary<Vector2Int, Vector2Int> cameFrom)
         {
             Vector2Int current = currentNode;
             int frameSize = 200;
             int curFrame = 0;
-            while(cameFrom.ContainsKey(current))
+            while (cameFrom.ContainsKey(current))
             {
                 ++curFrame;
                 if (curFrame > frameSize)
@@ -139,7 +139,7 @@ namespace KoiAI.A_Star
             for (int i = 1; i < openSet.Count; i++)
             {
                 float otherFCost = GetFCost(openSet[i], gCost);
-                if(curFCost > otherFCost)
+                if (curFCost > otherFCost)
                 {
                     curFCost = otherFCost;
                     bestNode = openSet[i];
@@ -165,14 +165,14 @@ namespace KoiAI.A_Star
 
         private bool IsInsideObstacle(Vector2Int node)
         {
-            if(_aStarObstacles == null)
+            if (_aStarObstacles == null)
             {
                 return false;
             }
             for (int i = 0; i < _aStarObstacles.Length; i++)
             {
                 bool isInside = _aStarObstacles[i].IsInsideObstacle(node);
-                if(isInside)
+                if (isInside)
                 {
                     return true;
                 }
@@ -182,7 +182,7 @@ namespace KoiAI.A_Star
 
         private bool IsInsideGrid(Vector2Int node)
         {
-            return node.x >= -_width/2 && node.x <= _width/2 && node.y >= -_height/2 && node.y <= _height/2;
+            return node.x >= -_width / 2 && node.x <= _width / 2 && node.y >= -_height / 2 && node.y <= _height / 2;
         }
     }
 }

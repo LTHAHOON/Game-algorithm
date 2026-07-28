@@ -21,7 +21,11 @@ namespace KoiAI.Monster
         private EntitySight _entitySight;
         private GameObject _target;
         private float _curAttackTime = 0f;
-        public override void Init()
+
+        public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Attack;
+
+        public override void Init(MonsterFeatureValueData monsterFeatureValueData = null,
+            MonsterFeatureExtensionData monsterFeatureExtensionData = null)
         {
             _entitySight = GetComponent<EntitySight>();
             for (int i = 0; i < _randomWeaponContorllers.Length; i++)

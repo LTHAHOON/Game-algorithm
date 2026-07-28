@@ -2813,8 +2813,10 @@ GameObject:
   - component: {fileID: 95320324289322388}
   - component: {fileID: 2138193119569264345}
   - component: {fileID: 4250779825577382863}
-  - component: {fileID: 3489968673991851894}
   - component: {fileID: 7368703184268436013}
+  - component: {fileID: 3489968673991851894}
+  - component: {fileID: 4209551928703008047}
+  - component: {fileID: 5673983677512846290}
   - component: {fileID: 1104606655383399093}
   - component: {fileID: 9169171670606985613}
   m_Layer: 0
@@ -2910,24 +2912,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3489968673991851894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1528915638184230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4fec9d96c7bf6945a3cb286ef3bfb9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Monster.MonsterAI
-  _allFeaturesHandler:
-  - _fromFeature: {fileID: 1104606655383399093}
-    _toFeature: {fileID: 9169171670606985613}
-  - _fromFeature: {fileID: 9169171670606985613}
-    _toFeature: {fileID: 1104606655383399093}
-  _curMonsterFeature: {fileID: 1104606655383399093}
 --- !u!114 &7368703184268436013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2948,6 +2932,76 @@ MonoBehaviour:
   _targetLayerMask:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &3489968673991851894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528915638184230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4fec9d96c7bf6945a3cb286ef3bfb9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Monster.MonsterAI
+  _allFeaturesHandler:
+  - _fromFeature: {fileID: 1104606655383399093}
+    _toFeature: {fileID: 5673983677512846290}
+  - _fromFeature: {fileID: 5673983677512846290}
+    _toFeature: {fileID: 1104606655383399093}
+  - _fromFeature: {fileID: 5673983677512846290}
+    _toFeature: {fileID: 9169171670606985613}
+  - _fromFeature: {fileID: 9169171670606985613}
+    _toFeature: {fileID: 5673983677512846290}
+  _curMonsterFeature: {fileID: 1104606655383399093}
+  _monsterData: {fileID: 11400000, guid: 5bda9bd72430676438c531188f16643b, type: 2}
+--- !u!114 &4209551928703008047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528915638184230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac5c3c1ac54d5f54a90cc3bee6f41dd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.MonsterIdle
+--- !u!114 &5673983677512846290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528915638184230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e08a6163349df84d855c095dc0a3d8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Monster.MonsterMovement
+  _valueData:
+    _moveSpeed: 10
+    _jumpForce: 10
+    _jumpMaxCount: 1
+    _buildDelayTime: 1
+    _moveWapointData: {fileID: 0}
+  _extensionData:
+    _stepAuidoData: {fileID: 0}
+    _stopStepAudioData: {fileID: 0}
+    _jumpAudioData: {fileID: 0}
+    _moveSpeedMod: 10
+    _jumpForceMod: 10
+    _jumpMaxCountMod: 1
+    _stepAudioThresold: 0
+    _rigidData:
+      _mass: 0
+      _linearDamping: 0
+      _angularDamping: 0
+    _colliderData:
+      _center: {x: 0, y: 0, z: 0}
+      _radius: 0
+      _height: 0
+      _direction: 0
 --- !u!114 &1104606655383399093
 MonoBehaviour:
   m_ObjectHideFlags: 0

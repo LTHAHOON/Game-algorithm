@@ -30,9 +30,12 @@ namespace KoiAI.A_Star
                 AStarObstacle[] aStarObstacles = Object.FindObjectsByType<AStarObstacle>();
                 _aStartLogic.Initialize(aStarObstacles, wayPointData.GridWidth, wayPointData.GridHeight);
 
-                ulong id = _owner.GetEntityULongID();
-                PoolManager.Instance.AddPool(id, wayPointData.WayPointPrefab, wayPointData.WayPointPoolSize, PoolName.WayPoint);
-                PoolManager.Instance.TryGetPool(id, out _pool);
+                if (wayPointData.WayPointPrefab != null)
+                {
+                    ulong id = _owner.GetEntityULongID();
+                    PoolManager.Instance.AddPool(id, wayPointData.WayPointPrefab, wayPointData.WayPointPoolSize, PoolName.WayPoint);
+                    PoolManager.Instance.TryGetPool(id, out _pool);
+                }
             }
             _aStartLogic.SetStartAndGoal(start, goal);
         }
@@ -68,21 +71,25 @@ namespace KoiAI.A_Star
 
         }
 
-        private void OnEndBuild(List<Vector2Int> paths)
+        private void OnEndBuild(List<Vector2Int> path)
         {
             if (!IsCompletedInit())
             {
                 return;
             }
 
-            if (paths != null)
+            if (path != null)
             {
-                for (int i = 0; i < paths.Count; i += _wayPointStep + 1)
-                {
-                    GameObject wayPoint = _pool.Pop();
-                    _wayPointList.Add(wayPoint);
-                    wayPoint.transform.position = new Vector3(paths[i].x, 1f, paths[i].y);
 
+                if(_pool != null)
+                {
+                    for (int i = 0; i < path.Count; i += _wayPointStep + 1)
+                    {
+                        GameObject wayPoint = _pool.Pop();
+                        _wayPointList.Add(wayPoint);
+                        wayPoint.transform.position = new Vector3(path[i].x, 1f, path[i].y);
+
+                    }
                 }
             }
             else
@@ -106,7 +113,7 @@ namespace KoiAI.A_Star
             _isBuilding = false;
         }
 
-        private bool IsCompletedInit() => _owner && _aStartLogic != null && _pool != null && _wayPointList != null;
+        private bool IsCompletedInit() => _owner && _aStartLogic != null && _wayPointList != null;
         public bool IsBuilding => _isBuilding;
     }
 }

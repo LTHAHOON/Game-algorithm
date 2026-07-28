@@ -1,7 +1,6 @@
 using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
-using KoiAI.Utilities;
 using UnityEngine;
 using UnityEngine.Playables;
 using static KoiAI.Player.PlayerFeature;
@@ -12,10 +11,10 @@ namespace KoiAI.Player
     using KoiAI.AnimatorSystem;
     using KoiAI.Audio;
     using KoiAI.Camera;
+    using KoiAI.Utilities;
 
     public abstract class PlayerFeatureExtensionData { }
     
-    [Serializable]
     public abstract class PlayerFeatureValueData { }
 
     [RequireComponent(typeof(PlayerController))]
