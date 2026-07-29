@@ -5,7 +5,11 @@ using static KoiAI.Monster.MonsterFeature;
 
 namespace KoiAI.Monster
 {
+    using Cysharp.Threading.Tasks;
     using KoiAI.AnimatorSystem;
+    using KoiAI.Nav;
+    using NaughtyAttributes;
+    using System.Linq;
     using UnityEngine.AI;
 
     public abstract class MonsterFeatureExtensionData { }
@@ -22,6 +26,8 @@ namespace KoiAI.Monster
             Attack,
         }
 
+        public int MainHandlerIndex { get; set; }
+        public int NextHandlerIndex { get; set; }
         public abstract MonsterFeatureProperty FeatureProperty { get; }
         public MonsterAI Owner { get; set; }
         public virtual void Init(MonsterFeatureValueData monsterFeatureValueData = null,
@@ -34,21 +40,37 @@ namespace KoiAI.Monster
     [Serializable]
     public struct MonsterFeatureHandler
     {
+        [Header("메인 인덱스")]
+        [SerializeField]
+        private int _mainHandlerIndex;
+
         [Header("변경 전 Feature")]
         [SerializeField]
         private MonsterFeature _fromFeature;
+      
         [Header("변경 후 Feature")]
+        [AllowNesting]
+        [SerializeField]
+        private int _nextHandlerIndex;
         [SerializeField]
         private MonsterFeature _toFeature;
+        
+        [Header("변경 딜레이 시간")]
+        [SerializeField]
+        private float _nextDelayTime;
+
         public readonly MonsterFeature FromFeature => _fromFeature;
         public readonly MonsterFeature ToFeature => _toFeature;
+        public readonly int MainHandlerIndex => _mainHandlerIndex;
+        public readonly int NextHandlerIndex => _nextHandlerIndex;
+        public readonly float NextDelayTime => _nextDelayTime;
     }
 
     [RequireComponent(typeof(Animator))]
     public class MonsterAI : MonoBehaviour
     {
         [SerializeField]
-        private NavMeshAgent _monsterAgent;
+        private NavigationController _agentController;
         [SerializeField]
         private MonsterFeatureHandler[] _allFeaturesHandler;
         [SerializeField]
@@ -56,7 +78,7 @@ namespace KoiAI.Monster
         [SerializeField]
         private MonsterData _monsterData;
         
-        private Dictionary<ulong, MonsterFeatureHandler> _dicFeatureHanlder;
+        private Dictionary<int, MonsterFeatureHandler> _dicFeatureHanlder;
         private Animator _monsterAnimator;
         private void Awake()
         {
@@ -87,75 +109,63 @@ namespace KoiAI.Monster
             {
                 MonsterFeatureProperty featureProperty = _allFeaturesHandler[i].FromFeature.FeatureProperty;
 
-                EntityId featureID = _allFeaturesHandler[i].FromFeature.GetEntityId();
-                ulong instanceID = EntityId.ToULong(featureID);
-                _dicFeatureHanlder.Add(instanceID, _allFeaturesHandler[i]);
+                int mainHanlderIndex = _allFeaturesHandler[i].MainHandlerIndex;
+                int nextHandlerIndex = _allFeaturesHandler[i].NextHandlerIndex;
+                MonsterFeatureHandler nextHandler = default;
+                int count = _allFeaturesHandler.Where(x => x.MainHandlerIndex == nextHandlerIndex).Select(x => 
+                {
+                    nextHandler = x;
+                    return x.MainHandlerIndex; 
+                }).Count();
+
+                bool isExistIndex = count == 1;
+                if(!isExistIndex)
+                {
+                    Debug.Log("존재하지 않는 NextHandlerIndex가 있습니다.");
+                    continue;
+                }
+
+                _allFeaturesHandler[i].FromFeature.MainHandlerIndex = mainHanlderIndex;
+                _allFeaturesHandler[i].FromFeature.NextHandlerIndex = nextHandlerIndex;
+                _dicFeatureHanlder.Add(mainHanlderIndex, nextHandler);
                 _allFeaturesHandler[i].FromFeature.Owner = this;
                 MonsterFeatureValueData valueData = _monsterData.GetMonsterFeatureValueData(featureProperty);
                 MonsterFeatureExtensionData extensionData = _monsterData.GetMonsterFeatureExtensionData(featureProperty);
                 _allFeaturesHandler[i].FromFeature.Init(valueData, extensionData);
-
             }
         }
     
-        /// <summary>
-        /// 변경 후 Feature 구하기
-        /// </summary>
-        private bool TryGetToFeature(MonsterFeature fromFeature, out MonsterFeature toFeature)
+        private bool TryGetMonsterFeatureHandler(out MonsterFeatureHandler handler, int index)
         {
-            EntityId featureID = fromFeature.GetEntityId();
-            ulong instanceID = EntityId.ToULong(featureID);
-            if(_dicFeatureHanlder.TryGetValue(instanceID, out var featureHandler))
+            if(_dicFeatureHanlder.TryGetValue(index, out handler))
             {
-                toFeature = featureHandler.ToFeature;
                 return true;
             }
-            toFeature = null;
             return false;
-        
         }
 
         /// <summary>
         /// 변경 후 Feature로 바꾸기
         /// </summary>
-        public void ChangeFeature(MonsterFeature callerFeature)
+        public async void ChangeFeature(MonsterFeature callerFeature)
         {
+            int nextHandlerIndex = callerFeature.NextHandlerIndex;
+
             if (callerFeature != null)
             {
-                bool bGet = TryGetToFeature(callerFeature, out MonsterFeature toFeature);
-                if(bGet)
+                if (TryGetMonsterFeatureHandler(out MonsterFeatureHandler monsterFeatureHandler, callerFeature.MainHandlerIndex))
                 {
+                    await UniTask.WaitForSeconds(monsterFeatureHandler.NextDelayTime);
+
                     callerFeature.ExitFeature();
-                    _curMonsterFeature = toFeature;
+                    _curMonsterFeature = monsterFeatureHandler.FromFeature;
                     _curMonsterFeature.EnterFeature();
                 }
             }
         }
 
-        public bool IsMonsterAgentStop()
-        {
-            if(_monsterAgent.desiredVelocity.sqrMagnitude <= 0.05f || _monsterAgent.pathStatus == NavMeshPathStatus.PathInvalid || _monsterAgent.hasPath == false)
-            {
-                return true;
-            }
-            return false;
-        }
 
-        private NavMeshPath _navMeshPath = new();
-        public bool CanMoveToDestination(Vector3 destination)
-        {
-            if(NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, _navMeshPath))
-            {
-                if(_navMeshPath.status == NavMeshPathStatus.PathInvalid)
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public NavMeshAgent MonsterAgent => _monsterAgent;
+        public NavigationController AgentController => _agentController;
         public AnimatorData MonsterAnimatorData => _monsterData.AnimatorData;
         public Animator MonsterAnimator => _monsterAnimator;
     }

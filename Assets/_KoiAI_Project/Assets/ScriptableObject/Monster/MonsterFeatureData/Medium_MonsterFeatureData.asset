@@ -15,7 +15,7 @@ MonoBehaviour:
   _monsterFeatureDataType: 1
   _properties: 010000000200000003000000
   _monsterMovementValueData:
-    _moveSpeed: 10
+    _moveSpeed: 5
     _jumpForce: 10
     _jumpMaxCount: 1
     _buildDelayTime: 1

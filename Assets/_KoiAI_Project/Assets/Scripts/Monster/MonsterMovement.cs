@@ -1,18 +1,14 @@
-using DG.Tweening;
-using KoiAI.A_Star;
-using KoiAI.AnimatorSystem;
-using KoiAI.Audio;
-using KoiAI.CustomPhysics;
-using KoiAI.Player;
 using NaughtyAttributes;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using static UnityEngine.UI.GridLayoutGroup;
 
 namespace KoiAI.Monster
 {
+    using KoiAI.A_Star;
+    using KoiAI.AnimatorSystem;
+    using KoiAI.Audio;
+    using KoiAI.CustomPhysics;
+
     [Serializable]
     public class MonsterMovementExtensionData : MonsterFeatureExtensionData
     {
@@ -64,18 +60,16 @@ namespace KoiAI.Monster
         private float _jumpForce = 10f;
         [SerializeField]
         private int _jumpMaxCount = 1;
-        [SerializeField]
-        private float _buildDelayTime = 1f;
+
         [SerializeField]
         private WayPointData _moveWapointData;
 
         #endregion
 
-        public float BuildDelayTime => _buildDelayTime;
-        public WayPointData MoveWayPointData => _moveWapointData;
         public float MoveSpeed => _moveSpeed;
         public float JumpForce => _jumpForce;
         public int JumpMaxCount => _jumpMaxCount;
+        public WayPointData MoveWayPointData => _moveWapointData;
     }
 
     [RequireComponent(typeof(EntitySight))]
@@ -92,9 +86,8 @@ namespace KoiAI.Monster
         [SerializeField]
         private float _detectDistanceToFeature;
 
-        private GameObject _target;
+        private Vector3 _originPoint;
         private EntitySight _entitySight;
-        private AnimatorData _animatorData;
         private AnimatorParamData _animParamData;
 
         public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Movement;
@@ -110,11 +103,8 @@ namespace KoiAI.Monster
             _valueData = valueData;
             _extensionData = extensionData;
             _entitySight = GetComponent<EntitySight>();
-
             if (Owner.MonsterAnimatorData.IsValid())
             {
-                //애니메이터 데이터 초기화
-                _animatorData = Owner.MonsterAnimatorData;
                 //애니메이터 파라미터 데이터 초기화
                 _animParamData = Owner.MonsterAnimatorData.AnimParamData;
             }
@@ -122,8 +112,7 @@ namespace KoiAI.Monster
             {
                 Debug.Log("Check: MonsterAnimatorData is not valid.");
             }
-
-            Owner.MonsterAgent.speed = _valueData.MoveSpeed;
+            _originPoint = transform.position;
         }
 
         public override void EnterFeature()
@@ -135,34 +124,46 @@ namespace KoiAI.Monster
             Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
         }
 
-        public bool DetectTargetAroundMonster()
+        public bool TryGetTargetAroundMonster(out GameObject target)
         {
             _entitySight.Detect();
             if (_entitySight.IsFindTarget())
             {
-                _target = _entitySight.GetTargetToFind();
-                Vector3 dir = _target.transform.position - transform.position;
-                if(dir.sqrMagnitude > _detectDistanceToFeature * _detectDistanceToFeature)
+                target = _entitySight.GetTargetToFind();
+                Vector3 dir = target.transform.position - transform.position;
+                if (dir.sqrMagnitude > _detectDistanceToFeature * _detectDistanceToFeature)
                 {
                     return false;
                 }
                 return true;
             }
+            target = null;
             return false;
         }
 
         public override void UpdateFeature()
         {
-            if(!DetectTargetAroundMonster())
+
+
+            if (!TryGetTargetAroundMonster(out GameObject target))
             {
-                Owner.MonsterAgent.ResetPath();
-                Owner.ChangeFeature(this);
-                return;
+                Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed);
+                Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
+                if (Owner.AgentController.IsMoveStop())
+                {
+                    Owner.AgentController.ResetPath();
+                    Owner.ChangeFeature(this);
+                }
             }
             else
             {
-                Owner.MonsterAgent.SetDestination(_target.transform.position);
+                Owner.AgentController.MoveToDest(target.transform.position, _valueData.MoveSpeed);
                 Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
+                if (Owner.AgentController.IsMoveStop())
+                {
+                    Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
+                    Owner.AgentController.ResetPath();
+                }
             }
         }
     }

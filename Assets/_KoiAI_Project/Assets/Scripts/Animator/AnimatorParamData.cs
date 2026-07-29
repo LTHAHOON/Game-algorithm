@@ -20,6 +20,11 @@ namespace KoiAI.AnimatorSystem
         [BoxGroup("애니메이터 파라미터(없으면 None)")]
         [Dropdown("GetAnimatorParamList")]
         [OnValueChanged("OnValueChanged")]
+        private string _idleParam;
+        [SerializeField]
+        [BoxGroup("애니메이터 파라미터(없으면 None)")]
+        [Dropdown("GetAnimatorParamList")]
+        [OnValueChanged("OnValueChanged")]
         private string _walkParam;
         [SerializeField]
         [BoxGroup("애니메이터 파라미터(없으면 None)")]
@@ -92,9 +97,16 @@ namespace KoiAI.AnimatorSystem
         
         public RuntimeAnimatorController RuntimeAC => _runtimeAnimatorController;
         private bool IsNone(string param) => param == "None";
+
+        /// <summary> -1일 경우 None</summary>
+        public int IdleParmID => IsNone(_idleParam) ? -1 : Animator.StringToHash(_idleParam);
         /// <summary> -1일 경우 None</summary>
         public int WalkParmID => IsNone(_walkParam) ? -1 : Animator.StringToHash(_walkParam);
         /// <summary> -1일 경우 None</summary>
         public int JumpParmID => IsNone(_jumpParam) ? -1 : Animator.StringToHash(_jumpParam);
+        /// <summary> -1일 경우 None</summary>
+        public int Act1ParamID => IsNone(_act1_Param) ? -1 : Animator.StringToHash(_act1_Param);
+        /// <summary> -1일 경우 None</summary>
+        public int Act2ParamID => IsNone(_act2_Param) ? -1 : Animator.StringToHash(_act2_Param);
     }
 }

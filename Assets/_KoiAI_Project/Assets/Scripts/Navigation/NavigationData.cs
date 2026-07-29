@@ -1,0 +1,39 @@
+using UnityEngine;
+using UnityEngine.AI;
+
+namespace KoiAI.Nav
+{
+    public enum AgentPhysicsType
+    {
+        AgentPhysicsUpdate,
+        RigidPhysicsUpdate
+    }
+
+    [CreateAssetMenu(fileName = "new NavigationData", menuName = "KoiAI/Navigation/NavigationData")]
+    public class NavigationData : ScriptableObject
+    {
+        [SerializeField]
+        private int _agentTypeIndex;
+        [SerializeField]
+        private AgentPhysicsType _agentPhysicsType;
+        [SerializeField]
+        private float _moveSpeed;
+        [SerializeField]
+        private float _angularSpeed;
+        [SerializeField]
+        private float _acceleration;
+        [SerializeField]
+        private int _avoidancePriority = 50;
+        
+        public int GetAgentTypeID()
+        {
+            NavMeshBuildSettings settings = NavMesh.GetSettingsByIndex(_agentTypeIndex);
+            return settings.agentTypeID;
+        }
+        public AgentPhysicsType AgentPhyscisType => _agentPhysicsType;
+        public float MoveSpeed => _moveSpeed;
+        public float AngularSpeed => _angularSpeed;
+        public float Acceleration => _acceleration;
+        public int AvoidancePriority => _avoidancePriority;   
+    }
+}

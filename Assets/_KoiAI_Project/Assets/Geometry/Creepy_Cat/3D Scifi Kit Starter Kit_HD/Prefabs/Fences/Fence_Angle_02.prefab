@@ -165,6 +165,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 402948}
+  - component: {fileID: 5129607342565853420}
   m_Layer: 0
   m_Name: Fence_Short_01
   m_TagString: Untagged
@@ -188,6 +189,22 @@ Transform:
   - {fileID: 402950}
   m_Father: {fileID: 402942}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &5129607342565853420
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102948}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.14, y: 0.65, z: 1.57}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.67, z: 1.39}
+  m_TimeToStationary: 0.5
 --- !u!1 &102950
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,6 +438,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 402954}
+  - component: {fileID: 790378568736961383}
   m_Layer: 0
   m_Name: Fence_Short_01
   m_TagString: Untagged
@@ -444,3 +462,19 @@ Transform:
   - {fileID: 402952}
   m_Father: {fileID: 402942}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &790378568736961383
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102954}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.12, y: 0.65, z: 1.525}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.64, z: 0.99}
+  m_TimeToStationary: 0.5

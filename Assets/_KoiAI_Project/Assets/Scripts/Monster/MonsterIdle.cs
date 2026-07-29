@@ -1,31 +1,21 @@
 
-using KoiAI.AnimatorSystem;
-using KoiAI.Monster;
-using R3;
 using UnityEngine;
-using UnityEngine.AI;
-using static UnityEngine.UI.GridLayoutGroup;
 
-namespace KoiAI
+namespace KoiAI.Monster
 {
+    using KoiAI.AnimatorSystem;
+
     public class MonsterIdle : MonsterFeature
     {
         public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Idle;
 
         private EntitySight _entitySight;
-        private Vector3 _idlePoint;
         private AnimatorParamData _animParamData;
-        private Subject<MonsterAI> _idleSubject = new();
+        private float _curNextTime;
         public override void Init(MonsterFeatureValueData monsterFeatureValueData = null, MonsterFeatureExtensionData monsterFeatureExtensionData = null)
         {
-            _idleSubject.Subscribe((owner) =>
-            {
-                owner.MonsterAgent.SetDestination(_idlePoint);
-                owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
-            }).AddTo(this);
 
             _entitySight = GetComponent<EntitySight>();
-            _idlePoint = transform.position;
             if (Owner.MonsterAnimatorData.IsValid())
             {
                 _animParamData = Owner.MonsterAnimatorData.AnimParamData;
@@ -34,31 +24,21 @@ namespace KoiAI
 
         public override void EnterFeature()
         {
+            Owner.MonsterAnimator.SetBool(_animParamData.IdleParmID, true);
         }
 
         public override void ExitFeature()
         {
+            Owner.MonsterAnimator.SetBool(_animParamData.IdleParmID, false);
         }
 
         public override void UpdateFeature()
         {
-            if (_entitySight == null)
-            {
-                return;
-            }
+
             _entitySight.Detect();
             if (_entitySight.IsFindTarget())
             {
                 Owner.ChangeFeature(this);
-            }
-            else
-            {
-                _idleSubject.OnNext(Owner);
-
-                if (Owner.IsMonsterAgentStop())
-                {
-                    owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
-                }
             }
         }
     }
