@@ -14,9 +14,8 @@ namespace KoiAI.Health
         private HealthData _healthData;
 
         private ReactiveProperty<float> _currentHealth = new(0);
-        private HealthBar _healthBar;
         private bool _isDelayChanging = false;
-    
+     
         private void Awake()
         {
             _currentHealth.Value = _healthData.MaxHealth;
@@ -24,30 +23,13 @@ namespace KoiAI.Health
                 .Skip(1)
                 .Subscribe(healthValue =>
                 {
-                    HealthBarManager.Instance.ChangeHealth(this);
                     if (healthValue <= 0)
                     {
                         OnDead();
                     }
                 }).AddTo(this);
         }
-    
-        private void Start()
-        {
-            bool bGet = HealthBarManager.Instance.TryGetHealthBar(this, out HealthBar healthBar);
-            if (bGet)
-            {
-                SetUITargetObject(healthBar);
-                _healthBar = healthBar;
-            }
-            else
-            {
-                _healthBar = HealthBarManager.Instance.CreateHealthBar(this);
-                SetUITargetObject(_healthBar);
-            }
-            _healthBar.Init(_healthData.HealthBarData, _currentHealth.CurrentValue, _healthData.MaxHealth);
-        }
-
+        
         public void ChangeHealth(float amount)
         {
             _currentHealth.Value += amount;
@@ -72,9 +54,6 @@ namespace KoiAI.Health
         {
             Debug.Log("Dead");
         }
-    
-        public HealthBar GetHealthBar() => _healthBar;
-
 
         public void RefreshItemPickUpCondition(ItemPickUpCondition currentConditionData, ItemPickUpCondition compareCondition)
         {
@@ -84,9 +63,16 @@ namespace KoiAI.Health
             currentConditionData.hpCompareCondition = conditionData;
         }
 
+        public override FollowableUI RegisterUIFollowHandle()
+        {
+            return HealthBarManager.Instance.CreateOrGetHealthBar(this);
+        }
+
         public float CurrentHealthRatio => Mathf.Clamp01(CurrentHealth / MaxHealth);
         public float CurrentHealth => _currentHealth.CurrentValue;
         public float MaxHealth => _healthData.MaxHealth;
-        public HealthData HealthData => _healthData;    
+        public HealthData HealthData => _healthData;
+        //Observable<float> 대신 ReadOnlyReactiveProperty<float> 사용
+        public ReadOnlyReactiveProperty<float> CurrentHealthReactive => _currentHealth;
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace KoiAI.Utilities
 {
-    public class ExplosionTrigger : MonoBehaviour
+    public class HitEffectTrigger : MonoBehaviour
     {
         [Header("Trigger Target Layer Mask")]
         [SerializeField]
@@ -12,15 +12,15 @@ namespace KoiAI.Utilities
         [SerializeField]
         private LayerMask _damageTargetLayerMask;
         [SerializeField]
-        private GameObject _explosionPrefab;
+        private GameObject _hitEffectPrefab;
     
         private bool _isTriggerEnter = false;
         private int _maxOverlapCount = 0;
         private float _overlapRadius = 0f;
         private Collider[] _targetColliders;
-        private Action<Collider[], int> OnExplosion;
+        private Action<Collider[], int> OnHit;
     
-        public void Init(int maxOverlapCount, float overlapRadius,  Action<Collider[], int>  explosionEvent, int targetLayerMask = -1)
+        public void Init(int maxOverlapCount, float overlapRadius,  Action<Collider[], int>  hitCount, int targetLayerMask = -1)
         {
             if (targetLayerMask != -1)
             {
@@ -29,7 +29,7 @@ namespace KoiAI.Utilities
             _overlapRadius = overlapRadius;
             _maxOverlapCount = maxOverlapCount;
             _targetColliders = new Collider[maxOverlapCount];
-            OnExplosion += explosionEvent;
+            OnHit += hitCount;
         }
     
         private void OnDisable()
@@ -56,13 +56,13 @@ namespace KoiAI.Utilities
             }
         
             Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
-            if(_explosionPrefab)
+            if(_hitEffectPrefab)
             {
-                Instantiate(_explosionPrefab, hitPoint, Quaternion.identity);
+                Instantiate(_hitEffectPrefab, hitPoint, Quaternion.identity);
             }
         
             int damgeTargetCount = UnityEngine.Physics.OverlapSphereNonAlloc(transform.position, _overlapRadius, _targetColliders, _damageTargetLayerMask);
-            OnExplosion?.Invoke(_targetColliders, damgeTargetCount);
+            OnHit?.Invoke(_targetColliders, damgeTargetCount);
         }
     
     }

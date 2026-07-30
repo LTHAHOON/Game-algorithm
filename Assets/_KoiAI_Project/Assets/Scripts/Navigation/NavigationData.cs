@@ -23,6 +23,8 @@ namespace KoiAI.Nav
         [SerializeField]
         private float _acceleration;
         [SerializeField]
+        private float _stoppingDistance;
+        [SerializeField]
         private int _avoidancePriority = 50;
         
         public int GetAgentTypeID()
@@ -34,6 +36,7 @@ namespace KoiAI.Nav
         public float MoveSpeed => _moveSpeed;
         public float AngularSpeed => _angularSpeed;
         public float Acceleration => _acceleration;
+        public float StoppingDistance => _stoppingDistance;
         public int AvoidancePriority => _avoidancePriority;   
     }
 }

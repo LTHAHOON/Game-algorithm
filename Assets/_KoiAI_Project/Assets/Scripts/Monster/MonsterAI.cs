@@ -155,6 +155,7 @@ namespace KoiAI.Monster
             {
                 if (TryGetMonsterFeatureHandler(out MonsterFeatureHandler monsterFeatureHandler, callerFeature.MainHandlerIndex))
                 {
+                    _curMonsterFeature = null;
                     await UniTask.WaitForSeconds(monsterFeatureHandler.NextDelayTime);
 
                     callerFeature.ExitFeature();

@@ -37,7 +37,7 @@ MonoBehaviour:
       _height: 0
       _direction: 0
   _monsterRotationExtensionData:
-    _lookSpeedMod: 0
+    _lookSpeedMod: 5
     _surfaceCheckDistanceMod: 0
     _surfaceLayerMask:
       serializedVersion: 2

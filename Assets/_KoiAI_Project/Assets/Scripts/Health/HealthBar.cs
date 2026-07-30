@@ -1,14 +1,21 @@
 using UnityEngine;
+using R3;
 
 namespace KoiAI.Health
 {
     using KoiAI.Utilities;
-    
+
     public abstract class HealthBar : FollowableUI
     {
         private float _maxHealth = -1f;
-        public void Init(HealthBarData healthBarData, float curHealth, float maxHealth)
+
+        public void Init(Health health, HealthBarData healthBarData, float curHealth, float maxHealth)
         {
+            health.CurrentHealthReactive.Subscribe(currentHealth =>
+            {
+                HealthBarManager.Instance.RemoveHealthBar(health);
+                ChangeHealthBar(currentHealth);
+            });
             _maxHealth = maxHealth;
             float normHealth = Mathf.Clamp01(curHealth / maxHealth);
             SetHealthBarValue(normHealth);
@@ -16,7 +23,7 @@ namespace KoiAI.Health
         }
 
 
-        public void ChangeHealthBar(float currentHealth)
+        private void ChangeHealthBar(float currentHealth)
         {
             if (_maxHealth <= 0)
             {

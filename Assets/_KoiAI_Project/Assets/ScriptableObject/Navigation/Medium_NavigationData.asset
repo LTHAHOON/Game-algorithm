@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Nav.NavigationData
   _agentTypeIndex: 2
   _agentPhysicsType: 1
-  _moveSpeed: 4
+  _moveSpeed: 3
   _angularSpeed: 150
   _acceleration: 60
+  _stoppingDistance: 1
   _avoidancePriority: 50

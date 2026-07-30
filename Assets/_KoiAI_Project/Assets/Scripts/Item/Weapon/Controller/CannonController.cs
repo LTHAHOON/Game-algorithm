@@ -268,13 +268,13 @@ namespace KoiAI.Item
                 return false;
             }
 
-            // 1) "바라보는 회전"을 계산 (대입 X)
+            //바라보는 회전을 계산
             Quaternion lookWorld = Quaternion.LookRotation(toTarget.normalized, Vector3.up);
 
-            // 2) fp 기준 로컬 회전으로 변환
+            //기준 로컬 회전
             Quaternion lookLocal = Quaternion.Inverse(fp.rotation) * lookWorld;
 
-            // 3) 로컬 yaw/pitch 추출
+            //로컬 yaw/pitch 추출
             Vector3 e = lookLocal.eulerAngles;
             pitchDeg = Mathf.Repeat(e.x + 180f, 360f) - 180f;
             yawDeg   = Mathf.Repeat(e.y + 180f, 360f) - 180f;

@@ -34,7 +34,6 @@ namespace KoiAI.Monster
 
         public override void UpdateFeature()
         {
-
             _entitySight.Detect();
             if (_entitySight.IsFindTarget())
             {

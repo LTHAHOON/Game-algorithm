@@ -10,15 +10,16 @@ namespace KoiAI.Item
         [SerializeField]
         private CannonBallSkin _cannonBallSkin;
         [SerializeField] 
-        private ExplosionTrigger _explosionTrigger;
+        private HitEffectTrigger _hitEffectTrigger;
+
         private CannonBallData _cannonBallData;
         public void Init(CannonBallData cannonBallData, LayerMask targetLayerMask)
         {
             _cannonBallData = cannonBallData;
-            _explosionTrigger.Init(cannonBallData.MaxOverlapCount,cannonBallData.RadiusExplosion, OnExplosion,targetLayerMask);
+            _hitEffectTrigger.Init(cannonBallData.MaxOverlapCount,cannonBallData.RadiusExplosion, OnHit,targetLayerMask);
         }
 
-        private void OnExplosion(Collider[] targetColliders, int hitCount)
+        private void OnHit(Collider[] targetColliders, int hitCount)
         {
             if (!_cannonBallData)
             {

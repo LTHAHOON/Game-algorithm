@@ -84,12 +84,16 @@ namespace KoiAI.Monster
         [Header("Movement 최대 거리")]
         [Tooltip("Feature 변경할 탐색 거리")]
         [SerializeField]
-        private float _detectDistanceToFeature;
+        private float _maxMovementDistance;
+        [Header("Movement 최소 거리")]
+        [Tooltip("Feature 변경할 탐색 거리")]
+        [SerializeField]
+        private float _minMovementDistance;
 
         private Vector3 _originPoint;
         private EntitySight _entitySight;
         private AnimatorParamData _animParamData;
-
+        private GameObject _target;
         public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Movement;
 
         public override void Init(MonsterFeatureValueData monsterFeatureValueData = null,
@@ -117,6 +121,8 @@ namespace KoiAI.Monster
 
         public override void EnterFeature()
         {
+            Debug.Log("dsad");
+            Owner.MonsterAnimator.SetTrigger(_animParamData.Act1ParamID);
         }
 
         public override void ExitFeature()
@@ -124,28 +130,19 @@ namespace KoiAI.Monster
             Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
         }
 
-        public bool TryGetTargetAroundMonster(out GameObject target)
-        {
-            _entitySight.Detect();
-            if (_entitySight.IsFindTarget())
-            {
-                target = _entitySight.GetTargetToFind();
-                Vector3 dir = target.transform.position - transform.position;
-                if (dir.sqrMagnitude > _detectDistanceToFeature * _detectDistanceToFeature)
-                {
-                    return false;
-                }
-                return true;
-            }
-            target = null;
-            return false;
-        }
+
 
         public override void UpdateFeature()
         {
+            _entitySight.Detect();
+            _target = _entitySight.GetTargetToFind();
+            Vector3 dir = Vector3.zero;
+            if (_target)
+            {
+                dir = _target.transform.position - transform.position;
+            }
 
-
-            if (!TryGetTargetAroundMonster(out GameObject target))
+            if (!_entitySight.IsFindTarget() || dir.sqrMagnitude > _maxMovementDistance * _maxMovementDistance)
             {
                 Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed);
                 Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
@@ -155,14 +152,19 @@ namespace KoiAI.Monster
                     Owner.ChangeFeature(this);
                 }
             }
+            else if(dir.sqrMagnitude < _minMovementDistance * _minMovementDistance) 
+            {
+             //   Owner.ChangeFeature(this);
+            }
             else
             {
-                Owner.AgentController.MoveToDest(target.transform.position, _valueData.MoveSpeed);
+                Owner.AgentController.MoveToDest(_target.transform.position, _valueData.MoveSpeed);
                 Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
                 if (Owner.AgentController.IsMoveStop())
                 {
                     Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
                     Owner.AgentController.ResetPath();
+                    Owner.ChangeFeature(this);
                 }
             }
         }

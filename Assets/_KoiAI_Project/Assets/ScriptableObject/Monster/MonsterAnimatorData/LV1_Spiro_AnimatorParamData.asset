@@ -16,7 +16,7 @@ MonoBehaviour:
   _idleParam: Close_Anim
   _walkParam: Walk_Anim
   _jumpParam: None
-  _attack01_Param: Roll_Anim
+  _attack01_Param: None
   _attack02_Param: None
-  _act1_Param: None
+  _act1_Param: Roll_Anim
   _act2_Param: None

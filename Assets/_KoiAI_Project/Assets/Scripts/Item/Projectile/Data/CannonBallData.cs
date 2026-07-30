@@ -7,7 +7,7 @@ namespace KoiAI.Item
     public class CannonBallData : ProjectileData
     {
         [SerializeField]
-        private CannonBallController cannonBallControllerData;
+        private CannonBallController _cannonBallController;
         [SerializeField]
         private PoolSize _cannonBallPoolSize;
         [SerializeField]
@@ -17,7 +17,7 @@ namespace KoiAI.Item
         [SerializeField] 
         private float _radiusExplosion;
 
-        public CannonBallController ControllerData => cannonBallControllerData;
+        public CannonBallController CannonBallController => _cannonBallController;
         public PoolSize CannonBallPoolSize => _cannonBallPoolSize;
         public float CannonBallLifeTime => _cannonBallLifeTime;
         public int MaxOverlapCount => _maxOverlapCount;

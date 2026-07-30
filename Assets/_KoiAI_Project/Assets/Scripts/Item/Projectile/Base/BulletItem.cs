@@ -1,19 +1,18 @@
+using KoiAI.Player;
 using UnityEngine;
 
 namespace KoiAI.Item
 {
-    using KoiAI.Player;
-
-    public class CannonBallItem : ResourceBase
+    public class BulletItem : ResourceBase
     {
         [SerializeField]
-        private CannonBallData _cannonBallData;
+        private BulletData _bulletData;
 
         private PlayerEquipment _equipmentFeature;
-        private CannonBallController _cannonBallController;
+        private BulletController _bulletController;
         public override ItemData GetItemData()
         {
-            return _cannonBallData;
+            return _bulletData;
         }
 
         public override void Init(PlayerController itemOwner, Renderer itemUI, ItemSlotType curSlotType)
@@ -27,13 +26,13 @@ namespace KoiAI.Item
 
         public override void SetItemCountInSlot()
         {
-            _equipmentFeature.SetItemCount(this, _cannonBallData.ProjectileCount);
+            _equipmentFeature.SetItemCount(this, _bulletData.ProjectileCount);
         }
 
         public void SetupController(LayerMask targetLayerMask)
         {
-            _cannonBallController = Instantiate(_cannonBallData.CannonBallController, transform);
-            _cannonBallController.Init(_cannonBallData, targetLayerMask);
+            _bulletController = Instantiate(_bulletData.BulletController, transform);
+            _bulletController.Init(_bulletData, targetLayerMask);
         }
 
         public override void UseItem()
@@ -50,14 +49,14 @@ namespace KoiAI.Item
             {
                 return;
             }
-            if (weaponItem.TryGetItemChildClass<CannonItem>(out CannonItem cannonItem))
+            if (weaponItem.TryGetItemChildClass<GunItem>(out GunItem gundItem))
             {
-                CannonData cannonData = cannonItem.GetCannonData();
+                GunData gunData = gundItem.GetGunData();
                 //ID와 타입이 같은 지 체크
-                if(cannonData.CannonBallData.ProjectileType == _cannonBallData.ProjectileType
-                   && cannonData.CannonBallData.ItemId == _cannonBallData.ItemId)
+                if (gunData.BulletData.ProjectileType == _bulletData.ProjectileType
+                   && gunData.BulletData.ItemId == _bulletData.ItemId)
                 {
-                    cannonItem.OnLoadCannonBall(_cannonBallData);
+                    gundItem.OnLoadCannonBall(_bulletData);
                     ItemSlotType curSlotType = GetCurrentSlotType();
                     _equipmentFeature.RemoveItemInSlot(this);
                 }
@@ -65,9 +64,8 @@ namespace KoiAI.Item
 
         }
 
-        public bool IsEmptyController() => _cannonBallController == null;
+        public BulletController BulletController => _bulletController;
+        public bool IsEmptyController() => _bulletController == null;
 
-        public Rigidbody Rigidbody => _cannonBallController.GetCannonBallSkin().Rigidbody;
-        public TrailRenderer TrailRenderer => _cannonBallController.GetCannonBallSkin().TrailRenderer;
     }
 }

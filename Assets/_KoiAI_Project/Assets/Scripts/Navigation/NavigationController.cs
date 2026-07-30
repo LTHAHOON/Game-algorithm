@@ -1,5 +1,7 @@
+using Cysharp.Threading.Tasks;
 using R3;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,6 +12,7 @@ namespace KoiAI.Nav
         [SerializeField] private NavMeshAgent _navMeshAgent;
         [SerializeField] private NavigationData _navigationData;
 
+        private float _curMoveSpeed = 0f;
         private NavMeshPath _navMeshPath;
         private Rigidbody _rigidBody;
         private Vector3[] _path;
@@ -29,6 +32,7 @@ namespace KoiAI.Nav
             _navMeshAgent.speed = _navigationData.MoveSpeed;
             _navMeshAgent.angularSpeed = _navigationData.AngularSpeed;
             _navMeshAgent.acceleration = _navigationData.Acceleration;
+            _navMeshAgent.stoppingDistance = _navigationData.StoppingDistance;
 
             switch (_navigationData.AgentPhyscisType)
             {
@@ -52,47 +56,36 @@ namespace KoiAI.Nav
             {
                 _rigidBody.constraints = RigidbodyConstraints.FreezeRotation;
             }
-            _rigidMoveSubscription = _rigidMoveSubject.Subscribe(moveSpeed => Observable.Interval(TimeSpan.Zero, UnityTimeProvider.FixedUpdate)
+            Observable.Interval(TimeSpan.Zero, UnityTimeProvider.FixedUpdate)
                             .Subscribe(_ =>
                             {
-                                if (_navMeshAgent.pathPending)
-                                {
-                                    _rigidBody.linearVelocity = new Vector3(0, _rigidBody.linearVelocity.y, 0);
-                                    return;
-                                }
-
-                                if (_navMeshAgent.pathPending)
-                                {
-                                    Vector3 forwardVelocity = _rigidBody.linearVelocity;
-                                    forwardVelocity.y = _rigidBody.linearVelocity.y;
-                                    _rigidBody.linearVelocity = forwardVelocity;
-                                }
-                                else
+                                if (!_navMeshAgent.pathPending && _navMeshAgent.hasPath)
                                 {
                                     Vector3 desiredVelocity = _navMeshAgent.desiredVelocity;
 
-                                    Vector3 targetVelocity = desiredVelocity * moveSpeed;
+                                    Vector3 targetVelocity = desiredVelocity * _curMoveSpeed;
                                     targetVelocity.y = _rigidBody.linearVelocity.y;
 
                                     _rigidBody.linearVelocity = targetVelocity;
                                 }
-               
+
                                 _navMeshAgent.nextPosition = _rigidBody.position;
 
                                 if (IsMoveStop())
                                 {
                                     _rigidBody.linearVelocity = new Vector3(0, _rigidBody.linearVelocity.y, 0);
                                 }
-                            }).AddTo(this));
+                            });
         }
 
-        public void MoveToDest(Vector3 destination, float moveSpeed)
+        public async void MoveToDest(Vector3 destination, float moveSpeed)
         {
             if (!CanMoveToDestination(out _path, destination))
             {
                 return;
             }
 
+            await UniTask.WaitForSeconds(0.5f);
             _navMeshAgent.SetDestination(destination);
 
             switch (_navigationData.AgentPhyscisType)
@@ -100,8 +93,7 @@ namespace KoiAI.Nav
                 case AgentPhysicsType.RigidPhysicsUpdate:
                     if (_rigidBody)
                     {
-                        Debug.Log("Move");
-                        _rigidMoveSubject.OnNext(moveSpeed);
+                        _curMoveSpeed = moveSpeed;
                     }
                     break;
             }
@@ -116,16 +108,11 @@ namespace KoiAI.Nav
 
         public bool IsMoveStop()
         {
-            if (!_navMeshAgent.pathPending)
-            {
-                if (_navMeshAgent.desiredVelocity.sqrMagnitude <= 0.05f || _navMeshAgent.pathStatus == NavMeshPathStatus.PathInvalid
-                        || _navMeshAgent.hasPath == false)
-                {
-                    return true;
-                }
-            }
 
-            return false;
+            if (_navMeshAgent.pathPending)
+                return false;
+
+            return !_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude < 0.01f;
         }
 
         public bool CanMoveToDestination(out Vector3[] path, Vector3 destination)

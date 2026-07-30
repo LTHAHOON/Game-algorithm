@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b05ab1acf437b4b81fec33aba9ee4c, type: 3}
+  m_Name: Spiro_GunData
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Item.GunData
+  _itemPrefab: {fileID: 0}
+  _itemTex: {fileID: 0}
+  _itemMesh: {fileID: 0}
+  _itemMaterials: []
+  _itemName: 
+  _itemId: 0
+  _isCreatableObj: 0
+  _weaponType: 1
+  _weaponDamage: 0
+  _layerMaskForAim:
+    serializedVersion: 2
+    m_Bits: 0
+  _bulletData: {fileID: 0}
+  _isInfiniteLoad: 1
+  _loadMaxCount: 20
+  _launchSpeed: 12
+  _loadTime: 1
+  _maxPitchAngle: 90
+  _minPitchAngle: 0
+  _maxYawAngle: 90
+  _minYawAngle: -90

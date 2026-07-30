@@ -4,7 +4,7 @@ namespace KoiAI.Skin
 {
     using KoiAI.Audio;
 
-    public class CannonSkin : WeaponSkin
+    public class GunSkin : WeaponSkin
     {
         [SerializeField]
         private Transform _firePoint;

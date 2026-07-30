@@ -1,25 +1,30 @@
 using R3;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace KoiAI.Utilities
 {
     public abstract class UIFollowHandle : MonoBehaviour
     {
+        [Tooltip("UI 연결하지않기")]
+        [SerializeField]
+        private bool _useUIFollow = true;
         private readonly Subject<FollowableUI> _uiFollowConnector = new();
 
         public Subject<FollowableUI> GetUIFollowConnector() => _uiFollowConnector;
-
-        /// <summary>
-        /// 중재자로 구독시킨 Subject를 호출해줍니다.
-        /// </summary>
-        public void SetUITargetObject(FollowableUI followableUI)
+        public void InitUIFollowHandle()
         {
-            if (followableUI == null)
+            if(_useUIFollow)
             {
-                return;
+                FollowableUI followableUI = RegisterUIFollowHandle();
+                if (followableUI != null)
+                {
+                    _uiFollowConnector.OnNext(followableUI);
+                }
             }
-            _uiFollowConnector.OnNext(followableUI);
         }
+
+        public abstract FollowableUI RegisterUIFollowHandle(); 
     }
 
     public abstract class FollowableUI : MonoBehaviour
@@ -34,6 +39,7 @@ namespace KoiAI.Utilities
             }
             return null;
         }
+
         public bool IsBlockFollowUI => _isBlockFollowUI;
     }
 
@@ -64,6 +70,10 @@ namespace KoiAI.Utilities
                     uiFollowToObj.SetTargetObject(_uiFollowHandle.gameObject);
                 }
             }).AddTo(this);
+        }
+        private void Start()
+        {
+            _uiFollowHandle.InitUIFollowHandle();
         }
     }
 }

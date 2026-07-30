@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace KoiAI.Monster
 {
+    using KoiAI.AnimatorSystem;
     using KoiAI.Item;
     
     [RequireComponent (typeof(EntitySight))]
@@ -21,6 +22,7 @@ namespace KoiAI.Monster
         private EntitySight _entitySight;
         private GameObject _target;
         private float _curAttackTime = 0f;
+        private AnimatorParamData _animParamData;
 
         public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Attack;
 
@@ -32,10 +34,15 @@ namespace KoiAI.Monster
             {
                 _randomWeaponContorllers[i].ActivateTarget.Init(null);
             }
+            if (Owner.MonsterAnimatorData.IsValid())
+            {
+                _animParamData = Owner.MonsterAnimatorData.AnimParamData;
+            }
         }
 
         public override void EnterFeature()
         {
+  
             _target = _entitySight.GetTargetToFind();
             if(!_target)
             {
