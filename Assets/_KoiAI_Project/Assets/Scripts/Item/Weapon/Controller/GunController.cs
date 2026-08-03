@@ -69,6 +69,7 @@ namespace KoiAI.Item
 
         public override void Init(WeaponBase wepaonItem)
         {
+            _hits = new RaycastHit[_gunData.MaxHitCount];
             _curBallCount
                 .Pairwise()
                 .Where(pair => pair.Current < pair.Previous)
@@ -94,11 +95,11 @@ namespace KoiAI.Item
             BulletItem projectilePrefab = (BulletItem)bulletData.ItemPrefab;
             PoolManager.Instance.AddPool<BulletItem>(id, projectilePrefab, bulletData.BulletPoolSize, PoolName.Projectile);
             PoolManager.Instance.TryGetPool<BulletItem>(id, out _pool);
-            BulletItem[] cannonBalls = _pool.GetAllInstanceArray();
-            for (int i = 0; i < cannonBalls.Length; i++)
+            BulletItem[] bullets = _pool.GetAllInstanceArray();
+            for (int i = 0; i < bullets.Length; i++)
             {
                 //발사체 스킨 생성
-                cannonBalls[i].SetupController(_targetLayerMask);
+                bullets[i].SetupController(_targetLayerMask);
             }
             InitSkin();
         }
@@ -138,14 +139,17 @@ namespace KoiAI.Item
                 bulletItem.SetupController(_targetLayerMask);
             }
 
-            int count = Physics.SphereCastNonAlloc(transform.position, 1f,transform.forward, _hits, 500f, _targetLayerMask);
-            bulletItem.BulletController.OnHit(hit.point, );
-            
+            int count = Physics.SphereCastNonAlloc(transform.position, 0.1f,transform.forward, _hits, 500f, _targetLayerMask);
+            if (count > 0)
+            {
+                bulletItem.BulletController.OnHit(_hits, count);
+            }
+
             return true;
         }
         public override void SetAim(Vector2 aim) { }
 
-        public override void StartAiming(float startPitchAngle, float startYawAngle)
+        public override void StartAiming(float startPitchAngle = 0, float startYawAngle = 0)
         {
             _isAiming = true;
             

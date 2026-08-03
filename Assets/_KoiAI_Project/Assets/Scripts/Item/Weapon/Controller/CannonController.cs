@@ -173,7 +173,7 @@ namespace KoiAI.Item
             _pitchAngle = Mathf.Clamp(_pitchAngle, _cannonData.MinPitchAngle, _cannonData.MaxPitchAngle);
         }
 
-        public override void StartAiming(float startPitchAngle, float startYawAngle)
+        public override void StartAiming(float startPitchAngle = 0, float startYawAngle = 0)
         {
             _isAiming = true;
             _pitchAngle = startPitchAngle;

@@ -42,7 +42,6 @@ namespace KoiAI.Monster
 
         public override void EnterFeature()
         {
-  
             _target = _entitySight.GetTargetToFind();
             if(!_target)
             {
@@ -52,6 +51,7 @@ namespace KoiAI.Monster
 
         public override void UpdateFeature()
         {
+            Debug.Log("Attacking");
             _entitySight.Detect();
             WeaponControllerBase weaponController = ActivateRandom.GetRandomActivateTarget(_randomWeaponContorllers);
             if(weaponController == null)
@@ -81,8 +81,7 @@ namespace KoiAI.Monster
             }
             _curAttackTime = 0f;
         
-            weaponController.TryGetYawPitch(_target.transform.position,out float yaw, out float pitch);
-            weaponController.StartAiming(pitch, yaw);
+            weaponController.StartAiming();
             weaponController.Activate();
         }
 

@@ -30,7 +30,7 @@ namespace KoiAI.Item
         /// <summary>
         /// 예외) Sword같은 경우 조준선(위치) 설정
         /// </summary>
-        public abstract void StartAiming(float startPitchAngle, float startYawAngle);
+        public abstract void StartAiming(float startPitchAngle = 0, float startYawAngle = 0);
         public abstract void EndAiming();
 
         /// <summary>

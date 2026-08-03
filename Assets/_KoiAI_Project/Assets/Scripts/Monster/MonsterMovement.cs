@@ -121,8 +121,7 @@ namespace KoiAI.Monster
 
         public override void EnterFeature()
         {
-            Debug.Log("dsad");
-            Owner.MonsterAnimator.SetTrigger(_animParamData.Act1ParamID);
+          //  Owner.MonsterAnimator.SetTrigger(_animParamData.Act1ParamID);
         }
 
         public override void ExitFeature()
@@ -154,7 +153,7 @@ namespace KoiAI.Monster
             }
             else if(dir.sqrMagnitude < _minMovementDistance * _minMovementDistance) 
             {
-             //   Owner.ChangeFeature(this);
+                Owner.ChangeFeature(this);
             }
             else
             {

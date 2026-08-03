@@ -18,13 +18,13 @@ namespace KoiAI
             _bulletData = bulletData;
         }
 
-        public void OnHit(Vector3[] hitPoints, Collider[] targetColliders, int hitCount)
+        public void OnHit(RaycastHit[] hits, int hitCount)
         {
             if (_hitEffectPrefab)
             {
-                for (int i = 0; i < hitPoints.Length; i++)
+                for (int i = 0; i < hits.Length; i++)
                 {
-                    Instantiate(_hitEffectPrefab, hitPoints[i], Quaternion.identity);
+                    Instantiate(_hitEffectPrefab, hits[i].transform.position, Quaternion.identity);
                 }
             }
 
@@ -39,11 +39,11 @@ namespace KoiAI
 
             for (int i = 0; i < hitCount; i++)
             {
-                if (!targetColliders[i])
+                if (!hits[i].collider)
                 {
                     continue;
                 }
-                if (targetColliders[i].TryGetComponent(out Health.Health health))
+                if (hits[i].collider.TryGetComponent(out Health.Health health))
                 {
                     health.ChangeHealth(-_bulletData.Damage);
                 }

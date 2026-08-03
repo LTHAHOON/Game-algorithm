@@ -12,7 +12,8 @@ namespace KoiAI.Health
     {
         [SerializeField]
         private HealthData _healthData;
-
+        [SerializeField]
+        private bool _hasHealthBar = true;
         private ReactiveProperty<float> _currentHealth = new(0);
         private bool _isDelayChanging = false;
      
@@ -29,7 +30,15 @@ namespace KoiAI.Health
                     }
                 }).AddTo(this);
         }
-        
+
+        private void Start()
+        {
+            if (_hasHealthBar)
+            {
+                HealthBarManager.Instance.CreateOrGetHealthBar(this);
+            }
+        }
+
         public void ChangeHealth(float amount)
         {
             _currentHealth.Value += amount;
