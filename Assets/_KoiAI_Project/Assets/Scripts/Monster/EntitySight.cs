@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace KoiAI.Monster
+namespace KoiAI.Enemy
 {
     public class EntitySight : MonoBehaviour
     {

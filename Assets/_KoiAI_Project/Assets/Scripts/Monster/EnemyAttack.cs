@@ -1,13 +1,13 @@
 using KoiAI.Utilities;
 using UnityEngine;
 
-namespace KoiAI.Monster
+namespace KoiAI.Enemy
 {
     using KoiAI.AnimatorSystem;
     using KoiAI.Item;
     
     [RequireComponent (typeof(EntitySight))]
-    public class MonsterAttack : MonsterFeature
+    public class EnemyAttack : EnemyFeature
     {
         [Header("몬스터 무기")]
         [SerializeField]
@@ -24,10 +24,10 @@ namespace KoiAI.Monster
         private float _curAttackTime = 0f;
         private AnimatorParamData _animParamData;
 
-        public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Attack;
+        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Attack;
 
-        public override void Init(MonsterFeatureValueData monsterFeatureValueData = null,
-            MonsterFeatureExtensionData monsterFeatureExtensionData = null)
+        public override void Init(EnemyFeatureValueData monsterFeatureValueData = null,
+            EnemyFeatureExtensionData monsterFeatureExtensionData = null)
         {
             _entitySight = GetComponent<EntitySight>();
             for (int i = 0; i < _randomWeaponContorllers.Length; i++)
@@ -45,7 +45,7 @@ namespace KoiAI.Monster
             _target = _entitySight.GetTargetToFind();
             if(!_target)
             {
-                Owner.ChangeFeature(this);
+                Owner.ChangeState(this);
             }
         }
 
@@ -56,20 +56,20 @@ namespace KoiAI.Monster
             WeaponControllerBase weaponController = ActivateRandom.GetRandomActivateTarget(_randomWeaponContorllers);
             if(weaponController == null)
             {
-                Owner.ChangeFeature(this);
+                Owner.ChangeState(this);
                 return;
             }
 
             if (!_entitySight.IsFindTarget())
             {
-                Owner.ChangeFeature(this);
+                Owner.ChangeState(this);
                 weaponController.EndAiming();
                 return;
             }
             Vector3 dir = _target.transform.position - transform.position;
             if (dir.sqrMagnitude >= _detectDistanceToFeature * _detectDistanceToFeature)
             {
-                Owner.ChangeFeature(this);
+                Owner.ChangeState(this);
                 weaponController.EndAiming();
                 return;
             }

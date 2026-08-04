@@ -8241,7 +8241,7 @@ PrefabInstance:
       objectReference: {fileID: 973562859}
     - target: {fileID: 3489968673991851894, guid: 8e0f285c21cdcf14e8d5c06c57ba936b, type: 3}
       propertyPath: _allFeaturesHandler.Array.size
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3489968673991851894, guid: 8e0f285c21cdcf14e8d5c06c57ba936b, type: 3}
       propertyPath: _allFeaturesHandler.Array.data[0]._toFeature
@@ -8361,7 +8361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3489968673991851894, guid: 8e0f285c21cdcf14e8d5c06c57ba936b, type: 3}
       propertyPath: _allFeaturesHandler.Array.data[4]._nextHandlerIndex
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3489968673991851894, guid: 8e0f285c21cdcf14e8d5c06c57ba936b, type: 3}
       propertyPath: _allFeaturesHandler.Array.data[5]._mainHandlerIndex
@@ -8369,7 +8369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3489968673991851894, guid: 8e0f285c21cdcf14e8d5c06c57ba936b, type: 3}
       propertyPath: _allFeaturesHandler.Array.data[5]._nextHandlerIndex
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4250779825577382863, guid: 8e0f285c21cdcf14e8d5c06c57ba936b, type: 3}
       propertyPath: m_Mass

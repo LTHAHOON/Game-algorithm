@@ -1,6 +1,6 @@
 using KoiAI.A_Star;
 using KoiAI.Input;
-using KoiAI.Monster;
+using KoiAI.Enemy;
 using NaughtyAttributes;
 using System;
 using UnityEngine;

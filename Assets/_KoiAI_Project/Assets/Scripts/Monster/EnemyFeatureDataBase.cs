@@ -1,18 +1,18 @@
 using UnityEngine;
 
-namespace KoiAI.Monster
+namespace KoiAI.Enemy
 {
     [CreateAssetMenu(fileName = "new MonsterFeatureDataBase", menuName = "KoiAI/Monster/MonsterFeatureDataBase")]
-    public class MonsterFeatureDataBase : ScriptableObject
+    public class EnemyFeatureDataBase : ScriptableObject
     {
         [SerializeField]
-        private MonsterFeatureData[] _monsterFeatureData;
+        private EnemyFeatureData[] _monsterFeatureData;
 
-        public MonsterFeatureData GetMonsterFeatureData(MonsterFeatureDataType monsterFeatureDataType)
+        public EnemyFeatureData GetMonsterFeatureData(EnemyFeatureDataType monsterFeatureDataType)
         {
             for (int i = 0; i < _monsterFeatureData.Length; i++)
             {
-                MonsterFeatureData monsterFeatureData = _monsterFeatureData[i];
+                EnemyFeatureData monsterFeatureData = _monsterFeatureData[i];
                 if (monsterFeatureData.MonsterFeatureDataType == monsterFeatureDataType)
                 {
                     return monsterFeatureData;

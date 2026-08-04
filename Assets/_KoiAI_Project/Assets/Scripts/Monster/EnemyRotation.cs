@@ -3,10 +3,10 @@ using KoiAI.Utilities;
 using System;
 using UnityEngine;
 
-namespace KoiAI.Monster
+namespace KoiAI.Enemy
 {
     [Serializable]
-    public class MonsterRotationExtensionData : MonsterFeatureExtensionData
+    public class EnemyRotationExtensionData : EnemyFeatureExtensionData
     {
         #region 보정값 및 추가 회전 데이터
 
@@ -24,7 +24,7 @@ namespace KoiAI.Monster
     }
 
     [Serializable]
-    public class MonsterRotationValueData : MonsterFeatureValueData
+    public class EnemyRotationValueData : EnemyFeatureValueData
     {
         #region 회전 데이터
 
@@ -39,7 +39,7 @@ namespace KoiAI.Monster
     }
 
     [RequireComponent(typeof(EntitySight))]
-    public class MonsterRotation : MonsterFeature
+    public class EnemyRotation : EnemyFeature
     {
         [SerializeField]
         private float _lookSpeed = 10f;
@@ -54,9 +54,9 @@ namespace KoiAI.Monster
         private EntitySight _entitySight;
         private Vector3 _targetAngle = Vector3.zero;
 
-        public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Rotation;
-        public override void Init(MonsterFeatureValueData monsterFeatureValueData = null,
-            MonsterFeatureExtensionData monsterFeatureExtensionData = null)
+        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Rotation;
+        public override void Init(EnemyFeatureValueData monsterFeatureValueData = null,
+            EnemyFeatureExtensionData monsterFeatureExtensionData = null)
         {
             _entitySight = GetComponent<EntitySight>();
             _surfaceAngleFinder = new(_surfaceCheckDistance);
@@ -66,7 +66,7 @@ namespace KoiAI.Monster
         {
             if (!_entitySight || _surfaceAngleFinder == null)
             {
-                Owner.ChangeFeature(this);
+                Owner.ChangeState(this);
             }
         }
 
@@ -87,7 +87,7 @@ namespace KoiAI.Monster
                 _targetAngle.y = angle;
                 if(dir.sqrMagnitude <= _detectDistanceToFeature * _detectDistanceToFeature)
                 {
-                    Owner.ChangeFeature(this);
+                    Owner.ChangeState(this);
 
                     return;
                 }

@@ -2,7 +2,7 @@ using NaughtyAttributes;
 using System;
 using UnityEngine;
 
-namespace KoiAI.Monster
+namespace KoiAI.Enemy
 {
     using KoiAI.A_Star;
     using KoiAI.AnimatorSystem;
@@ -10,7 +10,7 @@ namespace KoiAI.Monster
     using KoiAI.CustomPhysics;
 
     [Serializable]
-    public class MonsterMovementExtensionData : MonsterFeatureExtensionData
+    public class EnemyMovementExtensionData : EnemyFeatureExtensionData
     {
         #region 보정값 및 추가 이동 데이터
 
@@ -50,7 +50,7 @@ namespace KoiAI.Monster
     }
 
     [Serializable]
-    public class MonsterMovementValueData : MonsterFeatureValueData
+    public class EnemyMovementValueData : EnemyFeatureValueData
     {
         #region 이동 데이터
 
@@ -73,14 +73,14 @@ namespace KoiAI.Monster
     }
 
     [RequireComponent(typeof(EntitySight))]
-    public class MonsterMovement : MonsterFeature
+    public class EnemyMovement : EnemyFeature
     {
         [ReadOnly]
         [SerializeField]
-        private MonsterMovementValueData _valueData;
+        private EnemyMovementValueData _valueData;
         [ReadOnly]
         [SerializeField]
-        private MonsterMovementExtensionData _extensionData;
+        private EnemyMovementExtensionData _extensionData;
         [Header("Movement 최대 거리")]
         [Tooltip("Feature 변경할 탐색 거리")]
         [SerializeField]
@@ -94,13 +94,13 @@ namespace KoiAI.Monster
         private EntitySight _entitySight;
         private AnimatorParamData _animParamData;
         private GameObject _target;
-        public override MonsterFeatureProperty FeatureProperty => MonsterFeatureProperty.Movement;
+        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Movement;
 
-        public override void Init(MonsterFeatureValueData monsterFeatureValueData = null,
-            MonsterFeatureExtensionData monsterFeatureExtensionData = null)
+        public override void Init(EnemyFeatureValueData monsterFeatureValueData = null,
+            EnemyFeatureExtensionData monsterFeatureExtensionData = null)
         {
-            if (monsterFeatureValueData is not MonsterMovementValueData valueData
-                || monsterFeatureExtensionData is not MonsterMovementExtensionData extensionData)
+            if (monsterFeatureValueData is not EnemyMovementValueData valueData
+                || monsterFeatureExtensionData is not EnemyMovementExtensionData extensionData)
             {
                 return;
             }
@@ -148,12 +148,12 @@ namespace KoiAI.Monster
                 if (Owner.AgentController.IsMoveStop())
                 {
                     Owner.AgentController.ResetPath();
-                    Owner.ChangeFeature(this);
+                    Owner.ChangeState(this);
                 }
             }
             else if(dir.sqrMagnitude < _minMovementDistance * _minMovementDistance) 
             {
-                Owner.ChangeFeature(this);
+                Owner.ChangeState(this);
             }
             else
             {
@@ -163,7 +163,7 @@ namespace KoiAI.Monster
                 {
                     Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
                     Owner.AgentController.ResetPath();
-                    Owner.ChangeFeature(this);
+                    Owner.ChangeState(this);
                 }
             }
         }
