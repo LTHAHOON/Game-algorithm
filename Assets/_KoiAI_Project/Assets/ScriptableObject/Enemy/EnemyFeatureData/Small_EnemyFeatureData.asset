@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b09026c6359542a429c14c20cf94c739, type: 3}
+  m_Name: Small_EnemyFeatureData
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Enemy.EnemyFeatureData
+  _enemyFeatureDataType: 0
+  _properties: 0100000002000000
+  _enemyMovementValueData:
+    _moveSpeed: 10
+    _jumpForce: 10
+    _jumpMaxCount: 1
+    _sizeForMoveStop: 3
+    _moveWapointData: {fileID: 0}
+  _enemyRotationValueData:
+    _lookSpeed: 10
+    _surfaceCheckDistance: 3

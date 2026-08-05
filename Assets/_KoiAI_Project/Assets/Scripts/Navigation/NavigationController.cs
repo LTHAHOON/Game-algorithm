@@ -78,7 +78,7 @@ namespace KoiAI.Nav
                             });
         }
 
-        public async void MoveToDest(Vector3 destination, float moveSpeed)
+        public async UniTask MoveToDest(Vector3 destination, float moveSpeed)
         {
             if (!CanMoveToDestination(out _path, destination))
             {

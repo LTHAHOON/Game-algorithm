@@ -20,7 +20,7 @@ namespace KoiAI.Player
         public float BuildDelayTime => _buildDelayTime;
     }
 
-    [RequireComponent(typeof(EntitySight))]
+    [RequireComponent(typeof(EnemySightCondition))]
     public class PlayerWayPoint : PlayerFeature
     {
         [SerializeField]
@@ -29,7 +29,7 @@ namespace KoiAI.Player
         [SerializeField]
         private PlayerWayPointValueData _valueData;
 
-        private EntitySight _entitySight;
+        private EnemySightCondition _entitySight;
         private readonly WayPointHandler _wayPointHandle = new();
         private float _curTime = 0;
         private bool _isAutoBuild = false;
@@ -43,7 +43,7 @@ namespace KoiAI.Player
             {
                 return;
             }
-            _entitySight = GetComponent<EntitySight>(); 
+            _entitySight = GetComponent<EnemySightCondition>(); 
             _valueData = valueData;
             InputService.PlayerIA.Player.SetVisibleWayPoint.performed += OnSetVisibleWayPoint;
             InputService.PlayerIA.Player.Move.performed += OnRebuildWayPoint;

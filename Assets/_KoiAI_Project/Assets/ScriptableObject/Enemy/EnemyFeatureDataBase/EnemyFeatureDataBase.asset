@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08d2fd28985529f44989bd7b4ad621d3, type: 3}
-  m_Name: MonsterFeatureDataBase
+  m_Name: EnemyFeatureDataBase
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Monster.MonsterFeatureDataBase
-  _monsterFeatureData:
-  - {fileID: 11400000, guid: ce676442e9448e84db69b6237d629785, type: 2}
-  - {fileID: 11400000, guid: e1b900b289279d4409fb594296de0e91, type: 2}
-  - {fileID: 11400000, guid: 1d8793419bfe1e54588eae7610b91d4a, type: 2}
-  - {fileID: 11400000, guid: 6bc019659208fda4887311d2faa7c656, type: 2}
+  _enemyFeatureData:
+  - {fileID: 11400000, guid: 19548c5f18536334ead274b449c0fc17, type: 2}
+  - {fileID: 11400000, guid: f5338eb28c90cf54f85bdcf458423ec1, type: 2}
+  - {fileID: 11400000, guid: c2cc9ac27475bda459ce9bf00c336833, type: 2}
+  - {fileID: 11400000, guid: 93be4bf32a5cab74e8f30fed2cef4063, type: 2}

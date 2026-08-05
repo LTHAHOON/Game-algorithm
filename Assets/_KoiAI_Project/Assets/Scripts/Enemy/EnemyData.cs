@@ -19,7 +19,6 @@ namespace KoiAI.Enemy
         [Space(10)]
         [SerializeField]
         private AnimatorData _animatorData;
-        [ReadOnly]
         [SerializeField]
         private EnemyFeatureDataBase _enemyFeatureDataBase;
         [Space(10)]
@@ -37,7 +36,7 @@ namespace KoiAI.Enemy
 
         public EnemyFeatureData GetEnemyFeatureData()
         {
-            EnemyFeatureData data = _enemyFeatureDataBase?.GetMonsterFeatureData(_enemyFeatureDataType);
+            EnemyFeatureData data = _enemyFeatureDataBase?.GetEnemyFeatureData(_enemyFeatureDataType);
             return data;
         }
 

@@ -17,9 +17,9 @@ MonoBehaviour:
     _animatorAvatar: {fileID: 9000000, guid: bff429107601444d59c67940e6ad78c4, type: 3}
     _animatorParamData: {fileID: 11400000, guid: b2df726f506900740bd24bbec2416163, type: 2}
     _stepAnimatorThresold: 0
-  _monsterFeatureDataBase: {fileID: 11400000, guid: 587e3ecf27b34ba499460249aa750718, type: 2}
-  _monsterFeatureDataType: 1
-  _monsterMovementExtensionData:
+  _enemyFeatureDataBase: {fileID: 11400000, guid: 587e3ecf27b34ba499460249aa750718, type: 2}
+  _enemyFeatureDataType: 1
+  _enemyMovementExtensionData:
     _stepAuidoData: {fileID: 0}
     _stopStepAudioData: {fileID: 0}
     _jumpAudioData: {fileID: 0}
@@ -27,6 +27,7 @@ MonoBehaviour:
     _jumpForceMod: 10
     _jumpMaxCountMod: 1
     _stepAudioThresold: 0
+    _sizeForMoveStopMod: 1
     _rigidData:
       _mass: 0
       _linearDamping: 0
@@ -36,9 +37,9 @@ MonoBehaviour:
       _radius: 0
       _height: 0
       _direction: 0
-  _monsterRotationExtensionData:
-    _lookSpeedMod: 5
+  _enemyRotationExtensionData:
+    _lookSpeedMod: 0
     _surfaceCheckDistanceMod: 0
     _surfaceLayerMask:
       serializedVersion: 2
-      m_Bits: 64
+      m_Bits: 0

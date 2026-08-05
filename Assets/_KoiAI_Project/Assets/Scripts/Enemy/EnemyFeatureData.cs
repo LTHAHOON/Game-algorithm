@@ -1,4 +1,3 @@
-using KoiAI.Camera;
 using NaughtyAttributes;
 using System;
 using UnityEngine;
@@ -15,30 +14,34 @@ namespace KoiAI.Enemy
         Static, //움직이지 않는 캐릭터
     }
 
-    [CreateAssetMenu(fileName = "new MonsterFeatureData", menuName = "KoiAI/Monster/MonsterFeatureData")]
+    [CreateAssetMenu(fileName = "new EnemyFeatureData", menuName = "KoiAI/Enemy/EnemyFeatureData")]
     public class EnemyFeatureData : ScriptableObject
     {
         [SerializeField]
-        private EnemyFeatureDataType _monsterFeatureDataType;
+        private EnemyFeatureDataType _enemyFeatureDataType;
         [SerializeField]
         private EnemyFeatureProperty[] _properties;
         [ShowIf(nameof(HasMovementProperty))]
         [SerializeField]
-        private EnemyMovementValueData _monsterMovementValueData;
+        private EnemyMovementValueData _enemyMovementValueData;
         [ShowIf(nameof(HasRotationProperty))]
         [SerializeField]
-        private EnemyRotationValueData _monsterRotationValueData;
+        private EnemyRotationValueData _enemyRotationValueData;
         private bool HasProperty(EnemyFeatureProperty property)
         {
+            if (_properties == null)
+            {
+                return false;
+            }
             bool bHas = Array.IndexOf(_properties, property) != -1;
             return bHas;
         }
 
-        public EnemyMovementValueData EnemyMovementValueData => _monsterMovementValueData;
-        public EnemyRotationValueData EnemyRotationValueData => _monsterRotationValueData;
+        public EnemyMovementValueData EnemyMovementValueData => _enemyMovementValueData;
+        public EnemyRotationValueData EnemyRotationValueData => _enemyRotationValueData;
         public bool HasMovementProperty => HasProperty(EnemyFeatureProperty.Movement);
         public bool HasRotationProperty => HasProperty(EnemyFeatureProperty.Rotation);
-        public EnemyFeatureDataType MonsterFeatureDataType => _monsterFeatureDataType;
+        public EnemyFeatureDataType EnemyFeatureDataType => _enemyFeatureDataType;
         public EnemyFeatureProperty[] Properties => _properties;
 
     }

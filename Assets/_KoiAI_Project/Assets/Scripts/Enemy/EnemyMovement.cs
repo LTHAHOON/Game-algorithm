@@ -4,10 +4,12 @@ using UnityEngine;
 
 namespace KoiAI.Enemy
 {
+    using Cysharp.Threading.Tasks;
     using KoiAI.A_Star;
     using KoiAI.AnimatorSystem;
     using KoiAI.Audio;
     using KoiAI.CustomPhysics;
+    using System.Threading;
 
     [Serializable]
     public class EnemyMovementExtensionData : EnemyFeatureExtensionData
@@ -28,6 +30,8 @@ namespace KoiAI.Enemy
         private int _jumpMaxCountMod = 1;
         [SerializeField]
         private float _stepAudioThresold;
+        [SerializeField]
+        private float _sizeForMoveStopMod;
 
         #endregion
 
@@ -36,6 +40,7 @@ namespace KoiAI.Enemy
         private RigidbodyData _rigidData;
         [SerializeField]
         private CapsuleColliderData _colliderData;
+
         #endregion
 
         public RigidbodyData RigidData => _rigidData;
@@ -47,6 +52,7 @@ namespace KoiAI.Enemy
         public float JumpForceMod => _jumpForceMod;
         public int JumpMaxCountMod => _jumpMaxCountMod;
         public float StepAudioThresold => _stepAudioThresold;
+        public float SizeForMoveStopMod => _sizeForMoveStopMod;
     }
 
     [Serializable]
@@ -60,6 +66,8 @@ namespace KoiAI.Enemy
         private float _jumpForce = 10f;
         [SerializeField]
         private int _jumpMaxCount = 1;
+        [SerializeField]
+        private float _sizeForMoveStop = 3f;
 
         [SerializeField]
         private WayPointData _moveWapointData;
@@ -69,34 +77,25 @@ namespace KoiAI.Enemy
         public float MoveSpeed => _moveSpeed;
         public float JumpForce => _jumpForce;
         public int JumpMaxCount => _jumpMaxCount;
+        public float SizeForMoveStop => _sizeForMoveStop;
         public WayPointData MoveWayPointData => _moveWapointData;
     }
 
-    [RequireComponent(typeof(EntitySight))]
     public class EnemyMovement : EnemyFeature
     {
-        [ReadOnly]
-        [SerializeField]
         private EnemyMovementValueData _valueData;
-        [ReadOnly]
-        [SerializeField]
         private EnemyMovementExtensionData _extensionData;
-        [Header("Movement 최대 거리")]
-        [Tooltip("Feature 변경할 탐색 거리")]
-        [SerializeField]
-        private float _maxMovementDistance;
-        [Header("Movement 최소 거리")]
-        [Tooltip("Feature 변경할 탐색 거리")]
-        [SerializeField]
-        private float _minMovementDistance;
+        
+        private UniTask _moveToOrginTask;
+        private CancellationTokenSource _moveCts;
 
         private Vector3 _originPoint;
-        private EntitySight _entitySight;
         private AnimatorParamData _animParamData;
         private GameObject _target;
+        private bool _bHasTarget = false;
         public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Movement;
 
-        public override void Init(EnemyFeatureValueData monsterFeatureValueData = null,
+        public override void InitFeature(EnemyFeatureValueData monsterFeatureValueData = null,
             EnemyFeatureExtensionData monsterFeatureExtensionData = null)
         {
             if (monsterFeatureValueData is not EnemyMovementValueData valueData
@@ -106,66 +105,64 @@ namespace KoiAI.Enemy
             }
             _valueData = valueData;
             _extensionData = extensionData;
-            _entitySight = GetComponent<EntitySight>();
-            if (Owner.MonsterAnimatorData.IsValid())
+            if (Owner.EnemyAnimatorData.IsValid())
             {
                 //애니메이터 파라미터 데이터 초기화
-                _animParamData = Owner.MonsterAnimatorData.AnimParamData;
+                _animParamData = Owner.EnemyAnimatorData.AnimParamData;
             }
             else
             {
-                Debug.Log("Check: MonsterAnimatorData is not valid.");
+                Debug.Log("Check: EnemyAnimatorData is not valid.");
             }
-            _originPoint = transform.position;
+            _originPoint = Owner.transform.position;
+            _moveCts = CancellationTokenSource.CreateLinkedTokenSource(Owner.destroyCancellationToken);
         }
 
         public override void EnterFeature()
         {
-          //  Owner.MonsterAnimator.SetTrigger(_animParamData.Act1ParamID);
+            _bHasTarget = TryGetTarget(out _target);
+            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
         }
 
         public override void ExitFeature()
         {
-            Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
+        
+            MoveToOrigin().Forget();
+            _bHasTarget = false;
         }
 
 
 
         public override void UpdateFeature()
         {
-            _entitySight.Detect();
-            _target = _entitySight.GetTargetToFind();
-            Vector3 dir = Vector3.zero;
-            if (_target)
+            if(_bHasTarget)
             {
-                dir = _target.transform.position - transform.position;
-            }
-
-            if (!_entitySight.IsFindTarget() || dir.sqrMagnitude > _maxMovementDistance * _maxMovementDistance)
-            {
-                Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed);
-                Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
-                if (Owner.AgentController.IsMoveStop())
-                {
-                    Owner.AgentController.ResetPath();
-                    Owner.ChangeState(this);
-                }
-            }
-            else if(dir.sqrMagnitude < _minMovementDistance * _minMovementDistance) 
-            {
-                Owner.ChangeState(this);
+                float sizeForMoveStop = _valueData.SizeForMoveStop + _extensionData.SizeForMoveStopMod;
+                Vector3 targetPos = _target.transform.position + (Vector3.forward * sizeForMoveStop);
+                Owner.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed).Forget();
             }
             else
             {
-                Owner.AgentController.MoveToDest(_target.transform.position, _valueData.MoveSpeed);
-                Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, true);
-                if (Owner.AgentController.IsMoveStop())
-                {
-                    Owner.MonsterAnimator.SetBool(_animParamData.WalkParmID, false);
-                    Owner.AgentController.ResetPath();
-                    Owner.ChangeState(this);
-                }
+                Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed).Forget();
             }
+
+            if (Owner.AgentController.IsMoveStop())
+            {
+                Debug.Log("Stop Move");
+                Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
+                Owner.AgentController.ResetPath();
+            }
+            else
+            {
+                Debug.Log("Move");
+            }
+        }
+
+        public async UniTask MoveToOrigin()
+        {
+            Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed).Forget();
+            await UniTask.WaitUntil(() => Owner.AgentController.IsMoveStop(), cancellationToken : Owner.destroyCancellationToken);
+            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
         }
     }
 }

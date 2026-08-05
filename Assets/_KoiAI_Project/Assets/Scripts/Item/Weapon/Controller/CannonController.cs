@@ -39,7 +39,6 @@ namespace KoiAI.Item
         private float _curLoadTime = 0f;
         private float _targetLoadTime = 0f;
         private bool _isFireLoading = false;
-        private bool _isAiming = false;
 
         private void Update()
         {
@@ -331,7 +330,6 @@ namespace KoiAI.Item
 
         public bool IsFireLoading() => _isFireLoading;
         private bool HasNotCannonBall() => _pool == null || _curBallCount.CurrentValue <= 0;
-        public bool IsAiming() => _isAiming;
         public CannonData CannonData => _cannonData;
         public int CurBallCount => _curBallCount.CurrentValue;
         public int RemainingBallCount => _remainingBallCount;

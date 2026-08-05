@@ -10,6 +10,9 @@ namespace KoiAI.Item
         private bool _isSkinPrefab;
         [SerializeField]
         private Skin _skin;
+
+        protected bool _isAiming = false;
+
         /// <summary>
         /// 풀링 또는 값 초기화를 위한 함수
         /// </summary>
@@ -50,6 +53,7 @@ namespace KoiAI.Item
             return true;
         }
 
+        public bool IsAiming() => _isAiming;
         protected bool IsSkinPrefab() => _isSkinPrefab;
         protected Skin GetSkin() => _skin;
     }
