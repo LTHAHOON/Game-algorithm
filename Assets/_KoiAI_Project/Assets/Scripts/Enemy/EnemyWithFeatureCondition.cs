@@ -1,66 +1,45 @@
-using KoiAI.Utilities;
 using System;
 using System.Collections.Generic;
-using Unity.Cinemachine;
 using UnityEngine;
 using static KoiAI.Enemy.EnemyFeature;
 using static KoiAI.Enemy.EnemyFeatureTransition;
 
 namespace KoiAI.Enemy
 {
+    
     [Serializable]
-    public class EnemyWithFeatureConditionData
+    public struct EnemyWithFeatureConditionData
     {
-        [SerializeField]
-        private List<CompareEnumCondition<EnemyFeatureProperty>> _enemyFeaturePropertyConditions;
+        [SerializeField] private EnemyFeatureProperty _featureProperty;
 
-        public List<CompareEnumCondition<EnemyFeatureProperty>> EnemyFeaturePropertyCondition => _enemyFeaturePropertyConditions;
+        [SerializeField] private bool _shouldBeActive;
+
+        public EnemyFeatureProperty FeatureProperty => _featureProperty;
+        public bool ShouldBeActive => _shouldBeActive;
     }
 
     public class EnemyWithFeatureCondition : EnemyTransitionCondition
     {
-        private EnemyWithFeatureConditionData _enemyWithOutFeatureData;
-        private CompareEnumCondition<EnemyFeatureProperty> emptyCondition;
+        private List<EnemyWithFeatureConditionData> _conditionsData;
         public override EnemyFeatureTransitionType TransitionType => EnemyFeatureTransitionType.WithFeature;
 
-        public EnemyWithFeatureCondition(EnemyWithFeatureConditionData enemyWithOutFeatureData)
+        public EnemyWithFeatureCondition(List<EnemyWithFeatureConditionData> conditionsData)
         {
-            _enemyWithOutFeatureData = enemyWithOutFeatureData;
-            emptyCondition = new(EnemyFeatureProperty.None, ComparisonType.None, true);
+            _conditionsData = conditionsData;
         }
 
         public override bool Check(EnemyAI owner)
         {
-            bool isOn = false;
-            if(owner.EnabledPropertiesHashSet.Count <= 0)
+            foreach (var condition in _conditionsData)
             {
-                for (int i = 0; i < _enemyWithOutFeatureData.EnemyFeaturePropertyCondition.Count; i++)
-                {
-                    CompareEnumCondition<EnemyFeatureProperty> conditionData = _enemyWithOutFeatureData.EnemyFeaturePropertyCondition[i];
-                    isOn = emptyCondition.CompareValue.CompareEnumWithCondition<EnemyFeatureProperty, int>(conditionData);
-                    if(isOn)
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < _enemyWithOutFeatureData.EnemyFeaturePropertyCondition.Count; i++)
-                {
-                    CompareEnumCondition<EnemyFeatureProperty> conditionData = _enemyWithOutFeatureData.EnemyFeaturePropertyCondition[i];
-                    foreach (CompareEnumCondition<EnemyFeatureProperty> enumCondition in owner.EnabledPropertiesHashSet)
-                    {
-                        isOn = enumCondition.CompareValue.CompareEnumWithCondition<EnemyFeatureProperty, int>(conditionData);
-                        if (isOn)
-                        {
-                            break;
-                        }
-                    }
+                bool isActive =
+                    owner.IsFeatureActive(condition.FeatureProperty);
 
-                }
+                if (isActive != condition.ShouldBeActive)
+                    return false;
             }
-            return isOn;
+
+            return true;
         }
     }
 }

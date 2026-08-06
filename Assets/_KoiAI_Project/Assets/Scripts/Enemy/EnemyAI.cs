@@ -24,66 +24,59 @@ namespace KoiAI.Enemy
             Movement,
             Rotation,
             Attack,
+            Return
         }
 
-        public CompareEnumCondition<EnemyFeatureProperty> FeatureProperty => _enemyFeatureTransition.FeatureProperty;
+        public EnemyFeatureProperty FeatureProperty => _enemyFeatureTransition.FeatureProperty;
 
         public EnemyAI Owner { get; set; }
-        public EnemyTransitionCondition _enableTransitionCondition;
-        public EnemyTransitionCondition _disableTransitionCondition;
+        private EnemyConditionGroup _enableConditions;
+        private EnemyConditionGroup _disableConditions;
         public EnemyFeatureTransition _enemyFeatureTransition;
         
-        public void Init(EnemyFeatureTransition enemyFeatureTransition, EnemyFeatureValueData monsterFeatureValueData = null, EnemyFeatureExtensionData monsterFeatureExtensionData= null)
+        public void Init(EnemyFeatureTransition enemyFeatureTransition, EnemyFeatureValueData enemyFeatureValueData = null, EnemyFeatureExtensionData enemyFeatureExtensionData= null)
         {
-            InitFeature(monsterFeatureValueData, monsterFeatureExtensionData);
+            InitFeature(enemyFeatureValueData, enemyFeatureExtensionData);
             InitCondition(enemyFeatureTransition);
         }
 
-        public virtual void InitFeature(EnemyFeatureValueData monsterFeatureValueData = null, EnemyFeatureExtensionData monsterFeatureExtensionData = null) { }
+        public virtual void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null, EnemyFeatureExtensionData enemyFeatureExtensionData = null) { }
 
-        private void InitCondition(EnemyFeatureTransition enemyFeatureTransition)
+        private void InitCondition(
+            EnemyFeatureTransition transition)
         {
-            _enemyFeatureTransition = enemyFeatureTransition;
+            _enemyFeatureTransition = transition;
 
-            _enableTransitionCondition = _enemyFeatureTransition.EnableTransitionType switch
-            {
-                EnemyFeatureTransitionType.None => null,
-                EnemyFeatureTransitionType.EntitySight => new EnemySightCondition(_enemyFeatureTransition.EnableEntitySightConditionData),
-                EnemyFeatureTransitionType.WithFeature => new EnemyWithFeatureCondition(_enemyFeatureTransition.EnableWithFeatureConditionData),
-                _ => null,
-            };
-            _disableTransitionCondition = _enemyFeatureTransition.DisableTransitionType switch
-            {
-                EnemyFeatureTransitionType.None => null,
-                EnemyFeatureTransitionType.EntitySight => new EnemySightCondition(_enemyFeatureTransition.DisableEntitySightConditionData),
-                EnemyFeatureTransitionType.WithFeature => new EnemyWithFeatureCondition(_enemyFeatureTransition.DisableWithFeatureConditionData),
-                _ => null,
-            };
+            _enableConditions =
+                new EnemyConditionGroup(
+                    transition.EnableConditions);
+
+            _disableConditions =
+                new EnemyConditionGroup(
+                    transition.DisableConditions);
         }
 
         public bool CheckEnable()
         {
-            if(_enemyFeatureTransition.EnableTransitionType == EnemyFeatureTransitionType.None)
-            {
-                return true;
-            }
-            bool isEnable = _enableTransitionCondition.Check(Owner);
+            bool isEnable = _enableConditions.Check(Owner,true);
             return isEnable;
         }
 
         public bool CheckDisable()
         {
-            if (_enemyFeatureTransition.EnableTransitionType == EnemyFeatureTransitionType.None)
-            {
-                return false;
-            }
-            bool isDisable = _disableTransitionCondition.Check(Owner);
+            bool isDisable = _disableConditions.Check(Owner, false);
             return isDisable;
         }
 
         public bool TryGetTarget(out GameObject target)
         {
-            target = _enableTransitionCondition.GetTarget();
+            Transform targetTransform =
+                Owner.TargetContext.Target;
+
+            target = targetTransform
+                ? targetTransform.gameObject
+                : null;
+
             return target != null;
         }
 
@@ -97,10 +90,12 @@ namespace KoiAI.Enemy
     {
         public enum EnemyFeatureTransitionType
         {
-            None, //계속 지속
-            EntitySight, //거리 계산
-            WithFeature, //무조건 포함되어야하는 Feature
+            None,
+            HasTarget,
+            Distance,
+            WithFeature
         }
+        
         public enum EnemyFeatureState
         {
             ENTER,
@@ -111,40 +106,28 @@ namespace KoiAI.Enemy
         [AllowNesting]
         public string DEBUG_STATE;
         [SerializeField]
-        private CompareEnumCondition<EnemyFeatureProperty> _featureProperty;
-        [SerializeField]
-        private List<EnemyFeatureTransitionType> _enableTransitionTypes;
-        [SerializeField]
-        private List<EnemyFeatureTransitionType> _disableTransitionTypes;
-        [ShowIf(nameof(_enableTransitionTypes), EnemyFeatureTransitionType.EntitySight)]
-        [AllowNesting]
-        [SerializeField]
-        private EnemySightConditionData _enableEntitySightConditionData;
-        [ShowIf(nameof(_disableTransitionTypes), EnemyFeatureTransitionType.EntitySight)]
-        [AllowNesting]
-        [SerializeField]
-        private EnemySightConditionData _disableEntitySightConditionData;
-        [ShowIf(nameof(_enableTransitionTypes), EnemyFeatureTransitionType.WithFeature)]
-        [AllowNesting]
-        [SerializeField]
-        private EnemyWithFeatureConditionData _enableWithFeatureConditionData;
-        [ShowIf(nameof(_disableTransitionTypes), EnemyFeatureTransitionType.WithFeature)]
-        [AllowNesting]
-        [SerializeField]
-        private EnemyWithFeatureConditionData _disableWithFeatureConditionData;
+        private EnemyFeatureProperty _featureProperty;
 
-        public CompareEnumCondition<EnemyFeatureProperty> FeatureProperty => _featureProperty;
-        public EnemyFeatureTransitionType EnableTransitionType => _enableTransitionTypes;
-        public EnemyFeatureTransitionType DisableTransitionType => _disableTransitionType;
-        public EnemySightConditionData EnableEntitySightConditionData => _enableEntitySightConditionData;
-        public EnemySightConditionData DisableEntitySightConditionData => _disableEntitySightConditionData;
-        public EnemyWithFeatureConditionData EnableWithFeatureConditionData => _enableWithFeatureConditionData;
-        public EnemyWithFeatureConditionData DisableWithFeatureConditionData => _disableWithFeatureConditionData;
+        [SerializeField]
+        private EnemyConditionGroupData _enableConditions;
+
+        [SerializeField]
+        private EnemyConditionGroupData _disableConditions;
+
+        public EnemyFeatureProperty FeatureProperty => _featureProperty;
+        public EnemyConditionGroupData EnableConditions => _enableConditions;
+        public EnemyConditionGroupData DisableConditions => _disableConditions;
     }
 
     [RequireComponent(typeof(Animator))]
     public class EnemyAI : MonoBehaviour
     {
+        [SerializeField]
+        private EnemySightConditionData _sightConditionData;
+        private EnemySightCondition _sightCondition;
+
+        private readonly EnemyTargetContext _targetContext = new();
+        
         [SerializeField]
         private NavigationController _agentController;
         [SerializeField]
@@ -152,20 +135,35 @@ namespace KoiAI.Enemy
 
         [SerializeField]
         private List<EnemyFeatureTransition> _enemyFeatureTransitions;
+        
+        
         private List<EnemyFeature> _enemyFeatures;
         private Dictionary<EnemyFeatureProperty, Func<EnemyFeature>> _dicEnemyFeatureCreator;
-        private HashSet<CompareEnumCondition<EnemyFeatureProperty>> _enabledPropertiesHashSet;
+        private readonly HashSet<EnemyFeatureProperty> _activeFeatures = new();
+        private Vector3 _originPosition;
+
+        public bool IsFeatureActive(
+            EnemyFeatureProperty property)
+        {
+            return _activeFeatures.Contains(property);
+        }
         private Animator _monsterAnimator;
         private void Awake()
         {
-            _enabledPropertiesHashSet = new();
+            _originPosition = transform.position;
+            _sightCondition =
+                new EnemySightCondition(
+                    _sightConditionData);
+            
             _enemyFeatures = new();
             _dicEnemyFeatureCreator = new()
             {
                 { EnemyFeatureProperty.Idle, () => new EnemyIdle()},
                 { EnemyFeatureProperty.Movement, () => new EnemyMovement()},
                 { EnemyFeatureProperty.Rotation, () => new EnemyRotation()},
-                { EnemyFeatureProperty.Attack, () => new EnemyAttack()}
+                { EnemyFeatureProperty.Attack, () => new EnemyAttack()},
+                { EnemyFeatureProperty.Return, () => new EnemyReturn()}
+                
             };
             _monsterAnimator = GetComponent<Animator>();
         }
@@ -177,114 +175,147 @@ namespace KoiAI.Enemy
 
         private void Update()
         {
+            // 1. 공용 센서 갱신
+            _sightCondition.Tick(this);
+
+            // 2. 센서 결과를 Context에 복사
+            UpdateTargetContext();
+
+            // 3. 모든 Feature가 동일한 Context를 사용하여 조건 평가
             ActiveFeaturesProcess();
         }
 
+        private void UpdateTargetContext()
+        {
+            GameObject target = _sightCondition.Target;
+
+            if (target)
+            {
+                _targetContext.SetTarget(transform, target.transform);
+            }
+            else
+            {
+                _targetContext.Clear();
+            }
+        }
+        
         private void InitFeatures()
         {
             for (int i = 0; i < _enemyFeatureTransitions.Count; i++)
             {
                 EnemyFeatureTransition transition = _enemyFeatureTransitions[i];
-                CompareEnumCondition<EnemyFeatureProperty> property = transition.FeatureProperty;
-                if (_enabledPropertiesHashSet.Contains(property))
+                EnemyFeatureProperty property = transition.FeatureProperty;
+                if (_activeFeatures.Contains(property))
                 {
                     continue;
                 }
 
-                EnemyFeatureValueData valueData = _enemyData.GetEnemyFeatureValueData(property.CompareValue);
-                EnemyFeatureExtensionData extensionData = _enemyData.GetEnemyFeatureExtensionData(property.CompareValue);
+                EnemyFeatureValueData valueData = _enemyData.GetEnemyFeatureValueData(property);
+                EnemyFeatureExtensionData extensionData = _enemyData.GetEnemyFeatureExtensionData(property);
 
-                if (_dicEnemyFeatureCreator.TryGetValue(property.CompareValue, out Func<EnemyFeature> featureCreator))
+                if (_dicEnemyFeatureCreator.TryGetValue(property, out Func<EnemyFeature> featureCreator))
                 {
                     EnemyFeature enemyFeature = featureCreator?.Invoke();
+                    if (enemyFeature == null)
+                    {
+                        continue;
+                    }
                     enemyFeature.Owner = this;
                     enemyFeature.Init(transition, valueData, extensionData);
 
-                    _enabledPropertiesHashSet.Add(property);
+                    _activeFeatures.Add(property);
                     _enemyFeatures.Add(enemyFeature);
                 }
             }
-            _enabledPropertiesHashSet.Clear();
-            //Enable 조건 체크 후 Enter호출
+            _activeFeatures.Clear();
             ActiveFeaturesProcess();
         }
 
         private void ActiveFeaturesProcess()
         {
+            // 1. 비활성화
             foreach (EnemyFeature feature in _enemyFeatures)
             {
-                if (_enabledPropertiesHashSet.Contains(feature.FeatureProperty))
+                if (_activeFeatures.Contains(feature.FeatureProperty))
                 {
-                    feature.UpdateFeature();
-                    feature._enemyFeatureTransition.DEBUG_STATE = $"{feature._enemyFeatureTransition.FeatureProperty.CompareValue.ToString()} {EnemyFeatureState.UPDATE.ToString()}";
-                    bool canDisable = feature.CheckDisable();
-                    if (canDisable)
+                    if (feature.CheckDisable())
                     {
-                        feature._enemyFeatureTransition.DEBUG_STATE = $"{feature._enemyFeatureTransition.FeatureProperty.CompareValue.ToString()} {EnemyFeatureState.EXIT.ToString()}";
+                        feature._enemyFeatureTransition.DEBUG_STATE = $"{feature._enemyFeatureTransition.FeatureProperty.ToString()} {nameof(EnemyFeatureState.EXIT)}";
                         DisableFeature(feature);
-                        return;
-                    }
+                    }    
                 }
-                else
+            }
+
+            // 2. 활성화
+            foreach (EnemyFeature feature in _enemyFeatures)
+            {
+                if (!_activeFeatures.Contains(feature.FeatureProperty))
                 {
-                    bool canEnable = feature.CheckEnable();
-                    if (canEnable)
+                    if (feature.CheckEnable())
                     {
-                        feature._enemyFeatureTransition.DEBUG_STATE = $"{feature._enemyFeatureTransition.FeatureProperty.CompareValue.ToString()} {EnemyFeatureState.ENTER.ToString()}";
+                        feature._enemyFeatureTransition.DEBUG_STATE = $"{feature._enemyFeatureTransition.FeatureProperty.ToString()} {nameof(EnemyFeatureState.ENTER)}";
                         EnableFeature(feature);
                     }
                 }
             }
+
+            // 3. 활성 Feature 업데이트
+            foreach (EnemyFeature feature in _enemyFeatures)
+            {
+                if (_activeFeatures.Contains(feature.FeatureProperty))
+                {
+                    feature._enemyFeatureTransition.DEBUG_STATE = $"{feature._enemyFeatureTransition.FeatureProperty.ToString()} {nameof(EnemyFeatureState.UPDATE)}";
+                    feature.UpdateFeature();
+                }
+            }
+            
         }
 
         public void EnableFeature(EnemyFeature feature)
         {
-            if(!_enabledPropertiesHashSet.Contains(feature.FeatureProperty))
-            {
-                feature.EnterFeature();
-                _enabledPropertiesHashSet.Add(feature.FeatureProperty);
-            }
+            if (!_activeFeatures.Add(feature.FeatureProperty))
+                return;
+
+            feature.EnterFeature();
         }
 
         public void DisableFeature(EnemyFeature feature)
         {
-            if(_enabledPropertiesHashSet.Contains(feature.FeatureProperty))
-            {
-                feature.ExitFeature();
-                _enabledPropertiesHashSet.Remove(feature.FeatureProperty);
-            }
+            if (!_activeFeatures.Remove(feature.FeatureProperty))
+                return;
+
+            feature.ExitFeature();
         }
 
-        public void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
-            for (int i = 0; i < _enemyFeatureTransitions.Count; i++)
+            if (_sightConditionData == null ||
+                !_sightConditionData.UseGizmos)
             {
-                if(_enemyFeatureTransitions[i].EnableTransitionType == EnemyFeatureTransitionType.EntitySight)
-                {
-                    if (_enemyFeatureTransitions[i].EnableEntitySightConditionData.UseGizmo)
-                    {
-                        Gizmos.color = _enemyFeatureTransitions[i].EnableEntitySightConditionData.GizmosColor;
-                        Gizmos.DrawWireSphere(transform.position, _enemyFeatureTransitions[i].EnableEntitySightConditionData.MaxDetectionDistance);
-                        Gizmos.DrawWireSphere(transform.position, _enemyFeatureTransitions[i].EnableEntitySightConditionData.MinDetectionDistance);
-                    }
-                }
-          
-                if (_enemyFeatureTransitions[i].DisableTransitionType == EnemyFeatureTransitionType.EntitySight)
-                {
-                    if (_enemyFeatureTransitions[i].DisableEntitySightConditionData.UseGizmo)
-                    {
-                        Gizmos.color = _enemyFeatureTransitions[i].DisableEntitySightConditionData.GizmosColor;
-                        Gizmos.DrawWireSphere(transform.position, _enemyFeatureTransitions[i].DisableEntitySightConditionData.MaxDetectionDistance);
-                        Gizmos.DrawWireSphere(transform.position, _enemyFeatureTransitions[i].DisableEntitySightConditionData.MinDetectionDistance);
-                    }
-                }
-                    
+                return;
             }
+
+            Transform eye =
+                _sightConditionData.EyeTransform
+                    ? _sightConditionData.EyeTransform
+                    : transform;
+
+            Gizmos.color =
+                _sightConditionData.GizmosColor;
+
+            Gizmos.DrawWireSphere(
+                eye.position,
+                _sightConditionData.DetectionDistance);
+
+            Gizmos.DrawWireSphere(
+                eye.position,
+                _sightConditionData.LoseDistance);
         }
 
-        public HashSet<CompareEnumCondition<EnemyFeatureProperty>> EnabledPropertiesHashSet => _enabledPropertiesHashSet;
+        public EnemyTargetContext TargetContext => _targetContext;
         public NavigationController AgentController => _agentController;
         public AnimatorData EnemyAnimatorData => _enemyData.AnimatorData;
         public Animator EnemyAnimator => _monsterAnimator;
+        public Vector3 OriginPosition => _originPosition;
     }
 }

@@ -45,6 +45,7 @@ namespace KoiAI.Enemy
             return featureProperty switch
             {
                 EnemyFeatureProperty.Movement => _enemyMovementExtensionData,
+                EnemyFeatureProperty.Return => _enemyMovementExtensionData,
                 EnemyFeatureProperty.Rotation => _enemyRotationExtensionData,
                 _ => null
             };
@@ -58,6 +59,7 @@ namespace KoiAI.Enemy
                 return featureProperty switch
                 {
                     EnemyFeatureProperty.Movement => data.EnemyMovementValueData,
+                    EnemyFeatureProperty.Return => data.EnemyMovementValueData,
                     EnemyFeatureProperty.Rotation => data.EnemyRotationValueData,
                     _ => null
                 };

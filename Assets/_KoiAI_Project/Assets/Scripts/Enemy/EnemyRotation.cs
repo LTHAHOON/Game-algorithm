@@ -38,7 +38,6 @@ namespace KoiAI.Enemy
         public float SurfaceCheckDistance => _surfaceCheckDistance;
     }
 
-    [RequireComponent(typeof(EnemySightCondition))]
     public class EnemyRotation : EnemyFeature
     {
         private EnemyRotationValueData _valueData;

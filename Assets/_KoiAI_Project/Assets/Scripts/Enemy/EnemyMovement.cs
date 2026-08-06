@@ -93,11 +93,11 @@ namespace KoiAI.Enemy
         private GameObject _target;
         private bool _bHasTarget = false;
 
-        public override void InitFeature(EnemyFeatureValueData monsterFeatureValueData = null,
-            EnemyFeatureExtensionData monsterFeatureExtensionData = null)
+        public override void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null,
+            EnemyFeatureExtensionData enemyFeatureExtensionData = null)
         {
-            if (monsterFeatureValueData is not EnemyMovementValueData valueData
-                || monsterFeatureExtensionData is not EnemyMovementExtensionData extensionData)
+            if (enemyFeatureValueData is not EnemyMovementValueData valueData
+                || enemyFeatureExtensionData is not EnemyMovementExtensionData extensionData)
             {
                 return;
             }
@@ -118,15 +118,14 @@ namespace KoiAI.Enemy
         public override void EnterFeature()
         {
             _bHasTarget = TryGetTarget(out _target);
+
+            if (!_bHasTarget)
+                return;
             StartMoveDelay().Forget();
         }
 
         public override void ExitFeature()
         {
-            if(!_isReturning)
-            {
-                MoveToOrigin().Forget();
-            }
             _bHasTarget = false;
         }
 
@@ -138,16 +137,21 @@ namespace KoiAI.Enemy
             {
                 return;
             }
-            if (_bHasTarget)
-            {
-                float stopDistance = _valueData.SizeForMoveStop + _extensionData.SizeForMoveStopMod;
-                Vector3 targetPos = _target.transform.position + Vector3.forward * stopDistance;
+            if (!Owner.TargetContext.HasTarget)
+                return;
 
-                Owner.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed);
+            Transform target =
+                Owner.TargetContext.Target;
 
-                Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
-            }
+            if (!_bHasTarget)
+                return;
+            
+            float stopDistance = _valueData.SizeForMoveStop + _extensionData.SizeForMoveStopMod;
+            Vector3 targetPos = _target.transform.position + Vector3.forward * stopDistance;
 
+            Owner.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed);
+
+            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
             if (Owner.AgentController.IsMoveStop())
             {
                 Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
@@ -161,23 +165,6 @@ namespace KoiAI.Enemy
             _isStartMoveDelay = true;
             await UniTask.Delay(TimeSpan.FromSeconds(_extensionData.MoveDelayTime));
             _isStartMoveDelay = false;
-        }
-
-        private bool _isReturning = false;
-        public async UniTask MoveToOrigin()
-        {
-            _isReturning = true;
-            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
-
-            Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed);
-
-            await UniTask.WaitForEndOfFrame();
-            await UniTask.WaitUntil(() => Owner.AgentController.IsMoveStop(), cancellationToken: Owner.destroyCancellationToken);
-
-            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
-            Owner.AgentController.ResetPath();
-            Owner.EnemyAnimator.SetBool(_animParamData.IdleParmID, true);
-            _isReturning = false;
         }
     }
 }

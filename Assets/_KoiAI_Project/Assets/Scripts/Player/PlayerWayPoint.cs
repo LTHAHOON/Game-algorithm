@@ -52,12 +52,14 @@ namespace KoiAI.Player
 
         public bool DetectTargetAroundPlayer()
         {
-            _entitySight.Detect();
+            /*
+            _entitySight.();
             if(_entitySight.IsFindTarget())
             {
                 _target = _entitySight.GetTargetToFind().transform;
                 return true;
             }
+            */
             return false;
         }
 
