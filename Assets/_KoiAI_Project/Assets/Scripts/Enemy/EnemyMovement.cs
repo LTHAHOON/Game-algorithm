@@ -40,7 +40,8 @@ namespace KoiAI.Enemy
         private RigidbodyData _rigidData;
         [SerializeField]
         private CapsuleColliderData _colliderData;
-
+        [SerializeField]
+        private float _moveDelayTime;
         #endregion
 
         public RigidbodyData RigidData => _rigidData;
@@ -48,6 +49,7 @@ namespace KoiAI.Enemy
         public AudioData StepAuidoData => _stepAuidoData;
         public AudioData StopStepAudioData => _stopStepAudioData;
         public AudioData JumpAudioData => _jumpAudioData;
+        public float MoveDelayTime => _moveDelayTime;
         public float MoveSpeedMod => _moveSpeedMod;
         public float JumpForceMod => _jumpForceMod;
         public int JumpMaxCountMod => _jumpMaxCountMod;
@@ -86,14 +88,10 @@ namespace KoiAI.Enemy
         private EnemyMovementValueData _valueData;
         private EnemyMovementExtensionData _extensionData;
         
-        private UniTask _moveToOrginTask;
-        private CancellationTokenSource _moveCts;
-
         private Vector3 _originPoint;
         private AnimatorParamData _animParamData;
         private GameObject _target;
         private bool _bHasTarget = false;
-        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Movement;
 
         public override void InitFeature(EnemyFeatureValueData monsterFeatureValueData = null,
             EnemyFeatureExtensionData monsterFeatureExtensionData = null)
@@ -115,19 +113,20 @@ namespace KoiAI.Enemy
                 Debug.Log("Check: EnemyAnimatorData is not valid.");
             }
             _originPoint = Owner.transform.position;
-            _moveCts = CancellationTokenSource.CreateLinkedTokenSource(Owner.destroyCancellationToken);
         }
 
         public override void EnterFeature()
         {
             _bHasTarget = TryGetTarget(out _target);
-            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
+            StartMoveDelay().Forget();
         }
 
         public override void ExitFeature()
         {
-        
-            MoveToOrigin().Forget();
+            if(!_isReturning)
+            {
+                MoveToOrigin().Forget();
+            }
             _bHasTarget = false;
         }
 
@@ -135,34 +134,50 @@ namespace KoiAI.Enemy
 
         public override void UpdateFeature()
         {
-            if(_bHasTarget)
+            if(_isStartMoveDelay)
             {
-                float sizeForMoveStop = _valueData.SizeForMoveStop + _extensionData.SizeForMoveStopMod;
-                Vector3 targetPos = _target.transform.position + (Vector3.forward * sizeForMoveStop);
-                Owner.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed).Forget();
+                return;
             }
-            else
+            if (_bHasTarget)
             {
-                Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed).Forget();
+                float stopDistance = _valueData.SizeForMoveStop + _extensionData.SizeForMoveStopMod;
+                Vector3 targetPos = _target.transform.position + Vector3.forward * stopDistance;
+
+                Owner.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed);
+
+                Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
             }
 
             if (Owner.AgentController.IsMoveStop())
             {
-                Debug.Log("Stop Move");
                 Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
                 Owner.AgentController.ResetPath();
             }
-            else
-            {
-                Debug.Log("Move");
-            }
         }
 
+        private bool _isStartMoveDelay = false;
+        private async UniTask StartMoveDelay()
+        {
+            _isStartMoveDelay = true;
+            await UniTask.Delay(TimeSpan.FromSeconds(_extensionData.MoveDelayTime));
+            _isStartMoveDelay = false;
+        }
+
+        private bool _isReturning = false;
         public async UniTask MoveToOrigin()
         {
-            Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed).Forget();
-            await UniTask.WaitUntil(() => Owner.AgentController.IsMoveStop(), cancellationToken : Owner.destroyCancellationToken);
+            _isReturning = true;
+            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
+
+            Owner.AgentController.MoveToDest(_originPoint, _valueData.MoveSpeed);
+
+            await UniTask.WaitForEndOfFrame();
+            await UniTask.WaitUntil(() => Owner.AgentController.IsMoveStop(), cancellationToken: Owner.destroyCancellationToken);
+
             Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
+            Owner.AgentController.ResetPath();
+            Owner.EnemyAnimator.SetBool(_animParamData.IdleParmID, true);
+            _isReturning = false;
         }
     }
 }

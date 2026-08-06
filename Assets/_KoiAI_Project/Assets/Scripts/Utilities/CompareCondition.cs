@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace KoiAI.Utilities
@@ -55,7 +56,12 @@ namespace KoiAI.Utilities
         [AllowNesting]  
         [SerializeField]
         private ComparisonType _comparisonType;
-
+        public CompareEnumCondition(T compareValue, ComparisonType comparisonType, bool isDataOnly)
+        {
+            _compareValue = compareValue;
+            _comparisonType = comparisonType;
+            _isDataOnly = isDataOnly;
+        }
         public void SetCompareValue(T compareValue)
         {
             _compareValue = compareValue;

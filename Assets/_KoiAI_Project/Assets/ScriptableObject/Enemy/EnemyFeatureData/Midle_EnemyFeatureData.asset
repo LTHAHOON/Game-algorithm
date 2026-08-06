@@ -15,7 +15,7 @@ MonoBehaviour:
   _enemyFeatureDataType: 1
   _properties: 0100000002000000
   _enemyMovementValueData:
-    _moveSpeed: 10
+    _moveSpeed: 5
     _jumpForce: 10
     _jumpMaxCount: 1
     _sizeForMoveStop: 5

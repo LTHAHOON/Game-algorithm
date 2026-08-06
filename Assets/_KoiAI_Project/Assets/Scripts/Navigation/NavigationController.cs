@@ -78,14 +78,13 @@ namespace KoiAI.Nav
                             });
         }
 
-        public async UniTask MoveToDest(Vector3 destination, float moveSpeed)
+        public void MoveToDest(Vector3 destination, float moveSpeed)
         {
             if (!CanMoveToDestination(out _path, destination))
             {
                 return;
             }
 
-            await UniTask.WaitForSeconds(0.5f);
             _navMeshAgent.SetDestination(destination);
 
             switch (_navigationData.AgentPhyscisType)
@@ -112,7 +111,7 @@ namespace KoiAI.Nav
             if (_navMeshAgent.pathPending)
                 return false;
 
-            return !_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude < 0.01f;
+            return !_navMeshAgent.hasPath || _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance;
         }
 
         public bool CanMoveToDestination(out Vector3[] path, Vector3 destination)

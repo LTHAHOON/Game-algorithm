@@ -49,7 +49,6 @@ namespace KoiAI.Enemy
         private GameObject _target;
         private bool _bHasTarget = false;
 
-        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Rotation;
         public override void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null,
             EnemyFeatureExtensionData enemyFeatureExtensionData = null)
         {

@@ -6,7 +6,6 @@ namespace KoiAI.Enemy
 
     public class EnemyIdle : EnemyFeature
     {
-        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Idle;
 
         private AnimatorParamData _animParamData;
         public override void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null, EnemyFeatureExtensionData enemyFeatureExtensionData = null)
@@ -24,18 +23,12 @@ namespace KoiAI.Enemy
 
         public override void ExitFeature()
         {
+            Owner.EnemyAnimator.SetBool(_animParamData.IdleParmID, false);
         }
 
         public override void UpdateFeature()
         {
-            if(Owner.AgentController.IsMoveStop())
-            {
-                Owner.EnemyAnimator.SetBool(_animParamData.IdleParmID, true);
-            }
-            else
-            {
-                Owner.EnemyAnimator.SetBool(_animParamData.IdleParmID, false);
-            }
+  
         }
 
       

@@ -15,7 +15,9 @@ namespace KoiAI.Enemy
         [SerializeField]
         private Transform _entityTransform;
         [SerializeField]
-        private float _detectionDistance = 10f;
+        private float _maxDetectionDistance;
+        [SerializeField]
+        private float _minDetectionDistance;
         [SerializeField]
         private int _detectMaxCount = 1;
         [SerializeField]
@@ -28,7 +30,8 @@ namespace KoiAI.Enemy
         public bool UseGizmo => _bUseGizmos;
         public Color GizmosColor => _gizmosColor;   
         public Transform EntityTransform => _entityTransform;
-        public float DetectionDistance => _detectionDistance;
+        public float MaxDetectionDistance => _maxDetectionDistance;
+        public float MinDetectionDistance => _minDetectionDistance;
         public int DetectMaxCount => _detectMaxCount;
         public float SightAngle => _sightAngle;
         public float SightDelayTime => _sightDelayTime;
@@ -69,7 +72,7 @@ namespace KoiAI.Enemy
             }
             if (_target == null)
             {
-                int count = Physics.OverlapSphereNonAlloc(_enemySightData.EntityTransform.position, _enemySightData.DetectionDistance, _targetColliders, _enemySightData.TargetLayerMask);
+                int count = Physics.OverlapSphereNonAlloc(_enemySightData.EntityTransform.position, _enemySightData.MaxDetectionDistance, _targetColliders, _enemySightData.TargetLayerMask);
                 if (count <= 0)
                 {
                     return;
@@ -80,21 +83,26 @@ namespace KoiAI.Enemy
             float distance = (_target.transform.position - _enemySightData.EntityTransform.position).sqrMagnitude;
             if (_curSightTime < _enemySightData.SightDelayTime)
             {
-                if(distance >= _enemySightData.DetectionDistance * _enemySightData.DetectionDistance)
-                {
-                    _isFindPlayer = false;
-                    return;
-                }
+
                 _curSightTime += Time.deltaTime;
                 return;
             }
-            Vector3 dirToPlayer = _target.transform.position - _enemySightData.EntityTransform.position;
-            dirToPlayer.Normalize();
-            float dot = Vector3.Dot(_enemySightData.EntityTransform.forward, dirToPlayer);
-            float angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+            if (distance > _enemySightData.MaxDetectionDistance * _enemySightData.MaxDetectionDistance
+                || distance < _enemySightData.MinDetectionDistance * _enemySightData.MinDetectionDistance)
+            {
+                _isFindPlayer = false;
+            }
+            else
+            {
+                Vector3 dirToPlayer = _target.transform.position - _enemySightData.EntityTransform.position;
+                dirToPlayer.Normalize();
+                float dot = Vector3.Dot(_enemySightData.EntityTransform.forward, dirToPlayer);
+                float angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
 
-            _isFindPlayer = angle < _enemySightData.SightAngle;
-            _target = angle < _enemySightData.SightAngle ? _target : null;
+                _isFindPlayer = angle < _enemySightData.SightAngle;
+                _target = angle < _enemySightData.SightAngle ? _target : null;
+            }
+
             _curSightTime = 0;
        
         }

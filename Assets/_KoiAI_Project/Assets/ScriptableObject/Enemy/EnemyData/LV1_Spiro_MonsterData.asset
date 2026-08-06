@@ -23,8 +23,8 @@ MonoBehaviour:
     _stepAuidoData: {fileID: 0}
     _stopStepAudioData: {fileID: 0}
     _jumpAudioData: {fileID: 0}
-    _moveSpeedMod: 10
-    _jumpForceMod: 10
+    _moveSpeedMod: 1
+    _jumpForceMod: 0
     _jumpMaxCountMod: 1
     _stepAudioThresold: 0
     _sizeForMoveStopMod: 1
@@ -37,6 +37,7 @@ MonoBehaviour:
       _radius: 0
       _height: 0
       _direction: 0
+    _moveDelayTime: 5
   _enemyRotationExtensionData:
     _lookSpeedMod: 0
     _surfaceCheckDistanceMod: 0

@@ -33,7 +33,6 @@ namespace KoiAI.Enemy
         private float _curAttackTime = 0f;
         private AnimatorParamData _animParamData;
 
-        public override EnemyFeatureProperty FeatureProperty => EnemyFeatureProperty.Attack;
 
         public override void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null,
             EnemyFeatureExtensionData enemyFeatureExtensionData = null)
