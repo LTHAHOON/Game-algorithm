@@ -2,17 +2,15 @@ using NaughtyAttributes;
 using System;
 using UnityEngine;
 
-namespace KoiAI.Enemy
+namespace KoiAI.AI
 {
-    using Cysharp.Threading.Tasks;
     using KoiAI.A_Star;
     using KoiAI.AnimatorSystem;
     using KoiAI.Audio;
     using KoiAI.CustomPhysics;
-    using System.Threading;
 
     [Serializable]
-    public class EnemyMovementExtensionData : EnemyFeatureExtensionData
+    public class AIMovementExtensionData : AIFeatureExtensionData
     {
         #region 보정값 및 추가 이동 데이터
 
@@ -58,7 +56,7 @@ namespace KoiAI.Enemy
     }
 
     [Serializable]
-    public class EnemyMovementValueData : EnemyFeatureValueData
+    public class AIMovementValueData : AIFeatureValueData
     {
         #region 이동 데이터
 
@@ -83,36 +81,33 @@ namespace KoiAI.Enemy
         public WayPointData MoveWayPointData => _moveWapointData;
     }
 
-    public class EnemyMovement : EnemyFeature
+    public class AIMovement : AIFeature
     {
-        private EnemyMovementValueData _valueData;
-        private EnemyMovementExtensionData _extensionData;
-        
-        private Vector3 _originPoint;
+        private AIMovementValueData _valueData;
+        private AIMovementExtensionData _extensionData;
         private AnimatorParamData _animParamData;
         private GameObject _target;
         private bool _bHasTarget = false;
 
-        public override void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null,
-            EnemyFeatureExtensionData enemyFeatureExtensionData = null)
+        public override void InitFeature(AIFeatureValueData enemyFeatureValueData = null,
+            AIFeatureExtensionData enemyFeatureExtensionData = null)
         {
-            if (enemyFeatureValueData is not EnemyMovementValueData valueData
-                || enemyFeatureExtensionData is not EnemyMovementExtensionData extensionData)
+            if (enemyFeatureValueData is not AIMovementValueData valueData
+                || enemyFeatureExtensionData is not AIMovementExtensionData extensionData)
             {
                 return;
             }
             _valueData = valueData;
             _extensionData = extensionData;
-            if (Owner.EnemyAnimatorData.IsValid())
+            if (Brain.EnemyAnimatorData.IsValid())
             {
                 //애니메이터 파라미터 데이터 초기화
-                _animParamData = Owner.EnemyAnimatorData.AnimParamData;
+                _animParamData = Brain.EnemyAnimatorData.AnimParamData;
             }
             else
             {
                 Debug.Log("Check: EnemyAnimatorData is not valid.");
             }
-            _originPoint = Owner.transform.position;
         }
 
         public override void EnterFeature()
@@ -121,50 +116,33 @@ namespace KoiAI.Enemy
 
             if (!_bHasTarget)
                 return;
-            StartMoveDelay().Forget();
         }
 
         public override void ExitFeature()
         {
+            Brain.AgentController.ResetPath();
             _bHasTarget = false;
         }
 
-
-
         public override void UpdateFeature()
         {
-            if(_isStartMoveDelay)
+            if (!Brain.TargetContext.HasTarget && !_bHasTarget)
             {
                 return;
             }
-            if (!Owner.TargetContext.HasTarget)
-                return;
 
-            Transform target =
-                Owner.TargetContext.Target;
-
-            if (!_bHasTarget)
-                return;
+            Transform target = Brain.TargetContext.Target;
             
             float stopDistance = _valueData.SizeForMoveStop + _extensionData.SizeForMoveStopMod;
             Vector3 targetPos = _target.transform.position + Vector3.forward * stopDistance;
 
-            Owner.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed);
+            Brain.AgentController.MoveToDest(targetPos, _valueData.MoveSpeed);
+            Brain.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
 
-            Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, true);
-            if (Owner.AgentController.IsMoveStop())
+            if (Brain.AgentController.IsMoveStop())
             {
-                Owner.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
-                Owner.AgentController.ResetPath();
+                Brain.EnemyAnimator.SetBool(_animParamData.WalkParmID, false);
             }
-        }
-
-        private bool _isStartMoveDelay = false;
-        private async UniTask StartMoveDelay()
-        {
-            _isStartMoveDelay = true;
-            await UniTask.Delay(TimeSpan.FromSeconds(_extensionData.MoveDelayTime));
-            _isStartMoveDelay = false;
         }
     }
 }

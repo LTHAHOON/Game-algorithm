@@ -1,6 +1,4 @@
-using KoiAI.A_Star;
-using KoiAI.Input;
-using KoiAI.Enemy;
+
 using NaughtyAttributes;
 using System;
 using UnityEngine;
@@ -8,6 +6,10 @@ using UnityEngine.InputSystem;
 
 namespace KoiAI.Player
 {
+    using KoiAI.AI;
+    using KoiAI.A_Star;
+    using KoiAI.Input;
+
     [Serializable]
     public class PlayerWayPointValueData : PlayerFeatureValueData
     {
@@ -20,7 +22,7 @@ namespace KoiAI.Player
         public float BuildDelayTime => _buildDelayTime;
     }
 
-    [RequireComponent(typeof(EnemySightCondition))]
+    [RequireComponent(typeof(AISightCondition))]
     public class PlayerWayPoint : PlayerFeature
     {
         [SerializeField]
@@ -29,7 +31,7 @@ namespace KoiAI.Player
         [SerializeField]
         private PlayerWayPointValueData _valueData;
 
-        private EnemySightCondition _entitySight;
+        private AISightCondition _entitySight;
         private readonly WayPointHandler _wayPointHandle = new();
         private float _curTime = 0;
         private bool _isAutoBuild = false;
@@ -43,7 +45,7 @@ namespace KoiAI.Player
             {
                 return;
             }
-            _entitySight = GetComponent<EnemySightCondition>(); 
+            _entitySight = GetComponent<AISightCondition>(); 
             _valueData = valueData;
             InputService.PlayerIA.Player.SetVisibleWayPoint.performed += OnSetVisibleWayPoint;
             InputService.PlayerIA.Player.Move.performed += OnRebuildWayPoint;

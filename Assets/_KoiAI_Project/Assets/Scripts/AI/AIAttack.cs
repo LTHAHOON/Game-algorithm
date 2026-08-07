@@ -3,12 +3,13 @@ using System;
 
 namespace KoiAI.Enemy
 {
+    using KoiAI.AI;
     using KoiAI.AnimatorSystem;
     using KoiAI.Item;
     using KoiAI.Utilities;
 
     [Serializable]
-    public class EnemyAttackExtensionData : EnemyFeatureExtensionData
+    public class AIAttackExtensionData : AIFeatureExtensionData
     {
         #region 공격 데이터
 
@@ -25,19 +26,19 @@ namespace KoiAI.Enemy
     }
 
 
-    [RequireComponent (typeof(EnemySightCondition))]
-    public class EnemyAttack : EnemyFeature
+    [RequireComponent (typeof(AISightCondition))]
+    public class AIAttack : AIFeature
     {
-        private EnemyAttackExtensionData _extensionData;
+        private AIAttackExtensionData _extensionData;
         private WeaponControllerBase _weaponController;
         private float _curAttackTime = 0f;
         private AnimatorParamData _animParamData;
 
 
-        public override void InitFeature(EnemyFeatureValueData enemyFeatureValueData = null,
-            EnemyFeatureExtensionData enemyFeatureExtensionData = null)
+        public override void InitFeature(AIFeatureValueData enemyFeatureValueData = null,
+            AIFeatureExtensionData enemyFeatureExtensionData = null)
         {
-            if(enemyFeatureExtensionData is not EnemyAttackExtensionData extensionData)
+            if(enemyFeatureExtensionData is not AIAttackExtensionData extensionData)
             {
                 return;
             }
@@ -48,9 +49,9 @@ namespace KoiAI.Enemy
                 _extensionData.RandomWeaponControllers[i].ActivateTarget.Init(null);
             }
 
-            if (Owner.EnemyAnimatorData.IsValid())
+            if (Brain.EnemyAnimatorData.IsValid())
             {
-                _animParamData = Owner.EnemyAnimatorData.AnimParamData;
+                _animParamData = Brain.EnemyAnimatorData.AnimParamData;
             }
         }
 

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace KoiAI.Enemy
+namespace KoiAI.AI
 {
-    public class EnemyTargetContext
+    public class AITargetContext
     {
         public Transform Target { get; private set; }
         public float Distance { get; private set; }

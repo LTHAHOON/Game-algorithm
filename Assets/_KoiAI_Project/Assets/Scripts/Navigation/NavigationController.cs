@@ -50,7 +50,7 @@ namespace KoiAI.Nav
         public void SetUpRigidMoveSubscription()
         {
             _navMeshAgent.updatePosition = false;
-            _navMeshAgent.updateRotation = true;
+            _navMeshAgent.updateRotation = false;
             TryGetComponent(out _rigidBody);
             if (_rigidBody)
             {

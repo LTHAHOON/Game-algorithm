@@ -1,12 +1,11 @@
 using System;
 using UnityEngine;
-using static KoiAI.Enemy.EnemyFeatureTransition;
 
-namespace KoiAI.Enemy
+namespace KoiAI.AI
 {
 
     [Serializable]
-    public class EnemySightConditionData
+    public class AISightConditionData
     {
         [Header("감지 위치")]
         [SerializeField]
@@ -68,9 +67,9 @@ namespace KoiAI.Enemy
         public Color GizmosColor => _gizmosColor;
     }
 
-    public sealed class EnemySightCondition
+    public sealed class AISightCondition
     {
-        private readonly EnemySightConditionData _data;
+        private readonly AISightConditionData _data;
         private readonly Collider[] _overlapResults;
 
         private Collider _targetCollider;
@@ -79,8 +78,8 @@ namespace KoiAI.Enemy
         private float _distance = float.MaxValue;
         private float _scanTimer;
 
-        public EnemySightCondition(
-            EnemySightConditionData data)
+        public AISightCondition(
+            AISightConditionData data)
         {
             _data = data;
 
@@ -95,15 +94,15 @@ namespace KoiAI.Enemy
         /// <summary>
         /// EnemyAI에서 프레임당 한 번만 호출합니다.
         /// </summary>
-        public void Tick(EnemyAI owner)
+        public void Tick(AIBrain brain)
         {
-            if (_data == null || !owner)
+            if (_data == null || !brain)
             {
                 ClearTarget();
                 return;
             }
 
-            UpdateCurrentTargetDistance(owner);
+            UpdateCurrentTargetDistance(brain);
 
             // LoseDistance를 벗어나면 즉시 타깃 해제
             if (_target &&
@@ -122,21 +121,21 @@ namespace KoiAI.Enemy
             // 기존 타깃이 여전히 유효한지 확인
             if (_targetCollider &&
                 IsVisibleTarget(
-                    owner,
+                    brain,
                     _targetCollider,
                     _data.LoseDistance))
             {
-                SetTarget(owner, _targetCollider);
+                SetTarget(brain, _targetCollider);
                 return;
             }
 
             ClearTarget();
-            FindTarget(owner);
+            FindTarget(brain);
         }
 
-        private void FindTarget(EnemyAI owner)
+        private void FindTarget(AIBrain brain)
         {
-            Vector3 eyePosition = GetEyePosition(owner);
+            Vector3 eyePosition = GetEyePosition(brain);
 
             int count = Physics.OverlapSphereNonAlloc(eyePosition, _data.DetectionDistance, _overlapResults, _data.TargetLayerMask, QueryTriggerInteraction.Ignore);
 
@@ -153,12 +152,12 @@ namespace KoiAI.Enemy
                 }
 
                 // 자기 자신의 Collider 제외
-                if (candidate.transform.root == owner.transform.root)
+                if (candidate.transform.root == brain.transform.root)
                 {
                     continue;
                 }
 
-                if (!IsVisibleTarget(owner, candidate, _data.DetectionDistance))
+                if (!IsVisibleTarget(brain, candidate, _data.DetectionDistance))
                 {
                     continue;
                 }
@@ -178,18 +177,18 @@ namespace KoiAI.Enemy
 
             if (nearestCollider)
             {
-                SetTarget(owner, nearestCollider);
+                SetTarget(brain, nearestCollider);
             }
         }
 
-        private bool IsVisibleTarget(EnemyAI owner, Collider candidate, float maxDistance)
+        private bool IsVisibleTarget(AIBrain brain, Collider candidate, float maxDistance)
         {
             if (!candidate)
             {
                 return false;
             }
 
-            Transform eyeTransform = GetEyeTransform(owner);
+            Transform eyeTransform = GetEyeTransform(brain);
             Vector3 eyePosition = eyeTransform.position;
             Vector3 targetPosition = candidate.bounds.center;
 
@@ -223,17 +222,17 @@ namespace KoiAI.Enemy
             return !blocked;
         }
 
-        private void SetTarget(EnemyAI owner, Collider targetCollider)
+        private void SetTarget(AIBrain brain, Collider targetCollider)
         {
             _targetCollider = targetCollider;
             _target = targetCollider.gameObject;
 
-            Vector3 eyePosition = GetEyePosition(owner);
+            Vector3 eyePosition = GetEyePosition(brain);
 
             _distance = Vector3.Distance(eyePosition, targetCollider.bounds.center);
         }
 
-        private void UpdateCurrentTargetDistance(EnemyAI owner)
+        private void UpdateCurrentTargetDistance(AIBrain brain)
         {
             if (!_targetCollider)
             {
@@ -241,7 +240,7 @@ namespace KoiAI.Enemy
                 return;
             }
 
-            _distance = Vector3.Distance(GetEyePosition(owner), _targetCollider.bounds.center);
+            _distance = Vector3.Distance(GetEyePosition(brain), _targetCollider.bounds.center);
         }
 
         private void ClearTarget()
@@ -251,14 +250,14 @@ namespace KoiAI.Enemy
             _distance = float.MaxValue;
         }
 
-        private Transform GetEyeTransform(EnemyAI owner)
+        private Transform GetEyeTransform(AIBrain brain)
         {
-            return _data.EyeTransform ? _data.EyeTransform : owner.transform;
+            return _data.EyeTransform ? _data.EyeTransform : brain.transform;
         }
 
-        private Vector3 GetEyePosition(EnemyAI owner)
+        private Vector3 GetEyePosition(AIBrain brain)
         {
-            return GetEyeTransform(owner).position;
+            return GetEyeTransform(brain).position;
         }
   
     }

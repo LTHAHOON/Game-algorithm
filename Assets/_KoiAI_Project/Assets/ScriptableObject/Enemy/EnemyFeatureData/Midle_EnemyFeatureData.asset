@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Midle_EnemyFeatureData
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Enemy.EnemyFeatureData
   _enemyFeatureDataType: 1
-  _properties: 0100000002000000
+  _properties: 010000000200000003000000
   _enemyMovementValueData:
-    _moveSpeed: 5
+    _moveSpeed: 4
     _jumpForce: 10
     _jumpMaxCount: 1
     _sizeForMoveStop: 5

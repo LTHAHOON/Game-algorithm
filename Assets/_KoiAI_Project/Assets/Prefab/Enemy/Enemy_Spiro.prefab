@@ -1396,7 +1396,6 @@ GameObject:
   - component: {fileID: 5481288012781411425}
   - component: {fileID: 4935607812214051969}
   - component: {fileID: 8857722224692771334}
-  - component: {fileID: 6035040001995738957}
   - component: {fileID: 4129940667833861889}
   m_Layer: 0
   m_Name: Enemy_Spiro
@@ -1489,7 +1488,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!195 &8857722224692771334
 NavMeshAgent:
@@ -1513,89 +1512,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6035040001995738957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2706511028172561545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4fec9d96c7bf6945a3cb286ef3bfb9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Monster.MonsterAI
-  _agentController: {fileID: 4129940667833861889}
-  _enemyData: {fileID: 11400000, guid: 5bda9bd72430676438c531188f16643b, type: 2}
-  _enemyFeatureTransitions:
-  - DEBUG_STATE: 
-    _featureProperty: 1
-    _enableTransitionType: 2
-    _disableTransitionType: 2
-    _enableEntitySightConditionData:
-      _bUseGizmos: 0
-      _gizmosColor: {r: 0, g: 0, b: 0, a: 0}
-      _entityTransform: {fileID: 7943344260591565325}
-      _maxDetectionDistance: 0
-      _minDetectionDistance: 0
-      _detectMaxCount: 0
-      _sightAngle: 0
-      _sightDelayTime: 0
-      _targetLayerMask:
-        serializedVersion: 2
-        m_Bits: 0
-    _disableEntitySightConditionData:
-      _bUseGizmos: 0
-      _gizmosColor: {r: 0, g: 0, b: 0, a: 0}
-      _entityTransform: {fileID: 0}
-      _maxDetectionDistance: 0
-      _minDetectionDistance: 0
-      _detectMaxCount: 0
-      _sightAngle: 0
-      _sightDelayTime: 0
-      _targetLayerMask:
-        serializedVersion: 2
-        m_Bits: 0
-    _enableWithFeatureConditionData:
-      _isOpposite: 1
-      _enemyFeatureProperties: 02000000
-    _disableWithFeatureConditionData:
-      _isOpposite: 0
-      _enemyFeatureProperties: 02000000
-  - DEBUG_STATE: 
-    _featureProperty: 2
-    _enableTransitionType: 1
-    _disableTransitionType: 1
-    _enableEntitySightConditionData:
-      _bUseGizmos: 1
-      _gizmosColor: {r: 0, g: 0.07363975, b: 1, a: 1}
-      _entityTransform: {fileID: 3239538328083206801}
-      _maxDetectionDistance: 10
-      _minDetectionDistance: 0
-      _detectMaxCount: 1
-      _sightAngle: 360
-      _sightDelayTime: 0
-      _targetLayerMask:
-        serializedVersion: 2
-        m_Bits: 8
-    _disableEntitySightConditionData:
-      _bUseGizmos: 1
-      _gizmosColor: {r: 1, g: 0.9048885, b: 0, a: 1}
-      _entityTransform: {fileID: 3239538328083206801}
-      _maxDetectionDistance: 40
-      _minDetectionDistance: 35
-      _detectMaxCount: 1
-      _sightAngle: 360
-      _sightDelayTime: 0
-      _targetLayerMask:
-        serializedVersion: 2
-        m_Bits: 8
-    _enableWithFeatureConditionData:
-      _isOpposite: 0
-      _enemyFeatureProperties: 
-    _disableWithFeatureConditionData:
-      _isOpposite: 0
-      _enemyFeatureProperties: 
 --- !u!114 &4129940667833861889
 MonoBehaviour:
   m_ObjectHideFlags: 0
