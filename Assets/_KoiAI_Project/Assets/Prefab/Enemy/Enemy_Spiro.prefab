@@ -1397,6 +1397,7 @@ GameObject:
   - component: {fileID: 4935607812214051969}
   - component: {fileID: 8857722224692771334}
   - component: {fileID: 4129940667833861889}
+  - component: {fileID: 2888641819072732516}
   m_Layer: 0
   m_Name: Enemy_Spiro
   m_TagString: Untagged
@@ -1526,6 +1527,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Nav.NavigationController
   _navMeshAgent: {fileID: 8857722224692771334}
   _navigationData: {fileID: 11400000, guid: c7033bce27d351540b564ce646d0e228, type: 2}
+--- !u!114 &2888641819072732516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2706511028172561545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ee44dc784605b34899f7cad4af95c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.AI.AIBrain
+  _sightConditionData:
+    _eyeTransform: {fileID: 3239538328083206801}
+    _detectionDistance: 20
+    _loseDistance: 40
+    _sightAngle: 360
+    _scanInterval: 0.1
+    _maxDetectionCount: 1
+    _targetLayerMask:
+      serializedVersion: 2
+      m_Bits: 8
+    _obstacleLayerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    _useGizmos: 1
+    _gizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _useDebugState: 1
+  _agentController: {fileID: 4129940667833861889}
+  _aiStatData: {fileID: 11400000, guid: 5bda9bd72430676438c531188f16643b, type: 2}
+  _aiBrainData: {fileID: 11400000, guid: 92d473c7c4d85b64895e9a336938d818, type: 2}
+  _aiRuntimeDebugs: []
+  _aiRuntimeSettings:
+    _runtimeSettings:
+    - _featureProperty: 1
+      _enableDelayTime: 0
+      _disableDelayTime: 3.5
 --- !u!1 &2857284113161726406
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09026c6359542a429c14c20cf94c739, type: 3}
   m_Name: Large_EnemyFeatureData
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Enemy.EnemyFeatureData
-  _enemyFeatureDataType: 2
-  _properties: 0100000002000000
-  _enemyMovementValueData:
-    _moveSpeed: 10
+  _aiFeatureDataType: 2
+  _properties: 010000000200000003000000
+  aiMovementValueData:
+    _moveSpeed: 6
     _jumpForce: 10
     _jumpMaxCount: 1
-    _sizeForMoveStop: 8
+    _sizeForMoveStop: 3
     _moveWapointData: {fileID: 0}
-  _enemyRotationValueData:
+  aiRotationValueData:
     _lookSpeed: 10
     _surfaceCheckDistance: 3

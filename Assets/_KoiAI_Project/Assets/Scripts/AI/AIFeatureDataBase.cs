@@ -6,14 +6,14 @@ namespace KoiAI.AI
     public class AIFeatureDataBase : ScriptableObject
     {
         [SerializeField]
-        private AIFeatureData[] _enemyFeatureData;
+        private AIFeatureData[] _aiFeatureData;
 
-        public AIFeatureData GetEnemyFeatureData(AIFeatureDataType enemyFeatureDataType)
+        public AIFeatureData GetAIFeatureData(AIFeatureDataType aiFeatureDataType)
         {
-            for (int i = 0; i < _enemyFeatureData.Length; i++)
+            for (int i = 0; i < _aiFeatureData.Length; i++)
             {
-                AIFeatureData enemyFeatureData = _enemyFeatureData[i];
-                if (enemyFeatureData.EnemyFeatureDataType == enemyFeatureDataType)
+                AIFeatureData enemyFeatureData = _aiFeatureData[i];
+                if (enemyFeatureData.AIFeatureDataType == aiFeatureDataType)
                 {
                     return enemyFeatureData;
                 }

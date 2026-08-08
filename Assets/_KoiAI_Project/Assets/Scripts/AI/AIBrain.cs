@@ -1,27 +1,28 @@
 using Cysharp.Threading.Tasks;
-using KoiAI.AnimatorSystem;
-using KoiAI.Enemy;
-using KoiAI.Nav;
 using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static KoiAI.AI.AIFeature;
-using static KoiAI.AI.AIFeatureTransition;
 
 namespace KoiAI.AI
 {
+    using KoiAI.AnimatorSystem;
+    using KoiAI.Enemy;
+    using KoiAI.Nav;
+    
     public abstract class AIFeatureExtensionData { }
     public abstract class AIFeatureValueData { }
 
+    /// <summary>
+    /// AI 두뇌(판단) 클래스
+    /// </summary>
     public class AIBrain : MonoBehaviour
     {
         [SerializeField]
         private AISightConditionData _sightConditionData;
         private AISightCondition _sightCondition;
-
-        private readonly AITargetContext _targetContext = new();
 
         [SerializeField]
         private bool _useDebugState = true;
@@ -33,10 +34,11 @@ namespace KoiAI.AI
         private AIBrainData _aiBrainData;
         [ReadOnly]
         [SerializeField]
-        private List<AIFeatureTransitionRuntimeDebug> _aiRuntimeDebug;
+        private List<AIFeatureTransitionRuntimeDebug> _aiRuntimeDebugs;
         [SerializeField]
-        private AIFeatureTransitionRuntimeSetting[] _aiRuntimeSetting;
+        private AIFeatureTransitionRuntimeSettings _aiRuntimeSettings;
 
+        private readonly AITargetContext _targetContext = new();
         private Action[] _aiDecisionLogics;
         private int _aiDecisionLogicIndex = -1;
         private List<AIFeature> _aiFeatures;
@@ -44,8 +46,8 @@ namespace KoiAI.AI
         private readonly HashSet<AIFeatureProperty> _activeFeatures = new();
         private Vector3 _originPosition;
         private Animator _aiAnimator;
-
-        private void Awake()
+        
+        public void AwakeAIBrain()
         {
             _originPosition = transform.position;
             _sightCondition = new AISightCondition(_sightConditionData);
@@ -67,14 +69,14 @@ namespace KoiAI.AI
             };
             _aiAnimator = GetComponent<Animator>();
         }
-
-        private void Start()
+        
+        public void StartAIBrain()
         {
             InitFeatures();
             StartCoroutine(AIDecisionLogic());
         }
 
-        private void Update()
+        public void UpdateAIBrain()
         {
             _sightCondition.Tick(this);
 
@@ -124,8 +126,8 @@ namespace KoiAI.AI
 
                     if(_useDebugState)
                     {
-                        _aiRuntimeDebug.Add(new());
-                        _aiRuntimeDebug[i].AssignDebug(aiFeature);
+                        _aiRuntimeDebugs.Add(new());
+                        _aiRuntimeDebugs[i].AssignDebug(aiFeature);
                     }
                     _activeFeatures.Add(property);
                     _aiFeatures.Add(aiFeature);
@@ -153,7 +155,7 @@ namespace KoiAI.AI
         /// <summary>
         /// Feature 비활성화 판단 로직
         /// </summary>
-        public void DecisionDisableLogic()
+        private void DecisionDisableLogic()
         {
             foreach (AIFeature feature in _aiFeatures)
             {
@@ -161,7 +163,6 @@ namespace KoiAI.AI
                 {
                     if (feature.CheckDisable())
                     {
-                        feature.AIFeatureTransition.DEBUG_STATE = $"{feature.AIFeatureTransition.FeatureProperty.ToString()} {nameof(AIFeatureState.EXIT)}";
                         DisableFeature(feature).Forget();
                     }
                 }
@@ -171,7 +172,7 @@ namespace KoiAI.AI
         /// <summary>
         /// Feature 활성화 판단 로직
         /// </summary>
-        public void DecisionEnableLogic()
+        private void DecisionEnableLogic()
         {
             foreach (AIFeature feature in _aiFeatures)
             {
@@ -188,7 +189,7 @@ namespace KoiAI.AI
         /// <summary>
         /// 활성화된 Feature 업데이트 로직
         /// </summary>
-        public void UpdateActiveFeature()
+        private void UpdateActiveFeature()
         {
             foreach (AIFeature feature in _aiFeatures)
             {
@@ -199,7 +200,7 @@ namespace KoiAI.AI
             }
         }
 
-        public async UniTask EnableFeature(AIFeature feature)
+        private async UniTask EnableFeature(AIFeature feature)
         {
             if (_activeFeatures.Contains(feature.FeatureProperty))
             {
@@ -208,13 +209,13 @@ namespace KoiAI.AI
 
             feature.EnterFeature();
 
-            float delayTime = feature.AIFeatureTransition.EnableDelayTime;
+            float delayTime = _aiRuntimeSettings.GetEnableDelayTime(feature);
             await UniTask.Delay(TimeSpan.FromSeconds(delayTime));
 
             _activeFeatures.Add(feature.FeatureProperty);
         }
 
-        public async UniTask DisableFeature(AIFeature feature)
+        private async UniTask DisableFeature(AIFeature feature)
         {
             if (!_activeFeatures.Contains(feature.FeatureProperty))
             {
@@ -223,7 +224,7 @@ namespace KoiAI.AI
 
             feature.ExitFeature();
 
-            float delayTime = feature.AIFeatureTransition.DisableDelayTime;
+            float delayTime = _aiRuntimeSettings.GetDisableDelayTime(feature);
             await UniTask.Delay(TimeSpan.FromSeconds(delayTime));
 
             _activeFeatures.Remove(feature.FeatureProperty);

@@ -1,6 +1,7 @@
 using NaughtyAttributes;
 using R3;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static KoiAI.AI.AIFeature;
 using static KoiAI.AI.AIFeatureTransition;
@@ -41,16 +42,61 @@ namespace KoiAI.AI
     }
 
     [Serializable]
-    public class AIFeatureTransitionRuntimeSetting
+    public class AIFeatureTransitionRuntimeSettings
     {
-        [SerializeField]
-        private AIFeatureProperty _featureProperty;
+        [Serializable]
+        public struct AIFeatureTransitionRuntimeSetting
+        {
+            [SerializeField]
+            private AIFeatureProperty _featureProperty;
 
-        [SerializeField]
-        private float _enableDelayTime;
-        [SerializeField]
-        private float _disableDelayTime;
-        //여기부터 하면됨
+            [SerializeField]
+            private float _enableDelayTime;
+            [SerializeField]
+            private float _disableDelayTime;
+
+            public AIFeatureProperty FeatureProperty => _featureProperty;
+            public float EnableDelayTime => _enableDelayTime;
+            public float DisableDelayTime => _disableDelayTime;
+        }
+
+        [SerializeField] 
+        private List<AIFeatureTransitionRuntimeSetting> _runtimeSettings;
+
+        private bool TryGetRuntimeSetting(out AIFeatureTransitionRuntimeSetting runtimeSetting, AIFeature feature)
+        {
+            for (int i = 0; i < _runtimeSettings.Count; i++)
+            {
+                if (_runtimeSettings[i].FeatureProperty == feature.FeatureProperty)
+                {
+                    runtimeSetting = _runtimeSettings[i];
+                    return true;
+                }
+            }
+            runtimeSetting = default;
+            return false;
+        }
+        
+        public float GetEnableDelayTime(AIFeature feature)
+        {
+            bool bGet = TryGetRuntimeSetting(out AIFeatureTransitionRuntimeSetting runtimeSetting, feature);
+            if (bGet)
+            {
+                return runtimeSetting.EnableDelayTime;
+            }
+            return 0f;
+        }
+        
+        public float GetDisableDelayTime(AIFeature feature)
+        {
+            bool bGet = TryGetRuntimeSetting(out AIFeatureTransitionRuntimeSetting runtimeSetting, feature);
+            if (bGet)
+            {
+                return runtimeSetting.DisableDelayTime;
+            }
+            return 0f;
+        }
+
     }
 
     [Serializable]

@@ -6331,52 +6331,17 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!1 &1203988793 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2706511028172561545, guid: 5834b2cc212511a47b14b88182df4a9e, type: 3}
+--- !u!114 &1203988800 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2888641819072732516, guid: 5834b2cc212511a47b14b88182df4a9e, type: 3}
   m_PrefabInstance: {fileID: 6154447111143340077}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1203988794 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4129940667833861889, guid: 5834b2cc212511a47b14b88182df4a9e, type: 3}
-  m_PrefabInstance: {fileID: 6154447111143340077}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1203988793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 574ce0c2321a59f449ac6023cb17fe00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Nav.NavigationController
---- !u!114 &1203988800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1203988793}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ee44dc784605b34899f7cad4af95c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.AI.AIBrain
-  _sightConditionData:
-    _eyeTransform: {fileID: 0}
-    _detectionDistance: 12
-    _loseDistance: 13
-    _sightAngle: 120
-    _scanInterval: 0.1
-    _maxDetectionCount: 16
-    _targetLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    _obstacleLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    _useGizmos: 1
-    _gizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _agentController: {fileID: 1203988794}
-  _aiData: {fileID: 0}
-  _enemyFeatureTransitions: []
 --- !u!114 &1229593466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9418,6 +9383,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1004190201}
+  - {fileID: 1824134718}
   - {fileID: 12576894}
   - {fileID: 2126284448}
   - {fileID: 1604019200}
@@ -9563,6 +9529,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87bdb95acf1849342ae73d4ce74e8f7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.AISystem
+  _aiBrains:
+  - {fileID: 1203988800}
 --- !u!4 &1824134718
 Transform:
   m_ObjectHideFlags: 0
@@ -9571,12 +9539,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824134716}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -105.98724, y: -28.24989, z: 37.17241}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1793819142}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1866765266
 GameObject:
@@ -13818,10 +13786,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2706511028172561545, guid: 5834b2cc212511a47b14b88182df4a9e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1203988800}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5834b2cc212511a47b14b88182df4a9e, type: 3}
 --- !u!4 &8889758427351060723 stripped
 Transform:
@@ -13883,4 +13848,3 @@ SceneRoots:
   - {fileID: 9095912}
   - {fileID: 2009008588}
   - {fileID: 6154447111143340077}
-  - {fileID: 1824134718}

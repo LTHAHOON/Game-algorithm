@@ -19,15 +19,15 @@ namespace KoiAI.AI
     public class AIFeatureData : ScriptableObject
     {
         [SerializeField]
-        private AIFeatureDataType _enemyFeatureDataType;
+        private AIFeatureDataType _aiFeatureDataType;
         [SerializeField]
         private AIFeatureProperty[] _properties;
         [ShowIf(nameof(HasMovementProperty))]
         [SerializeField]
-        private AIMovementValueData _enemyMovementValueData;
+        private AIMovementValueData aiMovementValueData;
         [ShowIf(nameof(HasRotationProperty))]
         [SerializeField]
-        private AIRotationValueData _enemyRotationValueData;
+        private AIRotationValueData aiRotationValueData;
         private bool HasProperty(AIFeatureProperty property)
         {
             if (_properties == null)
@@ -38,11 +38,11 @@ namespace KoiAI.AI
             return bHas;
         }
 
-        public AIMovementValueData EnemyMovementValueData => _enemyMovementValueData;
-        public AIRotationValueData EnemyRotationValueData => _enemyRotationValueData;
+        public AIMovementValueData AIMovementValueData => aiMovementValueData;
+        public AIRotationValueData AIRotationValueData => aiRotationValueData;
         public bool HasMovementProperty => HasProperty(AIFeatureProperty.Movement);
         public bool HasRotationProperty => HasProperty(AIFeatureProperty.Rotation);
-        public AIFeatureDataType EnemyFeatureDataType => _enemyFeatureDataType;
+        public AIFeatureDataType AIFeatureDataType => _aiFeatureDataType;
         public AIFeatureProperty[] Properties => _properties;
 
     }

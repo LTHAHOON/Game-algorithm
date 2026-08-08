@@ -38,8 +38,6 @@ namespace KoiAI.AI
         private RigidbodyData _rigidData;
         [SerializeField]
         private CapsuleColliderData _colliderData;
-        [SerializeField]
-        private float _moveDelayTime;
         #endregion
 
         public RigidbodyData RigidData => _rigidData;
@@ -47,7 +45,6 @@ namespace KoiAI.AI
         public AudioData StepAuidoData => _stepAuidoData;
         public AudioData StopStepAudioData => _stopStepAudioData;
         public AudioData JumpAudioData => _jumpAudioData;
-        public float MoveDelayTime => _moveDelayTime;
         public float MoveSpeedMod => _moveSpeedMod;
         public float JumpForceMod => _jumpForceMod;
         public int JumpMaxCountMod => _jumpMaxCountMod;

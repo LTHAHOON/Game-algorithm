@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d2fd28985529f44989bd7b4ad621d3, type: 3}
   m_Name: EnemyFeatureDataBase
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Monster.MonsterFeatureDataBase
-  _enemyFeatureData:
+  _aiFeatureData:
+  - {fileID: 11400000, guid: 93be4bf32a5cab74e8f30fed2cef4063, type: 2}
   - {fileID: 11400000, guid: 19548c5f18536334ead274b449c0fc17, type: 2}
   - {fileID: 11400000, guid: f5338eb28c90cf54f85bdcf458423ec1, type: 2}
   - {fileID: 11400000, guid: c2cc9ac27475bda459ce9bf00c336833, type: 2}
-  - {fileID: 11400000, guid: 93be4bf32a5cab74e8f30fed2cef4063, type: 2}

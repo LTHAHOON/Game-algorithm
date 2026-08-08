@@ -2,7 +2,10 @@ using UnityEngine;
 
 namespace KoiAI.AI
 {
-    public abstract class AIFeature : MonoBehaviour
+    /// <summary>
+    /// AI 행동 클래스
+    /// </summary>
+    public abstract class AIFeature
     {
         public enum AIFeatureProperty
         {
