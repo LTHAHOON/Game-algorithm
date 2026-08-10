@@ -30,27 +30,31 @@ namespace KoiAI.AI
         [ShowIf(nameof(HasRotationProperty))]
         [SerializeField]
         private AIRotationExtensionData _aiRotationExtensionData;
-        
-        public AIFeatureData GetEnemyFeatureData()
+        [ShowIf(nameof(HasAttackProperty))]
+        [SerializeField]
+        private AIAttackExtensionData _aiAttackExtensionData;
+
+        public AIFeatureData GetAIFeatureData()
         {
             AIFeatureData data = _aiFeatureDataBase?.GetAIFeatureData(_aiFeatureDataType);
             return data;
         }
 
-        public AIFeatureExtensionData GetEnemyFeatureExtensionData(AIFeatureProperty featureProperty)
+        public AIFeatureExtensionData GetAIFeatureExtensionData(AIFeatureProperty featureProperty)
         {
             return featureProperty switch
             {
                 AIFeatureProperty.Movement => _aiMovementExtensionData,
                 AIFeatureProperty.Return => _aiMovementExtensionData,
                 AIFeatureProperty.Rotation => _aiRotationExtensionData,
+                AIFeatureProperty.Attack => _aiAttackExtensionData,
                 _ => null
             };
         }
 
-        public AIFeatureValueData GetEnemyFeatureValueData(AIFeatureProperty featureProperty)
+        public AIFeatureValueData GetAIFeatureValueData(AIFeatureProperty featureProperty)
         {
-            AIFeatureData data = GetEnemyFeatureData();
+            AIFeatureData data = GetAIFeatureData();
             if (data)
             {
                 return featureProperty switch
@@ -64,9 +68,11 @@ namespace KoiAI.AI
             return null;
         }
 
-        public bool HasMovementProperty => GetEnemyFeatureData() is var data && data != null && data.HasMovementProperty;
-        public bool HasRotationProperty => GetEnemyFeatureData() is var data && data != null && data.HasRotationProperty;
-        
+        public bool HasMovementProperty => GetAIFeatureData() is var data && data != null && data.HasMovementProperty;
+        public bool HasRotationProperty => GetAIFeatureData() is var data && data != null && data.HasRotationProperty;
+        public bool HasAttackProperty => GetAIFeatureData() is var data && data != null && data.HasAttackProperty;
+
+
         public AnimatorData AnimatorData => _animatorData;
     }
 }

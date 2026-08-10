@@ -42,6 +42,7 @@ namespace KoiAI.AI
         public AIRotationValueData AIRotationValueData => aiRotationValueData;
         public bool HasMovementProperty => HasProperty(AIFeatureProperty.Movement);
         public bool HasRotationProperty => HasProperty(AIFeatureProperty.Rotation);
+        public bool HasAttackProperty => HasProperty(AIFeatureProperty.Attack);
         public AIFeatureDataType AIFeatureDataType => _aiFeatureDataType;
         public AIFeatureProperty[] Properties => _properties;
 

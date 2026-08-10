@@ -111,8 +111,8 @@ namespace KoiAI.AI
                     continue;
                 }
 
-                AIFeatureValueData valueData = _aiStatData.GetEnemyFeatureValueData(property);
-                AIFeatureExtensionData extensionData = _aiStatData.GetEnemyFeatureExtensionData(property);
+                AIFeatureValueData valueData = _aiStatData.GetAIFeatureValueData(property);
+                AIFeatureExtensionData extensionData = _aiStatData.GetAIFeatureExtensionData(property);
 
                 if (_dicAIFeatureCreator.TryGetValue(property, out Func<AIFeature> featureCreator))
                 {

@@ -20,7 +20,7 @@ namespace KoiAI.AI
         public void AssignDebug(AIFeature feature)
         {
             Observable.EveryUpdate(UnityFrameProvider.PreLateUpdate)
-                .Subscribe(async _ =>
+                .Subscribe(_ =>
                 {
                     bool isActive = feature.Brain.IsFeatureActive(feature.FeatureProperty);
                     if (isActive && !_wasActive)

@@ -17,7 +17,7 @@ MonoBehaviour:
   _itemMesh: {fileID: 0}
   _itemMaterials: []
   _itemName: Spiro Gun
-  _itemId: 0
+  _itemId: 100002
   _isCreatableObj: 0
   _weaponType: 1
   _weaponDamage: 15

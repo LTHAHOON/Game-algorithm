@@ -1,19 +1,20 @@
 using UnityEngine;
 using System;
 
-namespace KoiAI.Enemy
+namespace KoiAI.AI
 {
-    using KoiAI.AI;
     using KoiAI.AnimatorSystem;
     using KoiAI.Item;
     using KoiAI.Utilities;
+    using NaughtyAttributes;
 
     [Serializable]
     public class AIAttackExtensionData : AIFeatureExtensionData
     {
-        #region 공격 데이터
 
-        [Header("몬스터 무기")]
+        #region 공격 데이터
+        [SerializeField]
+        private ulong _weaponID;
         [SerializeField]
         private ActivateRandomValue<WeaponControllerBase>[] _randomWeaponContorllers;
         [SerializeField]
@@ -21,12 +22,10 @@ namespace KoiAI.Enemy
 
         #endregion
 
-        public ActivateRandomValue<WeaponControllerBase>[] RandomWeaponControllers;
+        public ActivateRandomValue<WeaponControllerBase>[] RandomWeaponControllers => _randomWeaponContorllers;
         public float AttackDelayTime => _attackDelayTime;
     }
 
-
-    [RequireComponent (typeof(AISightCondition))]
     public class AIAttack : AIFeature
     {
         private AIAttackExtensionData _extensionData;
@@ -57,16 +56,16 @@ namespace KoiAI.Enemy
 
         public override void EnterFeature()
         {
+            _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponControllers);
             _weaponController.StartAiming();
         }
 
         public override void UpdateFeature()
         {
             Debug.Log("Attacking");
-            _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponControllers);
             if(_weaponController == null)
             {
-                return;
+                _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponControllers);
             }
 
             if(_curAttackTime < _extensionData.AttackDelayTime)
@@ -77,6 +76,7 @@ namespace KoiAI.Enemy
             _curAttackTime = 0f;
      
             _weaponController.Activate();
+            _weaponController = null;
         }
 
         public override void ExitFeature()
