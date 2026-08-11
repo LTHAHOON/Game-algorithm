@@ -26,7 +26,7 @@ namespace KoiAI.Utilities
                     curActivateValue = activateValues[i];
                 }
             }
-            return curActivateValue.ActivateTarget;
+            return curActivateValue.ActivateTargetData;
         }
     }
 }

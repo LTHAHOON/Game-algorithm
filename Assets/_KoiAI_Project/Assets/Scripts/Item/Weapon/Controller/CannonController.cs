@@ -78,6 +78,7 @@ namespace KoiAI.Item
 
         public override void Init(WeaponBase wepaonItem)
         {
+            base.Init(wepaonItem);
             _curBallCount
                 .Pairwise()
                 .Where(pair => pair.Current < pair.Previous)

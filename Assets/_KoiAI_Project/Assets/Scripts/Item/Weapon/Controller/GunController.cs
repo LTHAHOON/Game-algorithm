@@ -13,10 +13,9 @@ namespace KoiAI.Item
     public class GunController : WeaponControllerBase
     {
         [SerializeField]
-        private GunData _gunData;
-        [SerializeField]
         private LayerMask _targetLayerMask;
 
+        private GunData _gunData;
         private GunSkin _gunSkin;
         private Vector3 _hitPoint;
         private Pool<BulletItem> _pool;
@@ -69,6 +68,8 @@ namespace KoiAI.Item
 
         public override void Init(WeaponBase wepaonItem)
         {
+            base.Init(wepaonItem);
+            _gunData = GetWeaponData<GunData>();
             _hits = new RaycastHit[_gunData.MaxHitCount];
             _curBallCount
                 .Pairwise()

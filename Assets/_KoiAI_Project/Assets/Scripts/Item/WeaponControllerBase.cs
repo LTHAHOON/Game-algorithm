@@ -3,20 +3,31 @@ using UnityEngine;
 namespace KoiAI.Item
 {
     using KoiAI.Skin;
-    
+    using KoiAI.Utilities;
+    using R3;
+    using System;
+    using System.Threading;
+
     public abstract class WeaponControllerBase : MonoBehaviour
     {
+        [SerializeField]
+        private WeaponData _weaponData;
         [SerializeField]
         private bool _isSkinPrefab;
         [SerializeField]
         private Skin _skin;
 
+        private Subject<WeaponData> _weaponUnRegisterObservable;
         protected bool _isAiming = false;
+
 
         /// <summary>
         /// 풀링 또는 값 초기화를 위한 함수
         /// </summary>
-        public abstract void Init(WeaponBase wepaonItem);
+        public virtual void Init(WeaponBase wepaonItem)
+        {
+            WeaponControlRegistry.ResgisterWeaponControl(this);
+        }
 
         /// <summary>
         /// 발동 함수
@@ -53,7 +64,15 @@ namespace KoiAI.Item
             return true;
         }
 
+        private void OnDestroy()
+        {
+            _weaponUnRegisterObservable.OnNext(_weaponData);
+        }
+
+        public Observable<WeaponData> WeaponUnRegisterObservable => _weaponUnRegisterObservable;
         public bool IsAiming() => _isAiming;
+        public WeaponData GetWeaponData() => _weaponData;
+        protected T GetWeaponData<T>() where T : WeaponData => (T)_weaponData;
         protected bool IsSkinPrefab() => _isSkinPrefab;
         protected Skin GetSkin() => _skin;
     }

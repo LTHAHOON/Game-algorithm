@@ -9,7 +9,6 @@ using static KoiAI.AI.AIFeature;
 namespace KoiAI.AI
 {
     using KoiAI.AnimatorSystem;
-    using KoiAI.Enemy;
     using KoiAI.Nav;
     
     public abstract class AIFeatureExtensionData { }

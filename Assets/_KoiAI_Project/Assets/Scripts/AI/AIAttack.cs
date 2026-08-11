@@ -7,6 +7,7 @@ namespace KoiAI.AI
     using KoiAI.Item;
     using KoiAI.Utilities;
     using NaughtyAttributes;
+    using System.Collections.Generic;
 
     [Serializable]
     public class AIAttackExtensionData : AIFeatureExtensionData
@@ -16,18 +17,19 @@ namespace KoiAI.AI
         [SerializeField]
         private ulong _weaponID;
         [SerializeField]
-        private ActivateRandomValue<WeaponControllerBase>[] _randomWeaponContorllers;
+        private ActivateRandomValue<WeaponData>[] _randomWeaponData;
         [SerializeField]
         private float _attackDelayTime = 1f;
 
         #endregion
 
-        public ActivateRandomValue<WeaponControllerBase>[] RandomWeaponControllers => _randomWeaponContorllers;
+        public ActivateRandomValue<WeaponData>[] RandomWeaponData => _randomWeaponData;
         public float AttackDelayTime => _attackDelayTime;
     }
 
     public class AIAttack : AIFeature
     {
+        private List<ActivateRandomValue<WeaponControllerBase>> _randomWeaponData;
         private AIAttackExtensionData _extensionData;
         private WeaponControllerBase _weaponController;
         private float _curAttackTime = 0f;
@@ -43,9 +45,11 @@ namespace KoiAI.AI
             }
             _extensionData = extensionData;
 
-            for (int i = 0; i < _extensionData.RandomWeaponControllers.Length; i++)
+            for (int i = 0; i < _extensionData.RandomWeaponData.Length; i++)
             {
-                _extensionData.RandomWeaponControllers[i].ActivateTarget.Init(null);
+                WeaponData weaponData = _extensionData.RandomWeaponData[i].ActivateTargetData;
+                WeaponControllerBase weaponController = WeaponControlRegistry.GetWeaponController(weaponData);
+                weaponController.Init(null);
             }
 
             if (Brain.EnemyAnimatorData.IsValid())
@@ -56,7 +60,7 @@ namespace KoiAI.AI
 
         public override void EnterFeature()
         {
-            _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponControllers);
+            _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponData);
             _weaponController.StartAiming();
         }
 
@@ -65,7 +69,7 @@ namespace KoiAI.AI
             Debug.Log("Attacking");
             if(_weaponController == null)
             {
-                _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponControllers);
+                _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponData);
             }
 
             if(_curAttackTime < _extensionData.AttackDelayTime)
