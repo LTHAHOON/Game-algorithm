@@ -12,25 +12,18 @@ namespace KoiAI.AI
     [Serializable]
     public class AIAttackExtensionData : AIFeatureExtensionData
     {
-
         #region 공격 데이터
-        [SerializeField]
-        private ulong _weaponID;
-        [SerializeField]
-        private ActivateRandomValue<WeaponData>[] _randomWeaponData;
         [SerializeField]
         private float _attackDelayTime = 1f;
 
         #endregion
-
-        public ActivateRandomValue<WeaponData>[] RandomWeaponData => _randomWeaponData;
         public float AttackDelayTime => _attackDelayTime;
     }
 
     public class AIAttack : AIFeature
     {
-        private List<ActivateRandomValue<WeaponControllerBase>> _randomWeaponData;
         private AIAttackExtensionData _extensionData;
+        private WeaponActivateGroup _weaponRandomGroup;
         private WeaponControllerBase _weaponController;
         private float _curAttackTime = 0f;
         private AnimatorParamData _animParamData;
@@ -45,11 +38,19 @@ namespace KoiAI.AI
             }
             _extensionData = extensionData;
 
-            for (int i = 0; i < _extensionData.RandomWeaponData.Length; i++)
+            if(!Brain.TryGetComponent<WeaponActivateGroup>(out _weaponRandomGroup))
             {
-                WeaponData weaponData = _extensionData.RandomWeaponData[i].ActivateTargetData;
-                WeaponControllerBase weaponController = WeaponControlRegistry.GetWeaponController(weaponData);
-                weaponController.Init(null);
+                _weaponRandomGroup = Brain.GetComponentInChildren<WeaponActivateGroup>(true);
+                if (_weaponRandomGroup == null)
+                {
+                    Debug.LogError("This Object needs WeaponActivateRandomGroup Component");
+                    return;
+                }
+            }
+
+            for (int i = 0; i < _weaponRandomGroup.ActivateTargets.Count; i++)
+            {
+                _weaponRandomGroup.ActivateTargets[i].ActivateTarget.Init(null);
             }
 
             if (Brain.EnemyAnimatorData.IsValid())
@@ -60,7 +61,7 @@ namespace KoiAI.AI
 
         public override void EnterFeature()
         {
-            _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponData);
+            _weaponController = ActivateRandom.GetRandomActivateTarget(_weaponRandomGroup);
             _weaponController.StartAiming();
         }
 
@@ -69,7 +70,7 @@ namespace KoiAI.AI
             Debug.Log("Attacking");
             if(_weaponController == null)
             {
-                _weaponController = ActivateRandom.GetRandomActivateTarget(_extensionData.RandomWeaponData);
+                _weaponController = ActivateRandom.GetRandomActivateTarget(_weaponRandomGroup);
             }
 
             if(_curAttackTime < _extensionData.AttackDelayTime)

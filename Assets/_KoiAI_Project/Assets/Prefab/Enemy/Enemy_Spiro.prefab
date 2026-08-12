@@ -1398,6 +1398,7 @@ GameObject:
   - component: {fileID: 8857722224692771334}
   - component: {fileID: 4129940667833861889}
   - component: {fileID: 2888641819072732516}
+  - component: {fileID: 6148596442559701446}
   m_Layer: 0
   m_Name: Enemy_Spiro
   m_TagString: Untagged
@@ -1564,6 +1565,21 @@ MonoBehaviour:
     - _featureProperty: 1
       _enableDelayTime: 0
       _disableDelayTime: 3.5
+--- !u!114 &6148596442559701446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2706511028172561545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10ff01e6b119e8442bbc9b18832463b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Utilities.WeaponActivateRandomGroup
+  _activateTargets:
+  - _chanceValue: 100
+    _activateTarget: {fileID: 1957666023032080402}
 --- !u!1 &2857284113161726406
 GameObject:
   m_ObjectHideFlags: 0
@@ -2986,9 +3002,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1935253f271f974e9bf4fd812bafd8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Item.GunController
+  _weaponData: {fileID: 11400000, guid: 4a1784312d9d2cd4ea529252c40c0def, type: 2}
   _isSkinPrefab: 0
   _skin: {fileID: 3048071639395106231}
-  _gunData: {fileID: 11400000, guid: 4a1784312d9d2cd4ea529252c40c0def, type: 2}
   _targetLayerMask:
     serializedVersion: 2
     m_Bits: 8

@@ -5,8 +5,6 @@ namespace KoiAI.Item
     using KoiAI.Skin;
     using KoiAI.Utilities;
     using R3;
-    using System;
-    using System.Threading;
 
     public abstract class WeaponControllerBase : MonoBehaviour
     {
@@ -17,17 +15,13 @@ namespace KoiAI.Item
         [SerializeField]
         private Skin _skin;
 
-        private Subject<WeaponData> _weaponUnRegisterObservable;
         protected bool _isAiming = false;
 
 
         /// <summary>
         /// 풀링 또는 값 초기화를 위한 함수
         /// </summary>
-        public virtual void Init(WeaponBase wepaonItem)
-        {
-            WeaponControlRegistry.ResgisterWeaponControl(this);
-        }
+        public abstract void Init(WeaponBase wepaonItem);
 
         /// <summary>
         /// 발동 함수
@@ -64,12 +58,6 @@ namespace KoiAI.Item
             return true;
         }
 
-        private void OnDestroy()
-        {
-            _weaponUnRegisterObservable.OnNext(_weaponData);
-        }
-
-        public Observable<WeaponData> WeaponUnRegisterObservable => _weaponUnRegisterObservable;
         public bool IsAiming() => _isAiming;
         public WeaponData GetWeaponData() => _weaponData;
         protected T GetWeaponData<T>() where T : WeaponData => (T)_weaponData;

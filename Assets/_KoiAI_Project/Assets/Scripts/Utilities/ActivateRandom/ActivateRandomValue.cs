@@ -11,10 +11,16 @@ namespace KoiAI.Utilities
         [SerializeField]
         private float _chanceValue;
         [SerializeField]
-        private T _activateTargetData;
+        private T _activateTarget;
 
+        public ActivateRandomValue(T activateTarget, float chanceValue)
+        {
+            _activateTarget = activateTarget;
+            _chanceValue = chanceValue;
+        }
 
-        public T ActivateTargetData => _activateTargetData;
+        public T ActivateTarget => _activateTarget;
+        public float ChanceValue => _chanceValue;
         public float GetRandomValue()
         {
             float randomValue =  Random.Range(_chanceValue, 100f);

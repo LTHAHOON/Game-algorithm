@@ -68,7 +68,6 @@ namespace KoiAI.Item
 
         public override void Init(WeaponBase wepaonItem)
         {
-            base.Init(wepaonItem);
             _gunData = GetWeaponData<GunData>();
             _hits = new RaycastHit[_gunData.MaxHitCount];
             _curBallCount
