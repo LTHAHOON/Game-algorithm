@@ -39,7 +39,7 @@ namespace KoiAI.AI
         [SerializeField]
         private CapsuleColliderData _colliderData;
         #endregion
-
+        
         public RigidbodyData RigidData => _rigidData;
         public CapsuleColliderData ColliderData => _colliderData;
         public AudioData StepAuidoData => _stepAuidoData;

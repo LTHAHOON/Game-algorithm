@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 namespace KoiAI.Utilities
 {
     using KoiAI.UI;
-    
+
     public interface ICircleColorPickerHandler 
     {
         public void OnColorChanged(CircleColorPicker circleColorPicker, Color newColor);
