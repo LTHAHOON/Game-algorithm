@@ -25,9 +25,9 @@ namespace KoiAI.UI
          
         private UIScaleTransition _gameIconScaleTransition;
         
-        protected override void Initalize(UIDocument uiDoucument, ref LoadingScreenView visualView, LoadingScreenViewInfo visualViewInfo)
+        protected override void Initalize(UIDocument uiDocument, ref LoadingScreenView visualView, LoadingScreenViewInfo visualViewInfo)
         {
-            visualView = new(uiDoucument.rootVisualElement, visualViewInfo);
+            visualView = new(uiDocument.rootVisualElement, visualViewInfo);
             _gameIconScaleTransition = new(gameObject, visualView.GameIconImage,_gameIconScaleTransitionData);
             _gameIconScaleTransition.ActivateTransition();
             

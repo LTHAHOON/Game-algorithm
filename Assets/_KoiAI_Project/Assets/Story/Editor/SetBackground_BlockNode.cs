@@ -16,6 +16,7 @@ namespace Story.GraphToolkit.Editor
 
             context.AddInputPort<Color>(BACKGROUND_COLOR)
                 .WithDisplayName(BACKGROUND_COLOR)
+                .WithDefaultValue(Color.white)
                 .Build();
         }
     }

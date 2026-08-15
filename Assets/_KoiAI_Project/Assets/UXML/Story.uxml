@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/_KoiAI_Project/Assets/UXML/Global.uss?fileID=7433441132597879392&amp;guid=6ab1825469abf394097e891374d6718e&amp;type=3#Global"/>
+    <ui:VisualElement name="root" style="flex-grow: 1;">
+        <ui:VisualElement name="background" style="flex-grow: 1;">
+            <ui:Image name="background-image" style="background-color: rgb(186, 186, 186); flex-grow: 1;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="dialogue" style="position: absolute; bottom: 0; height: 30%; width: 100%; background-color: rgba(0, 0, 0, 0.5);"/>
+    </ui:VisualElement>
+</ui:UXML>

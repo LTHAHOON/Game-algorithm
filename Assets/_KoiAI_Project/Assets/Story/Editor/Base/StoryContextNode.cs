@@ -1,26 +1,27 @@
 using System;
+using Story.GraphToolkit.Runtime;
 using Unity.GraphToolkit.Editor;
 using UnityEngine;
 
 namespace Story.GraphToolkit.Editor
 {
     [Serializable]
-    public abstract class StoryContextNode : ContextNode
+    public abstract class StoryContextNode : ContextNode, IRuntimeNodeCreatable
     {
-        public const string ENTER = "Enter";
-        public const string EXIT = "Exit";  
 
         protected void AddInputOutputPort(IPortDefinitionContext context)
         {
-            context.AddInputPort(ENTER)
-                .WithDisplayName(ENTER)
+            context.AddInputPort(StoryBaseInputOutputName.ENTER)
+                .WithDisplayName(StoryBaseInputOutputName.ENTER)
                 .WithConnectorUI(PortConnectorUI.Arrowhead)
                 .Build();
 
-            context.AddOutputPort(EXIT)
-                .WithDisplayName(EXIT)
+            context.AddOutputPort(StoryBaseInputOutputName.EXIT)
+                .WithDisplayName(StoryBaseInputOutputName.EXIT)
                 .WithConnectorUI(PortConnectorUI.Arrowhead)
                 .Build();
         }
+
+        public abstract StoryRuntimeNode CreateRuntimeInstance();
     }
 }

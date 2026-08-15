@@ -6,14 +6,17 @@ using UnityEngine;
 namespace Story.GraphToolkit.Editor
 {
     [Serializable]
-    public class StorySequence_ContextNode : StoryContextNode
+    public class StoryStart_Node : Node, IRuntimeNodeCreatable
     {
+        
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
-            AddInputOutputPort(context);
+            context.AddOutputPort(StoryBaseInputOutputName.EXIT)
+                .WithDisplayName("Execute")
+                .Build();
         }
 
-        public override StoryRuntimeNode CreateRuntimeInstance()
+        public StoryRuntimeNode CreateRuntimeInstance()
         {
             return new StoryStart_RuntimeNode();
         }

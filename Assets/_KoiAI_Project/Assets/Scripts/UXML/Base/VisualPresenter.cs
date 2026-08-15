@@ -23,7 +23,7 @@ namespace KoiAI.UI
             Initalize(_uiDoucument, ref _visualView, _visualViewInfo);
         }
 
-        protected abstract void Initalize(UIDocument uiDoucument, ref TView visualView, TViewInfo visualViewInfo);
+        protected abstract void Initalize(UIDocument uiDocument, ref TView visualView, TViewInfo visualViewInfo);
         
         public TView GetVisualView() => _visualView;
         public TViewInfo GetVisualViewInfo() => _visualViewInfo;

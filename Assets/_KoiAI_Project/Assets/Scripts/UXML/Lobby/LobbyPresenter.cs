@@ -17,9 +17,9 @@ namespace KoiAI.UI
         [SerializeField]
         private PlayableAsset _exitLobbyTimeline;
 
-        protected override void Initalize(UIDocument uiDoucument, ref LobbyView visualView, LobbyViewInfo visualViewInfo)
+        protected override void Initalize(UIDocument uiDocument, ref LobbyView visualView, LobbyViewInfo visualViewInfo)
         {
-            visualView = new LobbyView(uiDoucument.rootVisualElement, visualViewInfo);
+            visualView = new LobbyView(uiDocument.rootVisualElement, visualViewInfo);
             
             visualView.PlayButton.clicked += OnClickPlayButton;
             visualView.CharacterSettingButton.clicked += OnClickCharacterSettingButton;
@@ -51,7 +51,7 @@ namespace KoiAI.UI
 
         private void OnLoadCompleted(Scene prevScene)
         {
-
+            Debug.Log("Completed: Exit Lobby Scene");
         }
     }
 }

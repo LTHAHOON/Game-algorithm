@@ -1,7 +1,9 @@
 {
     "name": "Story.GraphToolkit.RuntimeAssembly",
     "rootNamespace": "Story.GraphToolkit.Runtime",
-    "references": [],
+    "references": [
+        "UniTask"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
