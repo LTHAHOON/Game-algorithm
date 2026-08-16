@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Story.GraphToolkit.Runtime;
-using Unity.GraphToolkit.Editor;
-using UnityEngine;
 
 namespace Story.GraphToolkit.Editor
 {
@@ -15,7 +15,9 @@ namespace Story.GraphToolkit.Editor
 
         public override StoryRuntimeNode CreateRuntimeInstance()
         {
-            return new StoryStart_RuntimeNode();
+            List<StoryBlockNode> storyBlockNodes =  BlockNodes.OfType<StoryBlockNode>().ToList();
+            List<StoryRuntimeBlockNode> storyRuntimeBlockNodes = StoryGraphRuntimeCreator.CreateRuntimeBlockNodes(storyBlockNodes);
+            return new StorySequence_RuntimeContextNode(storyRuntimeBlockNodes);
         }
     }
 }

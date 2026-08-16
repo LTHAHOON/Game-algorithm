@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Story.GraphToolkit.Editor
 {
-    [ScriptedImporter(1, StoryGraph.AssetExtension)]
+    [ScriptedImporter(2, StoryGraph.AssetExtension)]
     public class StoryGraphImporter : ScriptedImporter
     {
         public override void OnImportAsset(AssetImportContext context)
@@ -16,6 +16,7 @@ namespace Story.GraphToolkit.Editor
             StoryRuntimeGraph runtimeGraph = ScriptableObject.CreateInstance<StoryRuntimeGraph>();
 
             List<StoryRuntimeNode> runtimeNodes = StoryGraphRuntimeCreator.CreateRuntimeNodes(editorGraph);
+
             runtimeGraph.Initialize(runtimeNodes);
             
             context.AddObjectToAsset("StoryRuntimeGraph", runtimeGraph);

@@ -1,4 +1,6 @@
 using System;
+using Story.GraphToolkit.Runtime;
+using Unity.GraphToolkit.Editor;
 using UnityEngine;
 
 namespace Story.GraphToolkit.Editor
@@ -18,6 +20,26 @@ namespace Story.GraphToolkit.Editor
                 .WithDisplayName(BACKGROUND_COLOR)
                 .WithDefaultValue(Color.white)
                 .Build();
+        }
+
+        public override StoryRuntimeBlockNode CreateRuntimeBlockInstance()
+        {
+            Sprite background = null;
+            Color backgroundColor = Color.white;
+
+            IPort backgroundPort = GetInputPortByName(BACKGROUND);
+            if (backgroundPort != null)
+            {
+                backgroundPort.TryGetValue(out background);
+            }
+
+            IPort backgroundColorPort = GetInputPortByName(BACKGROUND_COLOR);
+            if (backgroundColorPort != null)
+            {
+                backgroundColorPort.TryGetValue(out backgroundColor);
+            }
+
+            return new SetBackgorund_RuntimeBlockNode(background, backgroundColor);
         }
     }
 }

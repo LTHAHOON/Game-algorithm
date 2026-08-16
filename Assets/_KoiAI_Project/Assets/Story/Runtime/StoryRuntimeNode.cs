@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Story.GraphToolkit.Runtime
 {
     [Serializable]
-    public abstract class StoryRuntimeNode
+    public abstract class StoryRuntimeNode : IStoryExecutable
     {
         [SerializeField]
         private int _nextNodeIndex;
@@ -17,6 +17,7 @@ namespace Story.GraphToolkit.Runtime
             set => _nextNodeIndex = value;
         }
 
-        public abstract UniTask ExecuteAsync();
+
+        public abstract UniTask ExecuteAsync(StoryExecutionContext context);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Story.GraphToolkit.Runtime;
 using Unity.GraphToolkit.Editor;
 using UnityEngine;
 
@@ -6,11 +7,8 @@ namespace Story.GraphToolkit.Editor
 {
     [UseWithContext(typeof(StoryContextNode))]
     [Serializable]
-    public abstract class StoryBlockNode : BlockNode
+    public abstract class StoryBlockNode : BlockNode, IRuntimeBlockNodeCreatable
     {
-
-        protected void AddInputOutputPort(IPortDefinitionContext context)
-        {
-        }
+        public abstract StoryRuntimeBlockNode CreateRuntimeBlockInstance();
     }
 }

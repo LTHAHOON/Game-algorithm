@@ -9,34 +9,58 @@ namespace Story.GraphToolkit.Editor
     {
         public StoryRuntimeNode CreateRuntimeInstance();
     }
+
+    public interface IRuntimeBlockNodeCreatable
+    {
+        public StoryRuntimeBlockNode CreateRuntimeBlockInstance();
+    }
     
     public static class StoryGraphRuntimeCreator
     {
+        public static List<StoryRuntimeBlockNode> CreateRuntimeBlockNodes(List<StoryBlockNode> storyBlockNodes)
+        {
+            List<StoryRuntimeBlockNode> storyRuntimeBlockNodes = storyBlockNodes.OfType<IRuntimeBlockNodeCreatable>()
+                .Select(node => node.CreateRuntimeBlockInstance())
+                .Where(node => node != null)
+                .ToList();
+
+            return storyRuntimeBlockNodes;
+        }
+
         public static List<StoryRuntimeNode> CreateRuntimeNodes(StoryGraph storyGraph)
         {
+            List<INode> editorNodes = new();
+            List<StoryRuntimeNode> runtimeNodes = new();
             Dictionary<INode, int> dicRuntimeNodeIndices = new();
 
-            int index = 0;
             List<IRuntimeNodeCreatable> runtimeNodeCreators = storyGraph.GetNodes()
-                .Select(node =>
+                .OfType<IRuntimeNodeCreatable>()
+                .ToList();
+
+            for (int i = 0; i < runtimeNodeCreators.Count; i++)
+            {
+                IRuntimeNodeCreatable creator = runtimeNodeCreators[i];
+                if (creator is not INode editorNode)
                 {
-                    dicRuntimeNodeIndices.TryAdd(node, index);
-                    ++index;
-                    return node;
-                }).OfType<IRuntimeNodeCreatable>().ToList();
-            
-            List<StoryRuntimeNode> runtimeNodes = runtimeNodeCreators
-                .Select(creator =>
+                    continue;
+                }
+
+                StoryRuntimeNode runtimeNode = creator.CreateRuntimeInstance();
+                if (runtimeNode == null)
                 {
-                    StoryRuntimeNode storyRuntimeNode = creator.CreateRuntimeInstance();
-                    if (creator is INode node && storyRuntimeNode != null)
-                    {
-                        int nextIndex = FindNextNodeIndex(node, dicRuntimeNodeIndices);
-                        storyRuntimeNode.NextNodeIndex = nextIndex;
-                    }
-                    return storyRuntimeNode;
-                })
-                .Where(creator => creator != null).ToList();
+                    continue;
+                }
+
+                int runtimeNodeIndex = runtimeNodes.Count;
+                editorNodes.Add(editorNode);
+                runtimeNodes.Add(runtimeNode);
+                dicRuntimeNodeIndices.Add(editorNode, runtimeNodeIndex);
+            }
+
+            for (int i = 0; i < runtimeNodes.Count; i++)
+            {
+                runtimeNodes[i].NextNodeIndex = FindNextNodeIndex(editorNodes[i], dicRuntimeNodeIndices);
+            }
             
             return runtimeNodes;
         }
