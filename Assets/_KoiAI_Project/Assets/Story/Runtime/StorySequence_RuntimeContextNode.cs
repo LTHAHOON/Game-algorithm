@@ -13,14 +13,14 @@ namespace Story.GraphToolkit.Runtime
 
         public StorySequence_RuntimeContextNode(List<StoryRuntimeBlockNode> runtimeBlockNodes)
         {
-            _runtimeBlockNodes = runtimeBlockNodes ?? new List<StoryRuntimeBlockNode>();
+            _runtimeBlockNodes = runtimeBlockNodes;
         }
         
         public override async UniTask ExecuteAsync(StoryExecutionContext context)
         {
             if (_runtimeBlockNodes == null)
             {
-                Debug.LogError("RuntimeBlockNode 리스트가 역직렬화되지 않았습니다. StoryGraph를 다시 Import해주세요.");
+                Debug.LogError("_runtimeBlockNodes is null in StorySequence_RuntimeContextNode. Please check the configuration.");
                 return;
             }
 

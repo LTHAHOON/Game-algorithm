@@ -4,6 +4,12 @@
         <ui:VisualElement name="background" style="flex-grow: 1;">
             <ui:Image name="background-image" style="background-color: rgb(186, 186, 186); flex-grow: 1;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="dialogue" style="position: absolute; bottom: 0; height: 30%; width: 100%; background-color: rgba(0, 0, 0, 0.5);"/>
+        <ui:VisualElement name="dialogue" style="flex-grow: 1; position: absolute; bottom: 0; width: 100%; height: 35%;">
+            <ui:VisualElement name="dialogueBackground" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.59); position: absolute; height: 100%; width: 100%;">
+                <ui:Label text="." name="dialogueCharName" class="terrarum-text" style="position: relative; color: rgb(255, 255, 255); margin-top: 15px; margin-right: 5px; margin-bottom: 5px; margin-left: 45px; font-size: 70px;"/>
+                <ui:VisualElement style="flex-grow: 0; background-color: rgba(255, 255, 255, 0.59); height: 5px; margin-bottom: 5px;"/>
+                <ui:Label text="." name="dialogueDescription" class="terrarum-text" style="color: rgb(255, 255, 255); margin-top: 15px; margin-right: 5px; margin-bottom: 5px; margin-left: 45px; font-size: 50px; flex-direction: column;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

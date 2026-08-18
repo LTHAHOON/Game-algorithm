@@ -8,11 +8,13 @@ namespace Story.GraphToolkit.Runtime
     {
         [SerializeField] 
         private StoryRuntimeGraph _storyRuntimeGraph;
+        [SerializeField]
+        private int _maxIterationCount = 500;
 
         private StoryExecutionContext _storyExecutionContext;
-        private const int _maxIterationCount = 500;
         private int _currentIterationCount = 0;
         private int _currentNodeIndex = -1;
+        
         public void Initialize(IStoryPresenterService storyPresenterService)
         {
             _storyExecutionContext = new(storyPresenterService);
@@ -27,19 +29,8 @@ namespace Story.GraphToolkit.Runtime
             }
 
             List<StoryRuntimeNode> runtimeNodes = _storyRuntimeGraph.StoryRuntimeNodes;
-            if (runtimeNodes == null || runtimeNodes.Count == 0)
-            {
-                Debug.LogError("실행할 StoryRuntimeNode가 없습니다.");
-                return;
-            }
-
-            _currentIterationCount = 0;
             _currentNodeIndex = runtimeNodes.FindIndex(runtimeNode => runtimeNode is StoryStart_RuntimeNode);
-            if (_currentNodeIndex < 0)
-            {
-                Debug.LogError("StoryStart_RuntimeNode를 찾을 수 없습니다.");
-                return;
-            }
+            _currentIterationCount = 0;
 
             while (_currentNodeIndex >= 0 && _currentNodeIndex < runtimeNodes.Count)
             {

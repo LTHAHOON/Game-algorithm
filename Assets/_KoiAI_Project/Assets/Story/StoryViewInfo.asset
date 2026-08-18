@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: StoryViewInfo
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.Story.StoryViewInfo
   _backgroundImageName: background-image
+  _dialogueBackgroundName: dialogueBackground
+  _dialogueCharacterName: dialogueCharName
+  _dialogueDescriptionName: dialogueDescription

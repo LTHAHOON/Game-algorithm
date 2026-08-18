@@ -24,20 +24,11 @@ namespace Story.GraphToolkit.Editor
 
         public override StoryRuntimeBlockNode CreateRuntimeBlockInstance()
         {
-            Sprite background = null;
-            Color backgroundColor = Color.white;
-
             IPort backgroundPort = GetInputPortByName(BACKGROUND);
-            if (backgroundPort != null)
-            {
-                backgroundPort.TryGetValue(out background);
-            }
+            backgroundPort.TryGetValue(out Sprite background);
 
             IPort backgroundColorPort = GetInputPortByName(BACKGROUND_COLOR);
-            if (backgroundColorPort != null)
-            {
-                backgroundColorPort.TryGetValue(out backgroundColor);
-            }
+            backgroundColorPort.TryGetValue(out Color backgroundColor);
 
             return new SetBackgorund_RuntimeBlockNode(background, backgroundColor);
         }
