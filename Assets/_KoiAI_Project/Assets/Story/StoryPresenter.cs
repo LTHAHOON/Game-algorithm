@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Story.GraphToolkit.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace KoiAI.UI
@@ -29,7 +31,7 @@ namespace KoiAI.UI
             visualView.BackgroundImage.style.backgroundColor = backgroundColor;
         }
 
-        public void SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor, 
+        public async UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor, 
                                 StoryAnimationInfo charNameAnimationInfo, StoryAnimationInfo dialogueDescriptionAnimationInfo)
         {
             StoryView visualView = GetVisualView();
@@ -45,7 +47,6 @@ namespace KoiAI.UI
 
             visualView.DialogueDescription.text = string.Empty;
             visualView.DialogueDescription.Clear();
-            
             
             Label OnAddDialogueLine()
             {
@@ -74,14 +75,23 @@ namespace KoiAI.UI
                 Label wordLabel = new Label(word);
                 wordLabel.style.opacity = 0f;
                 dialogueLine.Add(wordLabel);
+                Tween tween = DOTween.To(() => wordLabel.style.opacity.value, x => wordLabel.style.opacity = x,
+                                1f, dialogueDescriptionAnimationInfo.Duration)
+                                .SetDelay(i * dialogueDescriptionAnimationInfo.DelayTime)
+                                .SetEase(dialogueDescriptionAnimationInfo.EaseType);
 
-                DOTween.To(() => wordLabel.style.opacity.value, x => wordLabel.style.opacity = x,
-                    1f, dialogueDescriptionAnimationInfo.Duration)
-                    .SetDelay(i * dialogueDescriptionAnimationInfo.DelayTime)
-                    .SetEase(dialogueDescriptionAnimationInfo.EaseType);
+                if (i == words.Length - 1)
+                {
+                    await tween.AsyncWaitForCompletion();
+                }
             }
         }
-  
+
+        public UniTask WaitForInput()
+        {
+            return UniTask.CompletedTask;
+        }
+
         public bool IsInitialized => _isInitialized;
     }
 }

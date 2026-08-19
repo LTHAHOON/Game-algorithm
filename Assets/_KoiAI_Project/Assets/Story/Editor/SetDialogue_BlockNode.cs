@@ -28,14 +28,15 @@ namespace Story.GraphToolkit.Editor
                 .WithDisplayName(DIALOGUE_BACKGROUND_COLOR)
                 .WithDefaultValue(Color.clear)
                 .Build();
+
             context.AddInputPort<StoryAnimationInfo>(CHAR_NAME_ANIMATION_INFO)
                 .WithDisplayName(CHAR_NAME_ANIMATION_INFO)
-                .WithDefaultValue(new StoryAnimationInfo())
                 .Build();
+
             context.AddInputPort<StoryAnimationInfo>(DIALOGUE_DESCRIPTION_ANIMATION_INFO)
                 .WithDisplayName(DIALOGUE_DESCRIPTION_ANIMATION_INFO)
-                .WithDefaultValue(new StoryAnimationInfo())
                 .Build();
+
         }
 
         public override StoryRuntimeBlockNode CreateRuntimeBlockInstance()
@@ -44,14 +45,15 @@ namespace Story.GraphToolkit.Editor
             IPort dialogueDescriptionPort = GetInputPortByName(DIALOGUE_DESCRIPTION);
             IPort dialogueBackgroundColorPort = GetInputPortByName(DIALOGUE_BACKGROUND_COLOR);
 
-            characterNamePort.TryGetValue(out string characterName);
-            dialogueDescriptionPort.TryGetValue(out string dialogueDescription);
-            dialogueBackgroundColorPort.TryGetValue(out Color dialogueBackgroundColor);
             IPort charNameAnimationInfoPort = GetInputPortByName(CHAR_NAME_ANIMATION_INFO);
             IPort dialogueDescriptionAnimationInfoPort = GetInputPortByName(DIALOGUE_DESCRIPTION_ANIMATION_INFO);
+            
+            characterNamePort.TryGetValue_Extension(out string characterName);
+            dialogueDescriptionPort.TryGetValue_Extension(out string dialogueDescription);
+            dialogueBackgroundColorPort.TryGetValue_Extension(out Color dialogueBackgroundColor);
 
-            charNameAnimationInfoPort.TryGetValue(out StoryAnimationInfo charNameAnimationInfo);
-            dialogueDescriptionAnimationInfoPort.TryGetValue(out StoryAnimationInfo dialogueDescriptionAnimationInfo);
+            dialogueDescriptionAnimationInfoPort.TryGetValue_Extension(out StoryAnimationInfo dialogueDescriptionAnimationInfo);
+            charNameAnimationInfoPort.TryGetValue_Extension(out StoryAnimationInfo charNameAnimationInfo);
 
             return new SetDialogue_RuntimeBlockNode(characterName, dialogueDescription, dialogueBackgroundColor, charNameAnimationInfo, dialogueDescriptionAnimationInfo);
         }

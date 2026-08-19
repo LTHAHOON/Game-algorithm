@@ -7,22 +7,16 @@ namespace Story.GraphToolkit.Runtime
     [Serializable]
     public struct StoryAnimationInfo
     {
-        [SerializeField]
-        private Ease _easeType;
-        [SerializeField]
-        private float _delayTime;
-        [SerializeField]
-        private float _duration;
+        public Ease EaseType;
+        public float DelayTime;
+        public float Duration;
 
         public StoryAnimationInfo(Ease easeType, float delayTime, float duration)
         {
-            _easeType = easeType;
-            _delayTime = delayTime;
-            _duration = duration;
+            EaseType = easeType;
+            DelayTime = delayTime;
+            Duration = duration;
         }
-        public Ease EaseType => _easeType;
-        public float DelayTime => _delayTime;
-        public float Duration => _duration;
     }
 
 }

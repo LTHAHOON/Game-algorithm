@@ -30,11 +30,10 @@ namespace Story.GraphToolkit.Runtime
             _dialogueDescriptionAnimationInfo = dialogueDescriptionAnimationInfo;
         }
 
-        public override UniTask ExecuteAsync(StoryExecutionContext context)
+        public override async UniTask ExecuteAsync(StoryExecutionContext context)
         {
-            context.StoryPresenterService.SetDialogue(_characterName, _dialogueDescription, _dialogueBackgroundColor,
+            await context.StoryPresenterService.SetDialogue(_characterName, _dialogueDescription, _dialogueBackgroundColor,
                 _charNameAnimationInfo, _dialogueDescriptionAnimationInfo);
-            return UniTask.CompletedTask;
         }
     }
 }
