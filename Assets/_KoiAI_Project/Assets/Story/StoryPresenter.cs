@@ -1,11 +1,14 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using KoiAI.Input;
 using Story.GraphToolkit.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
@@ -13,11 +16,11 @@ namespace KoiAI.UI
 {
     public class StoryPresenter : VisualPresenter<StoryView, StoryViewInfo>, IStoryPresenterService
     {
-        [SerializeField] 
+        [SerializeField]
         private StoryGraphRunner _storyGraphRunner;
 
         private bool _isInitialized = false;
-        
+
         protected override void Initalize(UIDocument uiDocument, ref StoryView visualView, StoryViewInfo visualViewInfo)
         {
             visualView = new StoryView(uiDocument.rootVisualElement, visualViewInfo);
@@ -28,10 +31,10 @@ namespace KoiAI.UI
         {
             StoryView visualView = GetVisualView();
             visualView.BackgroundImage.style.backgroundImage = new(background);
-            visualView.BackgroundImage.style.backgroundColor = backgroundColor;
+            visualView.BackgroundImage.style.unityBackgroundImageTintColor = backgroundColor;
         }
 
-        public async UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor, 
+        public async UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor,
                                 StoryAnimationInfo charNameAnimationInfo, StoryAnimationInfo dialogueDescriptionAnimationInfo)
         {
             StoryView visualView = GetVisualView();
@@ -39,7 +42,7 @@ namespace KoiAI.UI
 
             visualView.DialogueCharacterName.style.opacity = 0f;
             visualView.DialogueCharacterName.text = characterName;
-            DOTween.To(()=> visualView.DialogueCharacterName.style.opacity.value, x => visualView.DialogueCharacterName.style.opacity = x, 
+            DOTween.To(() => visualView.DialogueCharacterName.style.opacity.value, x => visualView.DialogueCharacterName.style.opacity = x,
                 1f, charNameAnimationInfo.Duration)
                 .SetEase(charNameAnimationInfo.EaseType)
                 .SetDelay(charNameAnimationInfo.DelayTime)
@@ -47,7 +50,7 @@ namespace KoiAI.UI
 
             visualView.DialogueDescription.text = string.Empty;
             visualView.DialogueDescription.Clear();
-            
+
             Label OnAddDialogueLine()
             {
                 Label dialogueLine = new Label();
@@ -63,10 +66,10 @@ namespace KoiAI.UI
             Label dialogueLine = OnAddDialogueLine();
             string fixedText = dialogueDescription.Replace("\\n", "\n");
             string[] words = fixedText.ToCharArray().Select(c => c.ToString()).ToArray();
-            for(int i = 0; i < words.Length; i++)
+            for (int i = 0; i < words.Length; i++)
             {
                 string word = words[i];
-                if(word == "\n")
+                if (word == "\n")
                 {
                     dialogueLine = OnAddDialogueLine();
                     continue;
@@ -87,9 +90,33 @@ namespace KoiAI.UI
             }
         }
 
-        public UniTask WaitForInput()
+        public async UniTask WaitForInput()
         {
-            return UniTask.CompletedTask;
+            bool onClick = false;
+            StoryView visualView = GetVisualView();
+
+            void WaitClick(InputAction.CallbackContext context)
+            {
+                if(context.control.device is Keyboard)
+                {
+                    Vector2 screenPosition = Mouse.current.position.ReadValue();
+                    Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(visualView.Root.panel, screenPosition);
+                    //UI ToolKit은 위치 기준이 Top-Left 방식이기 때문에 반전시켜줘야 합니다.
+                    panelPosition.y = visualView.Root.layout.height - panelPosition.y;
+                    if(!visualView.DialogueBackground.worldBound.Contains(panelPosition))
+                    {
+                        return;
+                    }    
+                }
+
+                if (context.performed)
+                {
+                    onClick = true;
+                    InputService.PlayerIA.Global.Click.performed -= WaitClick;
+                }
+            }
+            InputService.PlayerIA.Global.Click.performed += WaitClick;
+            await UniTask.WaitUntil(() => onClick);
         }
 
         public bool IsInitialized => _isInitialized;

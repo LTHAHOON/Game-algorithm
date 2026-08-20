@@ -6,6 +6,8 @@ using UnityEngine.Timeline;
 
 namespace KoiAI.Core
 {
+    using System;
+    using Cysharp.Threading.Tasks;
     using KoiAI.Input;
 
     public class GameManager : MonoBehaviour
@@ -16,7 +18,8 @@ namespace KoiAI.Core
         private PlayableDirector _playableDirector;
         [SerializeField]
         private PlayerInput _playerInput;
-    
+        
+        private IDisposable _curSceneDisposable;
         private Subject<PlayableDirector> _cutSceneSubject = new(); 
         public static GameManager Instance { get; private set; }
 
@@ -26,10 +29,11 @@ namespace KoiAI.Core
             _cutSceneSubject
                 .Subscribe(playableDirector =>
                 {
-                    Observable.EveryUpdate()
+                    _curSceneDisposable = Observable.EveryUpdate()
                         .Where(_ => playableDirector && playableDirector.state == PlayState.Paused)
                         .Take(1)
-                        .Subscribe(_ => EndCutScene());
+                        .Subscribe(_ => EndCutScene())
+                        .AddTo(this);
                 })
                 .AddTo(this);
             InputService.ReconnectInputAction();
@@ -69,6 +73,7 @@ namespace KoiAI.Core
                 return;
             }
             _playerInput.enabled = true;
+            _curSceneDisposable?.Dispose();
         }
     
     }   

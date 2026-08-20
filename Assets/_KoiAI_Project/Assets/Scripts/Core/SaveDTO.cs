@@ -28,8 +28,8 @@ namespace KoiAI.Core
 
         public PlayerDTO(Color curColorFace, Color curColorBody, List<Guid> wearingCostumeGUIDs)
         {
-            this._curColorFace = new(curColorFace);
-            this._curColorBody = new(curColorBody);
+            _curColorFace = new(curColorFace);
+            _curColorBody = new(curColorBody);
             _wearingCostumeGUIDs = wearingCostumeGUIDs;
         }
 
