@@ -6,6 +6,7 @@ namespace KoiAI.UI
     public class StoryView : VisualView<StoryViewInfo>
     {
         private Image _backgroundImage;
+        private VisualElement _backgroundOverlay;
         private VisualElement _dialogueBackground;
         private Label _dialogueCharacterName;
         private Label _dialogueDescription;
@@ -14,12 +15,14 @@ namespace KoiAI.UI
         protected override void Initalize(VisualElement root, StoryViewInfo info)
         {
             _backgroundImage = root.Q<Image>(info.BackgroundImageName);
+            _backgroundOverlay = root.Q<VisualElement>(info.BackgroundOverlayName);
             _dialogueBackground = root.Q<VisualElement>(info.DialogueBackgroundName);
             _dialogueCharacterName = root.Q<Label>(info.DialogueCharacterName);
             _dialogueDescription = root.Q<Label>(info.DialogueDescriptionName);
         }
 
         public Image BackgroundImage => _backgroundImage;
+        public VisualElement BackgroundOverlay => _backgroundOverlay;
         public VisualElement DialogueBackground => _dialogueBackground;
         public Label DialogueCharacterName => _dialogueCharacterName;
         public Label DialogueDescription => _dialogueDescription;

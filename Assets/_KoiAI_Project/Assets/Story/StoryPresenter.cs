@@ -30,8 +30,8 @@ namespace KoiAI.UI
         public void SetBackground(Sprite background, Color backgroundColor)
         {
             StoryView visualView = GetVisualView();
+            visualView.BackgroundOverlay.style.backgroundColor = new(backgroundColor);
             visualView.BackgroundImage.style.backgroundImage = new(background);
-            visualView.BackgroundImage.style.unityBackgroundImageTintColor = backgroundColor;
         }
 
         public async UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor,

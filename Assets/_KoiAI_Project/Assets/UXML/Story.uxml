@@ -3,6 +3,7 @@
     <ui:VisualElement name="root" picking-mode="Ignore" style="flex-grow: 1;">
         <ui:VisualElement name="background" picking-mode="Ignore" style="flex-grow: 1;">
             <ui:Image name="background-image" picking-mode="Ignore" style="background-color: rgb(186, 186, 186); flex-grow: 1; background-image: none;"/>
+            <ui:Image name="background-overlay" picking-mode="Ignore" style="background-color: rgba(0, 0, 0, 0.57); flex-grow: 1; background-image: none; position: absolute; width: 100%; height: 100%;"/>
         </ui:VisualElement>
         <ui:VisualElement name="dialogue" picking-mode="Ignore" style="flex-grow: 1; position: absolute; bottom: 0; width: 100%; height: 35%;">
             <ui:VisualElement name="dialogueBackground" picking-mode="Position" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.59); position: absolute; height: 100%; width: 100%;">
