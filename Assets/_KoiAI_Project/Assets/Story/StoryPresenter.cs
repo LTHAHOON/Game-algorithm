@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -34,10 +35,17 @@ namespace KoiAI.UI
             visualView.BackgroundImage.style.backgroundImage = new(background);
         }
 
+        public void InitStorySequence()
+        {
+            StoryView visualView = GetVisualView();
+            visualView.DialogueBackground.style.display = DisplayStyle.None;
+        }
+
         public async UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor,
                                 StoryAnimationInfo charNameAnimationInfo, StoryAnimationInfo dialogueDescriptionAnimationInfo)
         {
             StoryView visualView = GetVisualView();
+            visualView.DialogueBackground.style.display = DisplayStyle.Flex;
             visualView.DialogueBackground.style.backgroundColor = dialogueBackgroundColor;
 
             visualView.DialogueCharacterName.style.opacity = 0f;
@@ -97,16 +105,13 @@ namespace KoiAI.UI
 
             void WaitClick(InputAction.CallbackContext context)
             {
-                if(context.control.device is Keyboard)
+                Vector2 screenPosition = Mouse.current.position.ReadValue();
+                Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(visualView.Root.panel, screenPosition);
+                //UI ToolKit은 위치 기준이 Top-Left 방식이기 때문에 반전시켜줘야 합니다.
+                panelPosition.y = visualView.Root.layout.height - panelPosition.y;
+                if (!visualView.DialogueBackground.worldBound.Contains(panelPosition))
                 {
-                    Vector2 screenPosition = Mouse.current.position.ReadValue();
-                    Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(visualView.Root.panel, screenPosition);
-                    //UI ToolKit은 위치 기준이 Top-Left 방식이기 때문에 반전시켜줘야 합니다.
-                    panelPosition.y = visualView.Root.layout.height - panelPosition.y;
-                    if(!visualView.DialogueBackground.worldBound.Contains(panelPosition))
-                    {
-                        return;
-                    }    
+                    return;
                 }
 
                 if (context.performed)

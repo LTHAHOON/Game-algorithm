@@ -24,6 +24,7 @@ namespace Story.GraphToolkit.Runtime
                 return;
             }
 
+            context.StoryPresenterService.InitStorySequence();
             for (int i = 0; i < _runtimeBlockNodes.Count; i++)
             {
                 if (_runtimeBlockNodes[i] == null)
