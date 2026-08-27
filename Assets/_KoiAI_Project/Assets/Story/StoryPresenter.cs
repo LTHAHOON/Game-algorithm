@@ -20,31 +20,46 @@ namespace KoiAI.UI
         [SerializeField]
         private StoryGraphRunner _storyGraphRunner;
 
+        private UIScaleTransition _nextDialogueImage_Transition;
         private bool _isInitialized = false;
 
         protected override void Initalize(UIDocument uiDocument, ref StoryView visualView, StoryViewInfo visualViewInfo)
         {
             visualView = new StoryView(uiDocument.rootVisualElement, visualViewInfo);
+            _nextDialogueImage_Transition = new UIScaleTransition(gameObject, Ease.Linear, visualView.NextDialogueImage, 1f, new Vector2(0.7f, 0.7f), new Vector2(1f, 1f));
             _isInitialized = true;
         }
-
-        public void SetBackground(Sprite background, Color backgroundColor)
-        {
-            StoryView visualView = GetVisualView();
-            visualView.BackgroundOverlay.style.backgroundColor = new(backgroundColor);
-            visualView.BackgroundImage.style.backgroundImage = new(background);
-        }
-
+        
         public void InitStorySequence()
         {
             StoryView visualView = GetVisualView();
             visualView.DialogueBackground.style.display = DisplayStyle.None;
+            visualView.BackgroundImage.style.backgroundColor = Color.black;
+            visualView.BackgroundSubImage.style.backgroundColor = Color.black;
         }
+
+        public void SetBackground(Sprite background, Color backgroundColor, StoryAnimationInfo backgroundAnimationInfo)
+        {
+            StoryView visualView = GetVisualView();
+            visualView.BackgroundOverlay.style.backgroundColor = new(backgroundColor);
+            visualView.BackgroundSubImage.style.backgroundImage = visualView.BackgroundImage.style.backgroundImage;
+            visualView.BackgroundImage.style.backgroundImage = new(background);
+            visualView.BackgroundImage.style.opacity = 0f;
+
+            DOTween.To(() => visualView.BackgroundImage.style.opacity.value, x => visualView.BackgroundImage.style.opacity = x,
+                1f, backgroundAnimationInfo.Duration)
+                .SetEase(backgroundAnimationInfo.EaseType)
+                .SetDelay(backgroundAnimationInfo.DelayTime)
+                .OnComplete(()=> visualView.BackgroundSubImage.style.backgroundImage = null)
+                .SetUpdate(true);
+        }
+
 
         public async UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor,
                                 StoryAnimationInfo charNameAnimationInfo, StoryAnimationInfo dialogueDescriptionAnimationInfo)
         {
             StoryView visualView = GetVisualView();
+            _nextDialogueImage_Transition?.StopTransition();
             visualView.DialogueBackground.style.display = DisplayStyle.Flex;
             visualView.DialogueBackground.style.backgroundColor = dialogueBackgroundColor;
 
@@ -94,6 +109,7 @@ namespace KoiAI.UI
                 if (i == words.Length - 1)
                 {
                     await tween.AsyncWaitForCompletion();
+                    _nextDialogueImage_Transition?.ActivateTransition();
                 }
             }
         }

@@ -1,7 +1,5 @@
 using DG.Tweening;
-using R3;
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -39,7 +37,8 @@ namespace KoiAI.UI
         private UIScaleTransitionData _scaleTransitionData;
         private readonly VisualElement _uiTarget;
         private readonly GameObject _caller;
-        
+        private Tween targetTween;
+
         public UIScaleTransition(GameObject caller, VisualElement uiTarget, UIScaleTransitionData scaleTransitionData)
         {
             if(!caller || uiTarget == null)
@@ -68,19 +67,28 @@ namespace KoiAI.UI
                 return;
             }
 
-            DOTween.To(
-                () => _scaleTransitionData.MinScale,
+            targetTween = DOTween.To(
+                () => _scaleTransitionData.MaxScale,
                 x =>
                 {
                     _uiTarget.style.scale = x;
                 },
-                _scaleTransitionData.MaxScale,
+                _scaleTransitionData.MinScale,
                 _scaleTransitionData.Duration
                 )
                 .SetId(_uiTarget)
                 .SetEase(_scaleTransitionData.EasingType)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetLink(_caller, LinkBehaviour.KillOnDestroy);
+        }
+
+        public void StopTransition()
+        {
+            if(targetTween == null)
+            {
+                return;
+            }
+            targetTween.Kill();
         }
 
     }

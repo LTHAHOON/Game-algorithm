@@ -6,7 +6,7 @@ namespace Story.GraphToolkit.Runtime
     public interface IStoryPresenterService
     {
         public void InitStorySequence();
-        public void SetBackground(Sprite background, Color backgroundColor);
+        public void SetBackground(Sprite background, Color backgroundColor, StoryAnimationInfo backgroundAnimationInfo);
         public UniTask SetDialogue(string characterName, string dialogueDescription, Color dialogueBackgroundColor, 
                                 StoryAnimationInfo charNameAnimationInfo, StoryAnimationInfo dialogueDescriptionAnimationInfo);
         public UniTask WaitForInput();

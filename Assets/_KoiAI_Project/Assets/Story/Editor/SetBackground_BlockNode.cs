@@ -10,6 +10,8 @@ namespace Story.GraphToolkit.Editor
     {
         public const string BACKGROUND = "Background";
         public const string BACKGROUND_COLOR = "Background Color";
+        public const string BACKGROUND_ANIMATION_INFO = "Background Animation Info";
+
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
             context.AddInputPort<Sprite>(BACKGROUND)
@@ -20,6 +22,10 @@ namespace Story.GraphToolkit.Editor
                 .WithDisplayName(BACKGROUND_COLOR)
                 .WithDefaultValue(Color.white)
                 .Build();
+            
+            context.AddInputPort<StoryAnimationInfo>(BACKGROUND_ANIMATION_INFO)
+                .WithDisplayName(BACKGROUND_ANIMATION_INFO)
+                .Build();
         }
 
         public override StoryRuntimeBlockNode CreateRuntimeBlockInstance()
@@ -29,8 +35,10 @@ namespace Story.GraphToolkit.Editor
 
             IPort backgroundColorPort = GetInputPortByName(BACKGROUND_COLOR);
             backgroundColorPort.TryGetValue(out Color backgroundColor);
-
-            return new SetBackgorund_RuntimeBlockNode(background, backgroundColor);
+            
+            IPort backgroundAnimationInfoPort = GetInputPortByName(BACKGROUND_ANIMATION_INFO);
+            backgroundAnimationInfoPort.TryGetValue(out StoryAnimationInfo backgroundAnimationInfo);
+            return new SetBackgorund_RuntimeBlockNode(background, backgroundColor, backgroundAnimationInfo);
         }
     }
 }

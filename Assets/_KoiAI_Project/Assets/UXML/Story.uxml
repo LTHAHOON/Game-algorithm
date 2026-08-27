@@ -2,7 +2,8 @@
     <Style src="project://database/Assets/_KoiAI_Project/Assets/UXML/Global.uss?fileID=7433441132597879392&amp;guid=6ab1825469abf394097e891374d6718e&amp;type=3#Global"/>
     <ui:VisualElement name="root" picking-mode="Ignore" style="flex-grow: 1;">
         <ui:VisualElement name="background" picking-mode="Ignore" style="flex-grow: 1;">
-            <ui:Image name="background-image" picking-mode="Ignore" style="background-color: rgb(186, 186, 186); flex-grow: 1; background-image: none;"/>
+            <ui:Image name="background-sub-image" picking-mode="Ignore" style="background-color: rgb(0, 0, 0); flex-grow: 1; background-image: none; position: absolute; width: 100%; height: 100%;"/>
+            <ui:Image name="background-image" picking-mode="Ignore" style="background-color: rgb(255, 255, 255); flex-grow: 1; background-image: none; opacity: 1;"/>
             <ui:Image name="background-overlay" picking-mode="Ignore" style="background-color: rgba(0, 0, 0, 0.57); flex-grow: 1; background-image: none; position: absolute; width: 100%; height: 100%;"/>
         </ui:VisualElement>
         <ui:VisualElement name="dialogue" picking-mode="Ignore" style="flex-grow: 1; position: absolute; bottom: 0; width: 100%; height: 35%;">
@@ -10,6 +11,9 @@
                 <ui:Label text="." name="dialogueCharName" picking-mode="Ignore" class="terrarum-text" style="position: relative; color: rgb(255, 255, 255); margin-top: 15px; margin-right: 5px; margin-bottom: 5px; margin-left: 45px; font-size: 70px;"/>
                 <ui:VisualElement picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(255, 255, 255, 0.59); height: 5px; margin-bottom: 5px;"/>
                 <ui:Label text="." name="dialogueDescription" picking-mode="Ignore" class="terrarum-text" style="color: rgb(255, 255, 255); margin-top: 15px; margin-right: 5px; margin-bottom: 5px; margin-left: 45px; font-size: 50px; flex-direction: column;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="nextDialogue" style="flex-grow: 1; position: absolute; width: 96px; height: 96px; bottom: 20px; right: 50px;">
+                <ui:Image name="nectDialogue-image" style="flex-grow: 1; position: relative; background-image: none; background-color: rgb(255, 255, 255);"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

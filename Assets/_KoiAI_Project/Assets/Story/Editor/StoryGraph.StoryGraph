@@ -68,8 +68,8 @@ MonoBehaviour:
           serializedVersion: 2
           x: -329
           y: -169
-          width: 1220
-          height: 766
+          width: 1296
+          height: 757
         m_GraphElementMetaData:
         - m_Guid:
             m_Value0: 15503354617490573377
@@ -340,7 +340,7 @@ MonoBehaviour:
         - rid: 871934024881537204
         - rid: 871934070750183530
         - rid: 871934046711316715
-        - rid: 871934024881537128
+        - rid: 871934229603418365
         m_BlockGuids:
         - serializedVersion: 2
           Hash: 6157802154e34015f5e19358acac857d
@@ -351,7 +351,7 @@ MonoBehaviour:
         - serializedVersion: 2
           Hash: 3fde08b69e1c417323abc7e6ec0259c3
         - serializedVersion: 2
-          Hash: 2d37efa43aff9391ef9150914af47449
+          Hash: 939c5ef9c73c46cd2b08538c4704fe42
         m_Subtitle: 
         m_Node:
           rid: 871933936222077033
@@ -378,9 +378,11 @@ MonoBehaviour:
           m_KeyList:
           - Background
           - Background Color
+          - Background Animation Info
           m_ValueList:
           - rid: 871933936222077035
           - rid: 871933936222077038
+          - rid: 871934229603418221
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -444,7 +446,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_ContextNodeModel:
-          rid: 871933936222077032
+          rid: 871934207904448632
         m_Node:
           rid: 871934024881537130
     - rid: 871934024881537129
@@ -1374,9 +1376,12 @@ MonoBehaviour:
           m_HasUserColor: 0
         m_Blocks:
         - rid: 871934207904448635
+        - rid: 871934024881537128
         m_BlockGuids:
         - serializedVersion: 2
           Hash: f58b989208fad6bbce0ffa1f297c6483
+        - serializedVersion: 2
+          Hash: 2d37efa43aff9391ef9150914af47449
         m_Subtitle: 
         m_Node:
           rid: 871934207904448634
@@ -1435,9 +1440,11 @@ MonoBehaviour:
           m_KeyList:
           - Background
           - Background Color
+          - Background Animation Info
           m_ValueList:
           - rid: 871934207904448636
           - rid: 871934207904448637
+          - rid: 871934229603418222
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -1458,13 +1465,66 @@ MonoBehaviour:
     - rid: 871934207904448636
       type: {class: 'Constant`1[[UnityEngine.Sprite, UnityEngine.CoreModule]]', ns: Unity.GraphToolkit.Editor, asm: UnityEditor.GraphToolkitModule}
       data:
-        m_Value: {fileID: 0}
+        m_Value: {fileID: 21300000, guid: 45a8567e816ae2b4a9c4b59ec991ed8f, type: 3}
     - rid: 871934207904448637
       type: {class: 'Constant`1[[UnityEngine.Color, UnityEngine.CoreModule]]', ns: Unity.GraphToolkit.Editor, asm: UnityEditor.GraphToolkitModule}
       data:
-        m_Value: {r: 1, g: 1, b: 1, a: 1}
+        m_Value: {r: 0, g: 0, b: 0, a: 0.4745098}
     - rid: 871934207904448638
       type: {class: SetBackground_BlockNode, ns: Story.GraphToolkit.Editor, asm: Story.GraphToolkit.Editor.Assembly}
+      data: 
+    - rid: 871934229603418221
+      type: {class: 'Constant`1[[Story.GraphToolkit.Runtime.StoryAnimationInfo, Story.GraphToolkit.RuntimeAssembly]]', ns: Unity.GraphToolkit.Editor, asm: UnityEditor.GraphToolkitModule}
+      data:
+        m_Value:
+          EaseType: 1
+          DelayTime: 0
+          Duration: 1
+    - rid: 871934229603418222
+      type: {class: 'Constant`1[[Story.GraphToolkit.Runtime.StoryAnimationInfo, Story.GraphToolkit.RuntimeAssembly]]', ns: Unity.GraphToolkit.Editor, asm: UnityEditor.GraphToolkitModule}
+      data:
+        m_Value:
+          EaseType: 1
+          DelayTime: 0
+          Duration: 1
+    - rid: 871934229603418365
+      type: {class: UserBlockNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: UnityEditor.GraphToolkitModule}
+      data:
+        m_Guid:
+          m_Value0: 14791576855724858515
+          m_Value1: 4827300555931191339
+        m_HashGuid:
+          serializedVersion: 2
+          Hash: 939c5ef9c73c46cd2b08538c4704fe42
+        m_Version: 2
+        m_Position: {x: 0, y: 0}
+        m_Title: WaitForInput_BlockNode
+        m_Tooltip: 
+        m_NodePreviewModel:
+          rid: -2
+        m_State: 0
+        m_InputConstantsById:
+          m_KeyList: []
+          m_ValueList: []
+        m_InputPortInfos:
+          expandedPortsById:
+            m_KeyList: []
+            m_ValueList: 
+        m_OutputPortInfos:
+          expandedPortsById:
+            m_KeyList: []
+            m_ValueList: 
+        m_Collapsed: 0
+        m_CurrentModeIndex: 0
+        m_ElementColor:
+          m_Color: {r: 0, g: 0, b: 0, a: 0}
+          m_HasUserColor: 0
+        m_ContextNodeModel:
+          rid: 871933936222077032
+        m_Node:
+          rid: 871934229603418366
+    - rid: 871934229603418366
+      type: {class: WaitForInput_BlockNode, ns: Story.GraphToolkit.Editor, asm: Story.GraphToolkit.Editor.Assembly}
       data: 
     - rid: 7490010998037283051
       type: {class: UserNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: UnityEditor.GraphToolkitModule}

@@ -11,11 +11,14 @@ namespace Story.GraphToolkit.Runtime
         private Sprite _background;
         [SerializeField]
         private Color _backgroundColor;
+        [SerializeField]
+        private StoryAnimationInfo _backgroundAnimationInfo;
 
-        public SetBackgorund_RuntimeBlockNode(Sprite background, Color backgroundColor)
+        public SetBackgorund_RuntimeBlockNode(Sprite background, Color backgroundColor, StoryAnimationInfo backgroundAnimationInfo)
         {
             _background = background;
             _backgroundColor = backgroundColor;
+            _backgroundAnimationInfo = backgroundAnimationInfo;    
         }
         
         public override UniTask ExecuteAsync(StoryExecutionContext context)
@@ -27,7 +30,7 @@ namespace Story.GraphToolkit.Runtime
                 return UniTask.CompletedTask;
             }
 
-            context.StoryPresenterService.SetBackground(_background, _backgroundColor);
+            context.StoryPresenterService.SetBackground(_background, _backgroundColor, _backgroundAnimationInfo);
             return UniTask.CompletedTask;
         }
     }
