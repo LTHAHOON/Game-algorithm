@@ -19,3 +19,5 @@ MonoBehaviour:
   _dialogueCharacterName: dialogueCharName
   _dialogueDescriptionName: dialogueDescription
   _nextDialogueImageName: nectDialogue-image
+  _leftCharacterImageName: character-left-image
+  _rightCharacterImageName: character-right-image

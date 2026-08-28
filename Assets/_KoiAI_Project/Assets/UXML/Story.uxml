@@ -6,6 +6,10 @@
             <ui:Image name="background-image" picking-mode="Ignore" style="background-color: rgb(255, 255, 255); flex-grow: 1; background-image: none; opacity: 1;"/>
             <ui:Image name="background-overlay" picking-mode="Ignore" style="background-color: rgba(0, 0, 0, 0.57); flex-grow: 1; background-image: none; position: absolute; width: 100%; height: 100%;"/>
         </ui:VisualElement>
+        <ui:VisualElement name="characters" style="flex-grow: 1; position: absolute; bottom: 0; width: 100%; height: 75%; flex-direction: row;">
+            <ui:Image name="character-left-image" style="width: 760px; height: 760px; flex-grow: 0; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; background-image: none; bottom: 50px; left: 0; position: absolute; scale: 1 1;"/>
+            <ui:Image name="character-right-image" style="width: 760px; height: 760px; flex-grow: 0; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; background-image: none; position: absolute; right: 0; bottom: 50px; scale: 1 1;"/>
+        </ui:VisualElement>
         <ui:VisualElement name="dialogue" picking-mode="Ignore" style="flex-grow: 1; position: absolute; bottom: 0; width: 100%; height: 35%;">
             <ui:VisualElement name="dialogueBackground" picking-mode="Position" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.59); position: absolute; height: 100%; width: 100%; display: flex;">
                 <ui:Label text="." name="dialogueCharName" picking-mode="Ignore" class="terrarum-text" style="position: relative; color: rgb(255, 255, 255); margin-top: 15px; margin-right: 5px; margin-bottom: 5px; margin-left: 45px; font-size: 70px;"/>
@@ -13,7 +17,7 @@
                 <ui:Label text="." name="dialogueDescription" picking-mode="Ignore" class="terrarum-text" style="color: rgb(255, 255, 255); margin-top: 15px; margin-right: 5px; margin-bottom: 5px; margin-left: 45px; font-size: 50px; flex-direction: column;"/>
             </ui:VisualElement>
             <ui:VisualElement name="nextDialogue" style="flex-grow: 1; position: absolute; width: 96px; height: 96px; bottom: 20px; right: 50px;">
-                <ui:Image name="nectDialogue-image" style="flex-grow: 1; position: relative; background-image: none; background-color: rgb(255, 255, 255);"/>
+                <ui:Image name="nectDialogue-image" style="flex-grow: 1; position: relative; background-image: url(&quot;project://database/Assets/_KoiAI_Project/Assets/Story/Image/Base/T_WaitInput.png?fileID=21300000&amp;guid=ee596f0f7eb5ae842ab0109d2fd3ccd4&amp;type=3#T_WaitInput&quot;); background-color: rgba(255, 255, 255, 0); background-position-x: right 0; -unity-background-image-tint-color: rgb(255, 255, 255);"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

@@ -19,6 +19,10 @@ namespace KoiAI.UI
         private string _dialogueDescriptionName;
         [SerializeField]
         private string _nextDialogueImageName;
+        [SerializeField]
+        private string _leftCharacterImageName;
+        [SerializeField]
+        private string _rightCharacterImageName;
 
         public string BackgroundImageName => _backgroundImageName;
         public string BackgroundSubImageName => _backgroundSubImageName;
@@ -28,5 +32,8 @@ namespace KoiAI.UI
         public string DialogueCharacterName => _dialogueCharacterName;
         public string DialogueDescriptionName => _dialogueDescriptionName;
         public string NextDialogueImageName => _nextDialogueImageName;
+
+        public string LeftCharacterImageName => _leftCharacterImageName;
+        public string RightCharacterImageName => _rightCharacterImageName;
     }
 }

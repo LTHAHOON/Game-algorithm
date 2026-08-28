@@ -31,13 +31,13 @@ namespace Story.GraphToolkit.Editor
         public override StoryRuntimeBlockNode CreateRuntimeBlockInstance()
         {
             IPort backgroundPort = GetInputPortByName(BACKGROUND);
-            backgroundPort.TryGetValue(out Sprite background);
-
             IPort backgroundColorPort = GetInputPortByName(BACKGROUND_COLOR);
-            backgroundColorPort.TryGetValue(out Color backgroundColor);
-            
             IPort backgroundAnimationInfoPort = GetInputPortByName(BACKGROUND_ANIMATION_INFO);
-            backgroundAnimationInfoPort.TryGetValue(out StoryAnimationInfo backgroundAnimationInfo);
+
+            backgroundColorPort.TryGetValue_Extension(out Color backgroundColor);
+            backgroundPort.TryGetValue_Extension(out Sprite background);
+            backgroundAnimationInfoPort.TryGetValue_Extension(out StoryAnimationInfo backgroundAnimationInfo);
+            
             return new SetBackgorund_RuntimeBlockNode(background, backgroundColor, backgroundAnimationInfo);
         }
     }

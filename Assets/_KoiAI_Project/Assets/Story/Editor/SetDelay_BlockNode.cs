@@ -20,7 +20,7 @@ namespace Story.GraphToolkit.Editor
         public override StoryRuntimeBlockNode CreateRuntimeBlockInstance()
         {
             IPort delayTimePort = GetInputPortByName(DELAYTIME);
-            delayTimePort.TryGetValue(out float delayTime);
+            delayTimePort.TryGetValue_Extension(out float delayTime);
 
             return new SetDelay_RuntimeBlockNode(delayTime);
         }

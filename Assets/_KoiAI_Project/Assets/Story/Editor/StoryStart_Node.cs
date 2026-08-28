@@ -13,6 +13,7 @@ namespace Story.GraphToolkit.Editor
         {
             context.AddOutputPort(StoryBaseInputOutputName.EXIT)
                 .WithDisplayName("Execute")
+                .WithConnectorUI(PortConnectorUI.Arrowhead)
                 .Build();
         }
 

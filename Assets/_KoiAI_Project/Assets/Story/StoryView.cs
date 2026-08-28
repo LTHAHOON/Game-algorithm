@@ -12,6 +12,8 @@ namespace KoiAI.UI
         private Label _dialogueCharacterName;
         private Label _dialogueDescription;
         private Image _nextDialogueImage;
+        private Image _leftCharacterImage;
+        private Image _rightCharacterImage;
 
         public StoryView(VisualElement root, StoryViewInfo info) : base(root, info) { }
 
@@ -24,6 +26,8 @@ namespace KoiAI.UI
             _dialogueCharacterName = root.Q<Label>(info.DialogueCharacterName);
             _dialogueDescription = root.Q<Label>(info.DialogueDescriptionName);
             _nextDialogueImage = root.Q<Image>(info.NextDialogueImageName);
+            _leftCharacterImage = root.Q<Image>(info.LeftCharacterImageName);
+            _rightCharacterImage = root.Q<Image>(info.RightCharacterImageName);
         }
 
         public Image BackgroundImage => _backgroundImage;
@@ -33,5 +37,7 @@ namespace KoiAI.UI
         public Label DialogueCharacterName => _dialogueCharacterName;
         public Label DialogueDescription => _dialogueDescription;
         public Image NextDialogueImage => _nextDialogueImage;
+        public Image LeftCharacterImage => _leftCharacterImage;
+        public Image RightCharacterImage => _rightCharacterImage;
     }
 }
