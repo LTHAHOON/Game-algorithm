@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Story.GraphToolkit.Runtime;
 using Unity.GraphToolkit.Editor;
 using UnityEngine;
@@ -13,7 +14,8 @@ namespace Story.GraphToolkit.Editor
         public const string CHARACTER = "Character";
         public const string CHARACTER_POS_TRANSLATE = "Character Pos Translate";
         public const string CHARACTER_SCALE = "Character Scale";
-        public const string CHARACTER_ANIMATION_INFO = "Character Animation Info";
+        public const string CHARACTER_SPRITESHEET_INFO = "Character SpriteSheet Info";
+        public const string CHARACTER_ANIMATION_INFO = "Character Animation Frames";
 
         protected override void OnDefineOptions(IOptionDefinitionContext context)
         {
@@ -39,6 +41,8 @@ namespace Story.GraphToolkit.Editor
                 .WithDisplayName(CHARACTER)
                 .Build();
 
+
+
                 context.AddInputPort<Vector2>(CHARACTER_POS_TRANSLATE)
                 .WithDisplayName(CHARACTER_POS_TRANSLATE)
                 .WithDefaultValue(Vector2.zero)
@@ -49,7 +53,9 @@ namespace Story.GraphToolkit.Editor
                 .WithDefaultValue(Vector2.one)
                 .Build();
             }
-
+            context.AddInputPort<StorySpriteSheetInfo>(CHARACTER_SPRITESHEET_INFO)
+            .WithDisplayName(CHARACTER_SPRITESHEET_INFO)
+            .Build();
 
             context.AddInputPort<StoryAnimationInfo>(CHARACTER_ANIMATION_INFO)
                 .WithDisplayName(CHARACTER_ANIMATION_INFO)
@@ -64,6 +70,8 @@ namespace Story.GraphToolkit.Editor
             chatacterActionOption.TryGetValue(out CharacterAction characterAction);
             chatacterDirectionOption.TryGetValue(out CharacterDireciton characterDireciton);
             characterAnimationInfoPort.TryGetValue_Extension(out StoryAnimationInfo characterAnimationInfo);
+            IPort characterSpriteSheet = GetInputPortByName(CHARACTER_SPRITESHEET_INFO);
+            characterSpriteSheet.TryGetValue_Extension(out StorySpriteSheetInfo characterSpriteSheetInfo);
             if (characterAction == CharacterAction.APPEAR)
             {
                 IPort characterPort = GetInputPortByName(CHARACTER);
@@ -72,9 +80,9 @@ namespace Story.GraphToolkit.Editor
                 characterPort.TryGetValue_Extension(out Sprite character);
                 characterPosTranslatePort.TryGetValue_Extension(out Vector2 characterPosTranslate);
                 characterScalePort.TryGetValue_Extension(out Vector2 characterScale);
-                return new SetCharacter_RuntimeBlockNode(characterAction, characterDireciton, character, characterPosTranslate, characterScale, characterAnimationInfo);
+                return new SetCharacter_RuntimeBlockNode(characterAction, characterDireciton, character, characterPosTranslate, characterScale, characterAnimationInfo, characterSpriteSheetInfo);
             }
-            return new SetCharacter_RuntimeBlockNode(characterAction, characterDireciton, null, Vector2.zero, Vector2.one, characterAnimationInfo);
+            return new SetCharacter_RuntimeBlockNode(characterAction, characterDireciton, null, Vector2.zero, Vector2.one, characterAnimationInfo, characterSpriteSheetInfo);
         }
     }
 }

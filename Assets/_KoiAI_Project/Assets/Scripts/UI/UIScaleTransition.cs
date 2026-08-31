@@ -17,19 +17,27 @@ namespace KoiAI.UI
         private Vector2 _minScale;
         [SerializeField]
         private Vector2 _maxScale;
+        [SerializeField]
+        private int _loops;
+        [SerializeField]
+        private LoopType _loopType;
 
-        public UIScaleTransitionData(Ease easingType, float duration, Vector2 minScale, Vector2 maxScale)
+        public UIScaleTransitionData(Ease easingType, float duration, Vector2 minScale, Vector2 maxScale, int loops, LoopType loopType)
         {
             _easingType = easingType;
             _duration = duration;
             _minScale = minScale;
             _maxScale = maxScale;
+            _loops = loops;
+            _loopType = loopType;
         }
 
         public Ease EasingType => _easingType;
         public float Duration => _duration;
         public Vector2 MinScale => _minScale;
         public Vector2 MaxScale => _maxScale;
+        public int Loops => _loops;
+        public LoopType LoopType => _loopType;
     }
 
     public class UIScaleTransition
@@ -49,7 +57,7 @@ namespace KoiAI.UI
             _uiTarget = uiTarget;
             _scaleTransitionData = scaleTransitionData;
         }
-        public UIScaleTransition(GameObject caller, Ease easingType,VisualElement uiTarget, float duration, Vector2 minScale, Vector2 maxScale)
+        public UIScaleTransition(GameObject caller, Ease easingType,VisualElement uiTarget, float duration, Vector2 minScale, Vector2 maxScale, int loops, LoopType loopType)
         {
             if (!caller || uiTarget == null)
             {
@@ -57,7 +65,7 @@ namespace KoiAI.UI
             }
             _caller = caller;
             _uiTarget = uiTarget;
-            _scaleTransitionData = new(easingType, duration, minScale, maxScale);
+            _scaleTransitionData = new(easingType, duration, minScale, maxScale, loops, loopType);
         }
 
         public void ActivateTransition()
@@ -68,18 +76,19 @@ namespace KoiAI.UI
             }
 
             targetTween = DOTween.To(
-                () => _scaleTransitionData.MaxScale,
+                () => _scaleTransitionData.MinScale,
                 x =>
                 {
                     _uiTarget.style.scale = x;
                 },
-                _scaleTransitionData.MinScale,
+                _scaleTransitionData.MaxScale,
                 _scaleTransitionData.Duration
                 )
                 .SetId(_uiTarget)
                 .SetEase(_scaleTransitionData.EasingType)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetLink(_caller, LinkBehaviour.KillOnDestroy);
+                .SetLoops(_scaleTransitionData.Loops, _scaleTransitionData.LoopType)
+                .SetLink(_caller, LinkBehaviour.KillOnDestroy)
+                .OnComplete(() => StopTransition());
         }
 
         public void StopTransition()

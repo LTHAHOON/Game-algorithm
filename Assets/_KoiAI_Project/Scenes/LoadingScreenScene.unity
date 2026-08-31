@@ -426,6 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28a4000ad0960b428439f8482983b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KoiAI.UI.LoadingScreenPresenter
+  _popUpWindows: []
   _uiDoucument: {fileID: 350198044}
   _visualViewInfo: {fileID: 11400000, guid: 48439bd95614b6c4b9927b1e0a0810ba, type: 2}
   _exitLoadingDirector: {fileID: 0}
@@ -435,6 +436,8 @@ MonoBehaviour:
     _duration: 0.8
     _minScale: {x: 1, y: 1}
     _maxScale: {x: 1.1, y: 1.1}
+    _loops: -1
+    _loopType: 1
   _loadSceneReference:
     _scenePathRecord: Assets/_KoiAI_Project/Scenes/InGameScene.unity
 --- !u!4 &305742670

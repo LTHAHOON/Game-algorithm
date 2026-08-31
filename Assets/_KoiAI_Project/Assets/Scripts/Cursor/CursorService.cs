@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using KoiAI.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using Cursor = UnityEngine.Cursor;
 
@@ -64,6 +66,12 @@ namespace KoiAI.KoiCursor
             _elementCursorCallbacks.Remove(key);
         }
 
+        public static void SetCursor(CursorType cursorType, CursorMode cursorMode = CursorMode.Auto)
+        {
+            Texture2D cursorTex = GetCursorTex(cursorType);
+            Cursor.SetCursor(cursorTex, Vector2.zero, cursorMode);
+        }
+
         private static Texture2D GetCursorTex(CursorType cursorType)
         {
             Texture2D cursorTex = cursorType switch
@@ -73,6 +81,15 @@ namespace KoiAI.KoiCursor
                 _ => null
             };
             return cursorTex;
+        }
+        public static bool CheckPointerOverElement<TInfo>(VisualView<TInfo> visualView, VisualElement element) where TInfo : VisualViewInfo
+        {
+            Vector2 screenPosition = Mouse.current.position.ReadValue();
+            Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(visualView.Root.panel, screenPosition);
+            //UI ToolKit은 위치 기준이 Top-Left 방식이기 때문에 반전시켜줘야 합니다.
+            panelPosition.y = visualView.Root.layout.height - panelPosition.y;
+            bool bPointerOver = element.worldBound.Contains(panelPosition);
+            return bPointerOver;
         }
     }
 }

@@ -3,8 +3,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using DG.Tweening.Core;
-using KoiAI.Input;
-using KoiAI.KoiCursor;
 using Story.GraphToolkit.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +10,9 @@ using UnityEngine.UIElements;
 
 namespace KoiAI.UI
 {
+    using KoiAI.Input;
+    using KoiAI.KoiCursor;
+
     public class StoryPresenter : VisualPresenter<StoryView, StoryViewInfo>, IStoryPresenterService
     {
         [SerializeField]
@@ -23,7 +24,7 @@ namespace KoiAI.UI
         protected override void Initalize(UIDocument uiDocument, ref StoryView visualView, StoryViewInfo visualViewInfo)
         {
             visualView = new StoryView(uiDocument.rootVisualElement, visualViewInfo);
-            _nextDialogueImage_Transition = new UIScaleTransition(gameObject, Ease.Linear, visualView.NextDialogueImage, 1f, new Vector2(0.7f, 0.7f), new Vector2(1f, 1f));
+            _nextDialogueImage_Transition = new UIScaleTransition(gameObject, Ease.Linear, visualView.NextDialogueImage, 1f, new Vector2(1f, 1f), new Vector2(0.7f, 0.7f), -1, LoopType.Yoyo);
             _isInitialized = true;
         }
 
@@ -37,7 +38,7 @@ namespace KoiAI.UI
         }
 
         public void SetCharacter(CharacterAction characterAction, CharacterDireciton characterDireciton, Sprite character, Vector2 characterPosTranslate,
-                                    Vector2 characterScale, StoryAnimationInfo characterAnimationInfo)
+                                    Vector2 characterScale, StoryAnimationInfo characterAnimationInfo, StorySpriteSheetInfo characterSpriteSheetInfo)
         {
             StoryView visualView = GetVisualView();
             Image characterImage = characterDireciton switch
@@ -51,6 +52,24 @@ namespace KoiAI.UI
                 return;
             }
 
+            if(characterSpriteSheetInfo.IsValid())
+            {
+                int index = 0;
+                Tween spriteSheetSequence = DOTween.Sequence()
+                    .SetLoops(characterSpriteSheetInfo.Frames.Length)
+                    .AppendCallback(()=>{
+                        characterImage.style.backgroundImage = new(characterSpriteSheetInfo.Frames[index]);
+                        index = (index + 1) % characterSpriteSheetInfo.Frames.Length;
+                    })
+                    .SetDelay(characterSpriteSheetInfo.FrameRate)
+                    .OnComplete(() => {
+                        if(character)
+                        {
+                            characterImage.style.backgroundImage = new(character);
+                        }
+                    });
+            }
+
             float targetOpacity = 0f;
             switch (characterAction)
             {
@@ -59,7 +78,10 @@ namespace KoiAI.UI
                     characterImage.style.opacity = 0f;
                     characterImage.style.width = character.texture.width * characterScale.x;
                     characterImage.style.height = character.texture.height * characterScale.y;
-                    characterImage.style.backgroundImage = new(character);
+                    if(!characterSpriteSheetInfo.IsValid())
+                    {
+                        characterImage.style.backgroundImage = new(character);
+                    }
                     characterImage.style.translate = characterPosTranslate;
                     break;
                 case CharacterAction.REMOVE:
@@ -69,7 +91,7 @@ namespace KoiAI.UI
             FadeToVisual(() => characterImage.style.opacity.value, x => characterImage.style.opacity = x,
                 targetOpacity, characterAnimationInfo);
         }
-
+        
         public void SetBackground(Sprite background, Color backgroundColor, StoryAnimationInfo backgroundAnimationInfo)
         {
             StoryView visualView = GetVisualView();
@@ -147,30 +169,30 @@ namespace KoiAI.UI
         {
             bool onClick = false;
             StoryView visualView = GetVisualView();
-            CursorService.RegisterElementCursor<PointerOutEvent>(visualView.BackgroundImage, CursorType.Base, CursorMode.Auto);
-            CursorService.RegisterElementCursor<PointerEnterEvent>(visualView.BackgroundImage, CursorType.Hover, CursorMode.Auto);
+            CursorService.RegisterElementCursor<PointerLeaveEvent>(visualView.DialogueBackground, CursorType.Base, CursorMode.Auto);
+            CursorService.RegisterElementCursor<PointerEnterEvent>(visualView.DialogueBackground, CursorType.Hover, CursorMode.Auto);
+            bool bPointerOver = CursorService.CheckPointerOverElement(visualView, visualView.DialogueBackground);
+            if(bPointerOver)
+            {
+                CursorService.SetCursor(CursorType.Hover);
+            }
             void WaitClick(InputAction.CallbackContext context)
             {
-                Vector2 screenPosition = Mouse.current.position.ReadValue();
-                Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(visualView.Root.panel, screenPosition);
-                //UI ToolKit은 위치 기준이 Top-Left 방식이기 때문에 반전시켜줘야 합니다.
-                panelPosition.y = visualView.Root.layout.height - panelPosition.y;
-                if (!visualView.DialogueBackground.worldBound.Contains(panelPosition))
-                {
-                    return;
-                }
-
-                if (context.performed)
+                bool bPointerOver = CursorService.CheckPointerOverElement(visualView, visualView.DialogueBackground);
+                if (context.performed && bPointerOver)
                 {
                     onClick = true;
-                    CursorService.UnregisterElementCursor<PointerOutEvent>(visualView.BackgroundImage);
-                    CursorService.UnregisterElementCursor<PointerEnterEvent>(visualView.BackgroundImage);
+                    CursorService.UnregisterElementCursor<PointerLeaveEvent>(visualView.DialogueBackground);
+                    CursorService.UnregisterElementCursor<PointerEnterEvent>(visualView.DialogueBackground);
+                    CursorService.SetCursor(CursorType.Base);
                     InputService.PlayerIA.Global.Click.performed -= WaitClick;
                 }
             }
             InputService.PlayerIA.Global.Click.performed += WaitClick;
             await UniTask.WaitUntil(() => onClick);
         }
+
+        
 
         private Tween FadeToVisual(DOGetter<float> dOGetter, DOSetter<float> dOSetter, float targetOpacity, StoryAnimationInfo animationInfo)
         {
