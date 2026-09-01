@@ -129,6 +129,8 @@ MonoBehaviour:
         - rid: 8915585777626251910
         - rid: 4679753522666012732
         - rid: 4679753522666012733
+        - rid: 4679753523508543584
+        - rid: 4679753523508543591
         m_GraphWireModels:
         - rid: 871934046711316652
         - rid: 871934046711316660
@@ -244,9 +246,9 @@ MonoBehaviour:
         m_LastKnownBounds:
           serializedVersion: 2
           x: -1239.2001
-          y: -195.20001
+          y: -561.60004
           width: 6296.0005
-          height: 4913.5996
+          height: 5279.9995
         m_GraphElementMetaData:
         - m_Guid:
             m_Value0: 15503354617490573377
@@ -1872,6 +1874,22 @@ MonoBehaviour:
             Hash: 27b327fe75ccaf4ac4fff290d905cce3
           m_Category: 2
           m_Index: 96
+        - m_Guid:
+            m_Value0: 2349444309482475108
+            m_Value1: 10208433163718249469
+          m_HashGuid:
+            serializedVersion: 2
+            Hash: 640e44ce26e79a20fd4bbe34e0a3ab8d
+          m_Category: 4
+          m_Index: 100
+        - m_Guid:
+            m_Value0: 16619323917246297196
+            m_Value1: 7371233583627453728
+          m_HashGuid:
+            serializedVersion: 2
+            Hash: 6c749ebe0cb3a3e620458bcce3e14b66
+          m_Category: 0
+          m_Index: 100
         m_EntryPoint:
           rid: 871933936222077032
         m_Graph:
@@ -3278,6 +3296,104 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: Enter
+    - rid: 4679753523508543584
+      type: {class: UserContextNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: UnityEditor.GraphToolkitModule}
+      data:
+        m_Guid:
+          m_Value0: 2349444309482475108
+          m_Value1: 10208433163718249469
+        m_HashGuid:
+          serializedVersion: 2
+          Hash: 640e44ce26e79a20fd4bbe34e0a3ab8d
+        m_Version: 2
+        m_Position: {x: 444.64294, y: -561.2352}
+        m_Title: 
+        m_Tooltip: 
+        m_NodePreviewModel:
+          rid: -2
+        m_State: 0
+        m_InputConstantsById:
+          m_KeyList: []
+          m_ValueList: []
+        m_InputPortInfos:
+          expandedPortsById:
+            m_KeyList: []
+            m_ValueList: 
+        m_OutputPortInfos:
+          expandedPortsById:
+            m_KeyList: []
+            m_ValueList: 
+        m_Collapsed: 0
+        m_CurrentModeIndex: 0
+        m_ElementColor:
+          m_Color: {r: 0, g: 0, b: 0, a: 0}
+          m_HasUserColor: 0
+        m_Blocks: []
+        m_BlockGuids: []
+        m_Subtitle: 
+        m_Node:
+          rid: 4679753523508543585
+    - rid: 4679753523508543585
+      type: {class: StorySequence_ContextNode, ns: Story.GraphToolkit.Editor, asm: Story.GraphToolkit.Editor.Assembly}
+      data: 
+    - rid: 4679753523508543591
+      type: {class: SubgraphNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: UnityEditor.GraphToolkitModule}
+      data:
+        m_Guid:
+          m_Value0: 16619323917246297196
+          m_Value1: 7371233583627453728
+        m_HashGuid:
+          serializedVersion: 2
+          Hash: 6c749ebe0cb3a3e620458bcce3e14b66
+        m_Version: 2
+        m_Position: {x: 791.4768, y: -453.40143}
+        m_Title: 
+        m_Tooltip: Local Subgraph
+        m_NodePreviewModel:
+          rid: -2
+        m_State: 0
+        m_InputConstantsById:
+          m_KeyList: []
+          m_ValueList: []
+        m_InputPortInfos:
+          expandedPortsById:
+            m_KeyList: []
+            m_ValueList: 
+        m_OutputPortInfos:
+          expandedPortsById:
+            m_KeyList: []
+            m_ValueList: 
+        m_Collapsed: 0
+        m_CurrentModeIndex: 0
+        m_ElementColor:
+          m_Color: {r: 0, g: 0, b: 0, a: 0}
+          m_HasUserColor: 0
+        m_Subgraph:
+          rid: -2
+        m_SubgraphAssetReference:
+          rid: -2
+        m_SubgraphReference:
+          m_AssetGuidAsHash:
+            serializedVersion: 2
+            Hash: dda576678820b2429ebed1d0b74b6165
+          m_GraphModelGuid:
+            serializedVersion: 2
+            Hash: 3492d048b42a8bff387685434a332617
+          m_GraphObjectEntityId:
+            m_Data: 0
+        m_Subtitle: Asset Subgraph
+        m_AssetProperty:
+          m_SubgraphReference:
+            m_AssetGuidAsHash:
+              serializedVersion: 2
+              Hash: dda576678820b2429ebed1d0b74b6165
+            m_GraphModelGuid:
+              serializedVersion: 2
+              Hash: 3492d048b42a8bff387685434a332617
+            m_GraphObjectEntityId:
+              m_Data: 0
+        m_CopyPasteLocalSubgraphModelReference:
+          rid: -2
     - rid: 7490010998037283051
       type: {class: UserNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: UnityEditor.GraphToolkitModule}
       data:

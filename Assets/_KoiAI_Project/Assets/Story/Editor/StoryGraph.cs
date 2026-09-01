@@ -17,10 +17,4 @@ namespace Story.GraphToolkit.Editor
             GraphDatabase.PromptInProjectBrowserToCreateNewAsset<StoryGraph>("new StoryGraph");
         }
     }
-
-    [Subgraph(typeof(StoryGraph))]
-    public class StorySubGraph : Graph
-    {
-        
-    }
 }

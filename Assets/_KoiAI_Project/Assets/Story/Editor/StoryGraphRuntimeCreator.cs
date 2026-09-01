@@ -26,12 +26,17 @@ namespace Story.GraphToolkit.Editor
 
             return storyRuntimeBlockNodes;
         }
-
-        public static List<StoryRuntimeNode> CreateRuntimeNodes(StoryGraph storyGraph)
+        
+        public static List<StoryRuntimeNode> CreateRuntimeNodes(Graph storyGraph)
         {
             List<INode> editorNodes = new();
             List<StoryRuntimeNode> runtimeNodes = new();
             Dictionary<INode, int> dicRuntimeNodeIndices = new();
+
+            if (storyGraph == null)
+            {
+                return runtimeNodes;
+            }
 
             List<IRuntimeNodeCreatable> runtimeNodeCreators = storyGraph.GetNodes()
                 .OfType<IRuntimeNodeCreatable>()
