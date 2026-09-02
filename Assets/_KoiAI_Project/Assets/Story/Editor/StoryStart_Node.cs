@@ -8,10 +8,9 @@ namespace Story.GraphToolkit.Editor
     [Serializable]
     public class StoryStart_Node : Node, IRuntimeNodeCreatable
     {
-        
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
-            context.AddOutputPort(StoryBaseInputOutputName.EXIT)
+            context.AddOutputPort<StoryFlow>(StoryFlow.EXIT)
                 .WithDisplayName("Execute")
                 .WithConnectorUI(PortConnectorUI.Arrowhead)
                 .Build();

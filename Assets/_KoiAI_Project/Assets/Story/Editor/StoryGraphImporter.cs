@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Story.GraphToolkit.Runtime;
 using Unity.GraphToolkit.Editor;
 using UnityEditor.AssetImporters;
@@ -13,12 +12,11 @@ namespace Story.GraphToolkit.Editor
         public override void OnImportAsset(AssetImportContext context)
         {
             Graph editorGraph = GraphDatabase.LoadGraphForImporter<StoryGraph>(context.assetPath);
-            editorGraph ??= GraphDatabase.LoadGraphForImporter<StorySubGraph>(context.assetPath);
 
             StoryRuntimeGraph runtimeGraph = ScriptableObject.CreateInstance<StoryRuntimeGraph>();
 
             List<StoryRuntimeNode> runtimeNodes = StoryGraphRuntimeCreator.CreateRuntimeNodes(editorGraph);
-
+            
             runtimeGraph.Initialize(runtimeNodes);
             
             context.AddObjectToAsset("StoryRuntimeGraph", runtimeGraph);

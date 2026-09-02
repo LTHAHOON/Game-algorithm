@@ -4,7 +4,6 @@ using System;
 
 namespace Story.GraphToolkit.Editor
 {
-
     [Graph(AssetExtension, GraphOptions.SupportsSubgraphs)]
     [Serializable]
     public class StoryGraph : Graph

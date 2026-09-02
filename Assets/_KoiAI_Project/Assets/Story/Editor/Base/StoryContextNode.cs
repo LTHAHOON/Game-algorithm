@@ -11,13 +11,13 @@ namespace Story.GraphToolkit.Editor
 
         protected void AddInputOutputPort(IPortDefinitionContext context)
         {
-            context.AddInputPort(StoryBaseInputOutputName.ENTER)
-                .WithDisplayName(StoryBaseInputOutputName.ENTER)
+            context.AddInputPort<StoryFlow>(StoryFlow.ENTER)
+                .WithDisplayName(StoryFlow.ENTER)
                 .WithConnectorUI(PortConnectorUI.Arrowhead)
                 .Build();
 
-            context.AddOutputPort(StoryBaseInputOutputName.EXIT)
-                .WithDisplayName(StoryBaseInputOutputName.EXIT)
+            context.AddOutputPort<StoryFlow>(StoryFlow.EXIT)
+                .WithDisplayName(StoryFlow.EXIT)
                 .WithConnectorUI(PortConnectorUI.Arrowhead)
                 .Build();
         }
