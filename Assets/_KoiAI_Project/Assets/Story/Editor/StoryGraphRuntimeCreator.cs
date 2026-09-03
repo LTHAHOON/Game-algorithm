@@ -38,7 +38,7 @@ namespace Story.GraphToolkit.Editor
                 return runtimeNodes;
             }
 
-            List<INode> allNodes = storyGraph.GetNodes().ToList();
+            List<INode> allNodes = GetConnectedNodesFromStart(storyGraph.GetNodes());
             (int Index, ISubgraphNode SubGraphNode)[] subgraphNodes = allNodes
                                         .OfType<ISubgraphNode>()
                                         .Select(node => (allNodes.IndexOf(node), node))
@@ -47,54 +47,39 @@ namespace Story.GraphToolkit.Editor
             if (subgraphNodes.Length > 0)
             {
                 List<(int Index, List<INode> Nodes)> subgraphNodeIndexAndNodes = new();
+
                 for (int i = 0; i < subgraphNodes.Length; i++)
                 {
-                    List<INode> subgraphNodeList = subgraphNodes[i].SubGraphNode?
-                        .GetSubgraph()?
-                        .GetNodes()
-                        .Where(n => n is IRuntimeNodeCreatable).ToList();                                      
-                    if (subgraphNodeList == null || subgraphNodeList.Count == 0)
-                    {
-                        continue;
-                    }
-                    List<INode> sortedsubgraphNodeList = new();
-                    INode startNode = subgraphNodeList.OfType<StoryStart_Node>().FirstOrDefault();
-                    if (startNode == null)
+                    var subgraph = subgraphNodes[i].SubGraphNode.GetSubgraph();
+                    if (subgraph == null)
                     {
                         continue;
                     }
 
-                    INode curNode = startNode;
-                    sortedsubgraphNodeList.Add(curNode);
-                    for (int j = 0; j < subgraphNodeList.Count; j++)
+                    List<INode> connectedSubgraphNodes =
+                        GetConnectedSubgraphNodes(subgraph)
+                            .Where(node => node is IRuntimeNodeCreatable)
+                            .ToList();
+
+                    if (connectedSubgraphNodes.Count == 0)
                     {
-                        var exitPort = curNode.GetOutputPortByName(StoryFlow.EXIT);
-                        if (exitPort == null)
-                        {
-                            continue;
-                        }
-                        if(!exitPort.IsConnected)
-                        {
-                            break;
-                        }
-                        var nextNode = exitPort.FirstConnectedPort?.GetNode();
-                        if (nextNode == null)
-                        {
-                            continue;
-                        }
-                        sortedsubgraphNodeList.Add(nextNode);
-                        curNode = nextNode;
+                        continue;
                     }
-                    subgraphNodeIndexAndNodes.Add((subgraphNodes[i].Index, sortedsubgraphNodeList));
+
+                    subgraphNodeIndexAndNodes.Add(
+                        (subgraphNodes[i].Index, connectedSubgraphNodes));
                 }
 
-                int count = 0;
+                int insertedNodeCount = 0;
+
                 for (int i = 0; i < subgraphNodeIndexAndNodes.Count; i++)
                 {
-                    int index = subgraphNodeIndexAndNodes[i].Index;
+                    int insertionIndex = subgraphNodeIndexAndNodes[i].Index + 1 + insertedNodeCount;
+
                     List<INode> subgraphNodeList = subgraphNodeIndexAndNodes[i].Nodes;
-                    allNodes.InsertRange((index + 1) + count, subgraphNodeList);
-                    count += subgraphNodeList.Count;
+
+                    allNodes.InsertRange(insertionIndex, subgraphNodeList);
+                    insertedNodeCount += subgraphNodeList.Count;
                 }
             }
 
@@ -124,7 +109,7 @@ namespace Story.GraphToolkit.Editor
 
             for (int i = 0; i < runtimeNodes.Count; i++)
             {
-                if(i == runtimeNodes.Count - 1)
+                if (i == runtimeNodes.Count - 1)
                 {
                     runtimeNodes[i].NextNodeIndex = -1;
                     break;
@@ -135,10 +120,135 @@ namespace Story.GraphToolkit.Editor
             return runtimeNodes;
         }
 
+        private static List<INode> GetConnectedNodesFromStart(IEnumerable<INode> nodes)
+        {
+            List<INode> nodeList = nodes.ToList();
+            HashSet<INode> validNodes = new(nodeList);
+            HashSet<INode> visitedNodes = new();
+            List<INode> connectedNodes = new();
+
+            INode currentNode = nodeList
+                .OfType<StoryStart_Node>()
+                .FirstOrDefault();
+
+            while (currentNode != null &&
+                   validNodes.Contains(currentNode) &&
+                   visitedNodes.Add(currentNode))
+            {
+                connectedNodes.Add(currentNode);
+
+                IPort exitPort = GetStoryFlowOutputPort(currentNode);
+
+                if (exitPort == null || !exitPort.IsConnected)
+                {
+                    break;
+                }
+
+                currentNode = exitPort.FirstConnectedPort?.GetNode();
+            }
+
+            return connectedNodes;
+        }
+
+        private static List<INode> GetConnectedSubgraphNodes(Graph subgraph)
+        {
+            List<INode> nodeList = subgraph.GetNodes().ToList();
+            HashSet<INode> validNodes = new(nodeList);
+            HashSet<INode> visitedNodes = new();
+            List<INode> connectedNodes = new();
+
+            IVariableNode enterNode = nodeList
+                .OfType<IVariableNode>()
+                .FirstOrDefault(node =>
+                    node.Variable != null &&
+                    node.Variable.VariableKind == VariableKind.Input &&
+                    IsStoryFlowVariable(node.Variable, VariableKind.Input));
+
+            if (enterNode == null || enterNode.OutputPortCount == 0)
+            {
+                return connectedNodes;
+            }
+
+            INode currentNode = enterNode
+                .GetOutputPort(0)?
+                .FirstConnectedPort?
+                .GetNode();
+
+            while (currentNode != null &&
+                   validNodes.Contains(currentNode) &&
+                   visitedNodes.Add(currentNode))
+            {
+                if (currentNode is IVariableNode exitNode &&
+                    exitNode.Variable != null &&
+                    exitNode.Variable.VariableKind == VariableKind.Output &&
+                    IsStoryFlowVariable(exitNode.Variable, VariableKind.Output))
+                {
+                    break;
+                }
+
+                connectedNodes.Add(currentNode);
+
+                IPort exitPort = currentNode.GetOutputPortByName(StoryFlow.EXIT);
+                if (exitPort == null || !exitPort.IsConnected)
+                {
+                    break;
+                }
+
+                currentNode = exitPort.FirstConnectedPort?.GetNode();
+            }
+
+            return connectedNodes;
+        }
+
+        private static IPort GetStoryFlowOutputPort(INode node)
+        {
+            if (node is not ISubgraphNode subgraphNode)
+            {
+                return node.GetOutputPortByName(StoryFlow.EXIT);
+            }
+
+            Graph subgraph = subgraphNode.GetSubgraph();
+            if (subgraph == null)
+            {
+                return null;
+            }
+
+            IVariable outputVariable = subgraph
+                .GetVariables()
+                .FirstOrDefault(variable =>
+                    variable.VariableKind == VariableKind.Output &&
+                    IsStoryFlowVariable(variable, VariableKind.Output));
+            IPort port = Enumerable.Range(0, subgraphNode.OutputPortCount)
+                .Select(subgraphNode.GetOutputPort)
+                .FirstOrDefault(outputPort => outputPort.DisplayName == outputVariable?.Name);
+            for (int i = 0; i < subgraphNode.OutputPortCount; i++)
+{
+    IPort outputPort = subgraphNode.GetOutputPort(i);
+    UnityEngine.Debug.Log(outputPort);
+}
+            return outputVariable == null
+                ? null
+                : port;
+        }
+
+        private static bool IsStoryFlowVariable(IVariable variable, VariableKind kind)
+        {
+            if (variable == null || variable.VariableKind != kind)
+            {
+                return false;
+            }
+
+            return variable.DataType == typeof(StoryFlow) ||
+                   (kind == VariableKind.Input &&
+                    (variable.Name == "Start" || variable.Name == StoryFlow.ENTER)) ||
+                   (kind == VariableKind.Output &&
+                    (variable.Name == "End" || variable.Name == StoryFlow.EXIT));
+        }
+
         //보류
         private static int FindNextNodeIndex(INode currentNode, Dictionary<INode, int> dicRuntimeNodeIndices)
         {
-            IPort exitPort = currentNode.GetOutputPortByName(StoryFlow.EXIT);
+            IPort exitPort = GetStoryFlowOutputPort(currentNode);
             if (exitPort == null || !exitPort.IsConnected)
             {
                 return -1;
@@ -149,9 +259,10 @@ namespace Story.GraphToolkit.Editor
             if (nextNode is ISubgraphNode subgraphNode)
             {
                 var subgraph = subgraphNode.GetSubgraph();
-                nextNode = subgraph?
-                    .GetNodes()
-                    .OfType<StoryStart_Node>().FirstOrDefault();
+                nextNode = subgraph == null
+                    ? null
+                    : GetConnectedSubgraphNodes(subgraph)
+                        .FirstOrDefault(node => node is IRuntimeNodeCreatable);
             }
             int nextIndex = dicRuntimeNodeIndices.GetValueOrDefault(nextNode, -1);
 

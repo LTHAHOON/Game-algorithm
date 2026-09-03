@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Story.GraphToolkit.Editor
 {
-    [ScriptedImporter(3, StoryGraph.AssetExtension)]
+    [ScriptedImporter(4, StoryGraph.AssetExtension)]
     public class StoryGraphImporter : ScriptedImporter
     {
         public override void OnImportAsset(AssetImportContext context)
